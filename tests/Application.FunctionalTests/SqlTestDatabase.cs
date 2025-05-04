@@ -1,20 +1,20 @@
 ﻿using System.Data.Common;
 using BookShop.Infrastructure.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
 using Respawn;
 
 namespace BookShop.Application.FunctionalTests;
 
-public class PostgreSQLTestDatabase : ITestDatabase
+public class SqlTestDatabase : ITestDatabase
 {
     private readonly string _connectionString = null!;
-    private NpgsqlConnection _connection = null!;
+    private SqlConnection _connection = null!;
     private Respawner _respawner = null!;
 
-    public PostgreSQLTestDatabase()
+    public SqlTestDatabase()
     {
         var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
@@ -30,10 +30,10 @@ public class PostgreSQLTestDatabase : ITestDatabase
 
     public async Task InitialiseAsync()
     {
-        _connection = new NpgsqlConnection(_connectionString);
+        _connection = new SqlConnection(_connectionString);
 
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseNpgsql(_connectionString)
+            .UseSqlServer(_connectionString)
             .ConfigureWarnings(warnings => warnings.Log(RelationalEventId.PendingModelChangesWarning))
             .Options;
 
@@ -42,13 +42,10 @@ public class PostgreSQLTestDatabase : ITestDatabase
         context.Database.EnsureDeleted();
         context.Database.Migrate();
 
-        await _connection.OpenAsync();
-        _respawner = await Respawner.CreateAsync(_connection, new RespawnerOptions
+        _respawner = await Respawner.CreateAsync(_connectionString, new RespawnerOptions
         {
-            DbAdapter = DbAdapter.Postgres,
             TablesToIgnore = ["__EFMigrationsHistory"]
         });
-        await _connection.CloseAsync();
     }
 
     public DbConnection GetConnection()
@@ -63,9 +60,7 @@ public class PostgreSQLTestDatabase : ITestDatabase
 
     public async Task ResetAsync()
     {
-        await _connection.OpenAsync();
-        await _respawner.ResetAsync(_connection);
-        await _connection.CloseAsync();
+        await _respawner.ResetAsync(_connectionString);
     }
 
     public async Task DisposeAsync()

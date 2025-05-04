@@ -98,32 +98,21 @@ module web 'services/web.bicep' = {
   scope: rg
 }
 
-module pgsqldatabase 'core/database/postgresql/flexibleserver.bicep' = {
-  name: 'pgsql-database'
+
+module database 'core/database/sqlserver/sqlserver.bicep' = {
+  name: 'database'
   params: {
-    name: !empty(dbServerName) ? dbServerName : '${abbrs.postgreSQLServers}${resourceToken}'
+    name: !empty(dbServerName) ? dbServerName : '${abbrs.sqlServers}${resourceToken}'
     location: location
     tags: tags
-    sku: {
-      name: 'Standard_B1ms'
-      tier: 'Burstable'
-    }
-    storage: {
-      storageSizeGB: 32
-    }
-    version: '14'
-    appUserLogin: 'appUser'
-    appUserLoginPassword: dbAppUserPassword
-    administratorLogin: 'pgsqlAdmin'
-    administratorLoginPassword: dbAdminPassword
-    databaseName:!empty(dbName) ? dbName : '${abbrs.postgreSQLServersDatabases}${resourceToken}'
-    allowAzureIPsFirewall: true
+    databaseName: !empty(dbName) ? dbName : '${abbrs.sqlServersDatabases}${resourceToken}'
     keyVaultName: keyVault.outputs.name
     connectionStringKey: 'ConnectionStrings--BookShopDb'
+    sqlAdminPassword: dbAdminPassword
+    appUserPassword: dbAppUserPassword
   }
   scope: rg
 }
-
 
 module webKeyVaultAccess 'core/security/keyvault-access.bicep' = {
   name: 'webKeyVaultAccess'
@@ -147,5 +136,5 @@ output AZURE_TENANT_ID string = tenant().tenantId
 output AZURE_KEY_VAULT_NAME string = keyVault.outputs.name
 output AZURE_KEY_VAULT_ENDPOINT string = keyVault.outputs.endpoint
 output APPLICATIONINSIGHTS_CONNECTION_STRING string = monitoring.outputs.applicationInsightsConnectionString
-output AZURE_PSQL_CONNECTION_STRING_KEY string = pgsqldatabase.outputs.connectionStringKey
+output AZURE_SQL_CONNECTION_STRING_KEY string = database.outputs.connectionStringKey
 output WEB_BASE_URI string = web.outputs.uri

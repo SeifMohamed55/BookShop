@@ -3,24 +3,22 @@ using BookShop.Infrastructure.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Configuration;
-using Npgsql;
 using Respawn;
-using Testcontainers.PostgreSql;
+using Testcontainers.MsSql;
 
 namespace BookShop.Application.FunctionalTests;
 
-public class PostgreSQLTestcontainersTestDatabase : ITestDatabase
+public class SqlTestcontainersTestDatabase : ITestDatabase
 {
     private const string DefaultDatabase = "BookShopTestDb";
-    private readonly PostgreSqlContainer _container;
+    private readonly MsSqlContainer _container;
     private DbConnection _connection = null!;
     private string _connectionString = null!;
     private Respawner _respawner = null!;
 
-    public PostgreSQLTestcontainersTestDatabase()
+    public SqlTestcontainersTestDatabase()
     {
-        _container = new PostgreSqlBuilder()
+        _container = new MsSqlBuilder()
             .WithAutoRemove(true)
             .Build();
     }
@@ -30,17 +28,17 @@ public class PostgreSQLTestcontainersTestDatabase : ITestDatabase
         await _container.StartAsync();
         await _container.ExecScriptAsync($"CREATE DATABASE {DefaultDatabase}");
 
-        var builder = new NpgsqlConnectionStringBuilder(_container.GetConnectionString())
+        var builder = new SqlConnectionStringBuilder(_container.GetConnectionString())
         {
-            Database = DefaultDatabase
+            InitialCatalog = DefaultDatabase
         };
 
         _connectionString = builder.ConnectionString;
 
-        _connection = new NpgsqlConnection(_connectionString);
+        _connection = new SqlConnection(_connectionString);
 
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseNpgsql(_connectionString)
+            .UseSqlServer(_connectionString)
             .ConfigureWarnings(warnings => warnings.Log(RelationalEventId.PendingModelChangesWarning))
             .Options;
 
@@ -48,13 +46,10 @@ public class PostgreSQLTestcontainersTestDatabase : ITestDatabase
 
         await context.Database.MigrateAsync();
 
-        await _connection.OpenAsync();
-        _respawner = await Respawner.CreateAsync(_connection, new RespawnerOptions
+        _respawner = await Respawner.CreateAsync(_connectionString, new RespawnerOptions
         {
-            DbAdapter = DbAdapter.Postgres,
             TablesToIgnore = ["__EFMigrationsHistory"]
         });
-        await _connection.CloseAsync();
     }
 
     public DbConnection GetConnection()
@@ -69,9 +64,7 @@ public class PostgreSQLTestcontainersTestDatabase : ITestDatabase
 
     public async Task ResetAsync()
     {
-        await _connection.OpenAsync();
-        await _respawner.ResetAsync(_connection);
-        await _connection.CloseAsync();
+        await _respawner.ResetAsync(_connectionString);
     }
 
     public async Task DisposeAsync()

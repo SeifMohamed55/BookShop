@@ -2,14 +2,14 @@ using BookShop.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+DotNetEnv.Env.Load();
+builder.Configuration.AddEnvironmentVariables();
+
 // Add services to the container.
 builder.AddKeyVaultIfConfigured();
 builder.AddApplicationServices();
 builder.AddInfrastructureServices();
 builder.AddWebServices();
-
-DotNetEnv.Env.Load();
-builder.Configuration.AddEnvironmentVariables();
 
 var app = builder.Build();
 

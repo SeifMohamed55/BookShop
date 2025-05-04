@@ -15,7 +15,7 @@ public static class DependencyInjection
 {
     public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("BookShopDb");
+        var connectionString = builder.Configuration.GetConnectionString("BookShopDb_OnlineSQLServer");
         Guard.Against.Null(connectionString, message: "Connection string 'BookShopDb' not found.");
 
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
@@ -24,7 +24,7 @@ public static class DependencyInjection
         builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-            options.UseNpgsql(connectionString);
+            options.UseSqlServer(connectionString);
         });
 
 
