@@ -1,7 +1,6 @@
-﻿using BookShop.Domain.Entities;
+﻿using AspireApp.Domain.Entities;
 
-namespace BookShop.Application.TodoItems.Queries.GetTodoItemsWithPagination;
-
+namespace AspireApp.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 public class TodoItemBriefDto
 {
     public int Id { get; init; }

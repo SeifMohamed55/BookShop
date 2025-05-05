@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace BookShop.Infrastructure.Identity;
-
+namespace AspireApp.Infrastructure.Identity;
 public class ApplicationUser : IdentityUser
 {
 }

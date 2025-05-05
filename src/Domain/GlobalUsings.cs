@@ -1,6 +1,6 @@
-﻿global using BookShop.Domain.Common;
-global using BookShop.Domain.Entities;
-global using BookShop.Domain.Enums;
-global using BookShop.Domain.Events;
-global using BookShop.Domain.Exceptions;
-global using BookShop.Domain.ValueObjects;
+﻿global using AspireApp.Domain.Common;
+global using AspireApp.Domain.Entities;
+global using AspireApp.Domain.Enums;
+global using AspireApp.Domain.Events;
+global using AspireApp.Domain.Exceptions;
+global using AspireApp.Domain.ValueObjects;

@@ -1,4 +1,4 @@
-﻿namespace BookShop.Application.Common.Models;
+﻿namespace AspireApp.Application.Common.Models;
 
 public class PaginatedList<T>
 {

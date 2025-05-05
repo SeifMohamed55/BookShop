@@ -1,4 +1,4 @@
-﻿namespace BookShop.Application.TodoItems.Commands.UpdateTodoItem;
+﻿namespace AspireApp.Application.TodoItems.Commands.UpdateTodoItem;
 
 public class UpdateTodoItemCommandValidator : AbstractValidator<UpdateTodoItemCommand>
 {

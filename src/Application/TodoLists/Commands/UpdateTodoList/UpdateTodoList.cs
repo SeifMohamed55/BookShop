@@ -1,7 +1,6 @@
-﻿using BookShop.Application.Common.Interfaces;
+﻿using AspireApp.Application.Common.Interfaces;
 
-namespace BookShop.Application.TodoLists.Commands.UpdateTodoList;
-
+namespace AspireApp.Application.TodoLists.Commands.UpdateTodoList;
 public record UpdateTodoListCommand : IRequest
 {
     public int Id { get; init; }

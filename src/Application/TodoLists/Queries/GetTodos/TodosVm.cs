@@ -1,7 +1,6 @@
-﻿using BookShop.Application.Common.Models;
+﻿using AspireApp.Application.Common.Models;
 
-namespace BookShop.Application.TodoLists.Queries.GetTodos;
-
+namespace AspireApp.Application.TodoLists.Queries.GetTodos;
 public class TodosVm
 {
     public IReadOnlyCollection<LookupDto> PriorityLevels { get; init; } = Array.Empty<LookupDto>();

@@ -1,10 +1,9 @@
-﻿using BookShop.Application.Common.Interfaces;
-using BookShop.Application.Common.Models;
-using BookShop.Application.Common.Security;
-using BookShop.Domain.Enums;
+﻿using AspireApp.Application.Common.Interfaces;
+using AspireApp.Application.Common.Models;
+using AspireApp.Application.Common.Security;
+using AspireApp.Domain.Enums;
 
-namespace BookShop.Application.TodoLists.Queries.GetTodos;
-
+namespace AspireApp.Application.TodoLists.Queries.GetTodos;
 [Authorize]
 public record GetTodosQuery : IRequest<TodosVm>;
 

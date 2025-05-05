@@ -1,13 +1,12 @@
 ﻿using System.Data.Common;
-using BookShop.Infrastructure.Data;
+using AspireApp.Infrastructure.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Respawn;
 
-namespace BookShop.Application.FunctionalTests;
-
+namespace AspireApp.Application.FunctionalTests;
 public class SqlTestDatabase : ITestDatabase
 {
     private readonly string _connectionString = null!;
@@ -21,7 +20,7 @@ public class SqlTestDatabase : ITestDatabase
             .AddEnvironmentVariables()
             .Build();
 
-        var connectionString = configuration.GetConnectionString("BookShopDb");
+        var connectionString = configuration.GetConnectionString("AspireAppDb");
 
         Guard.Against.Null(connectionString);
 

@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>BookShop.Application</RootNamespace>
-    <AssemblyName>BookShop.Application</AssemblyName>
+    <RootNamespace>AspireApp.Application</RootNamespace>
+    <AssemblyName>AspireApp.Application</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

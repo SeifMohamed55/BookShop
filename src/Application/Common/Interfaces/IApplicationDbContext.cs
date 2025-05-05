@@ -1,7 +1,6 @@
-﻿using BookShop.Domain.Entities;
+﻿using AspireApp.Domain.Entities;
 
-namespace BookShop.Application.Common.Interfaces;
-
+namespace AspireApp.Application.Common.Interfaces;
 public interface IApplicationDbContext
 {
     DbSet<TodoList> TodoLists { get; }

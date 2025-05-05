@@ -1,4 +1,4 @@
-﻿namespace BookShop.Application.FunctionalTests;
+﻿namespace AspireApp.Application.FunctionalTests;
 
 using static Testing;
 

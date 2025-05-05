@@ -1,8 +1,7 @@
-﻿using BookShop.Application.Common.Interfaces;
-using BookShop.Domain.Enums;
+﻿using AspireApp.Application.Common.Interfaces;
+using AspireApp.Domain.Enums;
 
-namespace BookShop.Application.TodoItems.Commands.UpdateTodoItemDetail;
-
+namespace AspireApp.Application.TodoItems.Commands.UpdateTodoItemDetail;
 public record UpdateTodoItemDetailCommand : IRequest
 {
     public int Id { get; init; }

@@ -1,13 +1,12 @@
-﻿using BookShop.Application.Common.Models;
-using BookShop.Application.TodoItems.Commands.CreateTodoItem;
-using BookShop.Application.TodoItems.Commands.DeleteTodoItem;
-using BookShop.Application.TodoItems.Commands.UpdateTodoItem;
-using BookShop.Application.TodoItems.Commands.UpdateTodoItemDetail;
-using BookShop.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+﻿using AspireApp.Application.Common.Models;
+using AspireApp.Application.TodoItems.Commands.CreateTodoItem;
+using AspireApp.Application.TodoItems.Commands.DeleteTodoItem;
+using AspireApp.Application.TodoItems.Commands.UpdateTodoItem;
+using AspireApp.Application.TodoItems.Commands.UpdateTodoItemDetail;
+using AspireApp.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace BookShop.Web.Endpoints;
-
+namespace AspireApp.Web.Endpoints;
 public class TodoItems : EndpointGroupBase
 {
     public override void Map(WebApplication app)
@@ -47,9 +46,9 @@ public class TodoItems : EndpointGroupBase
     public async Task<Results<NoContent, BadRequest>> UpdateTodoItemDetail(ISender sender, int id, UpdateTodoItemDetailCommand command)
     {
         if (id != command.Id) return TypedResults.BadRequest();
-        
+
         await sender.Send(command);
-        
+
         return TypedResults.NoContent();
     }
 

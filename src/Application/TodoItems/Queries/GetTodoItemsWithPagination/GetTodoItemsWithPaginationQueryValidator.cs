@@ -1,4 +1,4 @@
-﻿namespace BookShop.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+﻿namespace AspireApp.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 
 public class GetTodoItemsWithPaginationQueryValidator : AbstractValidator<GetTodoItemsWithPaginationQuery>
 {

@@ -1,4 +1,4 @@
-using BookShop.Infrastructure.Data;
+using AspireApp.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +6,7 @@ DotNetEnv.Env.Load();
 builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
+builder.AddServiceDefaults();
 builder.AddKeyVaultIfConfigured();
 builder.AddApplicationServices();
 builder.AddInfrastructureServices();
@@ -24,7 +25,6 @@ else
     app.UseHsts();
 }
 
-app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -34,13 +34,16 @@ app.UseSwaggerUi(settings =>
     settings.DocumentPath = "/api/specification.json";
 });
 
-app.MapRazorPages();
+//app.MapRazorPages();
 
 app.MapFallbackToFile("index.html");
 
 app.UseExceptionHandler(options => { });
 
+app.UseAuthentication();
+app.UseAuthorization();
 
+app.MapDefaultEndpoints();
 app.MapEndpoints();
 
 app.Run();

@@ -1,11 +1,10 @@
-﻿using BookShop.Application.TodoLists.Commands.CreateTodoList;
-using BookShop.Application.TodoLists.Commands.DeleteTodoList;
-using BookShop.Application.TodoLists.Commands.UpdateTodoList;
-using BookShop.Application.TodoLists.Queries.GetTodos;
+﻿using AspireApp.Application.TodoLists.Commands.CreateTodoList;
+using AspireApp.Application.TodoLists.Commands.DeleteTodoList;
+using AspireApp.Application.TodoLists.Commands.UpdateTodoList;
+using AspireApp.Application.TodoLists.Queries.GetTodos;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace BookShop.Web.Endpoints;
-
+namespace AspireApp.Web.Endpoints;
 public class TodoLists : EndpointGroupBase
 {
     public override void Map(WebApplication app)
@@ -35,7 +34,7 @@ public class TodoLists : EndpointGroupBase
     public async Task<Results<NoContent, BadRequest>> UpdateTodoList(ISender sender, int id, UpdateTodoListCommand command)
     {
         if (id != command.Id) return TypedResults.BadRequest();
-        
+
         await sender.Send(command);
 
         return TypedResults.NoContent();

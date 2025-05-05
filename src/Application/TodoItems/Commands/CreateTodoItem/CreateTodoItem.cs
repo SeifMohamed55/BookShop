@@ -1,9 +1,8 @@
-﻿using BookShop.Application.Common.Interfaces;
-using BookShop.Domain.Entities;
-using BookShop.Domain.Events;
+﻿using AspireApp.Application.Common.Interfaces;
+using AspireApp.Domain.Entities;
+using AspireApp.Domain.Events;
 
-namespace BookShop.Application.TodoItems.Commands.CreateTodoItem;
-
+namespace AspireApp.Application.TodoItems.Commands.CreateTodoItem;
 public record CreateTodoItemCommand : IRequest<int>
 {
     public int ListId { get; init; }

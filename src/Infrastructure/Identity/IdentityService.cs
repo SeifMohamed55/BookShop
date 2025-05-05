@@ -1,11 +1,10 @@
-using BookShop.Application.Common.Interfaces;
-using BookShop.Application.Common.Models;
+using AspireApp.Application.Common.Interfaces;
+using AspireApp.Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookShop.Infrastructure.Identity;
-
+namespace AspireApp.Infrastructure.Identity;
 public class IdentityService : IIdentityService
 {
     private readonly UserManager<ApplicationUser> _userManager;

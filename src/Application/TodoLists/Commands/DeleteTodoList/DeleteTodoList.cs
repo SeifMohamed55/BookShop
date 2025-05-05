@@ -1,7 +1,6 @@
-﻿using BookShop.Application.Common.Interfaces;
+﻿using AspireApp.Application.Common.Interfaces;
 
-namespace BookShop.Application.TodoLists.Commands.DeleteTodoList;
-
+namespace AspireApp.Application.TodoLists.Commands.DeleteTodoList;
 public record DeleteTodoListCommand(int Id) : IRequest;
 
 public class DeleteTodoListCommandHandler : IRequestHandler<DeleteTodoListCommand>

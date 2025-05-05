@@ -1,4 +1,4 @@
-﻿namespace BookShop.Application.WeatherForecasts.Queries.GetWeatherForecasts;
+﻿namespace AspireApp.Application.WeatherForecasts.Queries.GetWeatherForecasts;
 
 public record GetWeatherForecastsQuery : IRequest<IEnumerable<WeatherForecast>>;
 

@@ -1,7 +1,6 @@
-﻿using BookShop.Domain.Entities;
+﻿using AspireApp.Domain.Entities;
 
-namespace BookShop.Application.TodoLists.Queries.GetTodos;
-
+namespace AspireApp.Application.TodoLists.Queries.GetTodos;
 public class TodoListDto
 {
     public TodoListDto()

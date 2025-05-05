@@ -1,9 +1,8 @@
-﻿using BookShop.Application.Common.Interfaces;
-using BookShop.Application.Common.Security;
-using BookShop.Domain.Constants;
+﻿using AspireApp.Application.Common.Interfaces;
+using AspireApp.Application.Common.Security;
+using AspireApp.Domain.Constants;
 
-namespace BookShop.Application.TodoLists.Commands.PurgeTodoLists;
-
+namespace AspireApp.Application.TodoLists.Commands.PurgeTodoLists;
 [Authorize(Roles = Roles.Administrator)]
 [Authorize(Policy = Policies.CanPurge)]
 public record PurgeTodoListsCommand : IRequest;

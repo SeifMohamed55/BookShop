@@ -1,15 +1,14 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
+using AspireApp.Application.Common.Interfaces;
+using AspireApp.Application.Common.Models;
+using AspireApp.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+using AspireApp.Application.TodoLists.Queries.GetTodos;
+using AspireApp.Domain.Entities;
 using AutoMapper;
-using BookShop.Application.Common.Interfaces;
-using BookShop.Application.Common.Models;
-using BookShop.Application.TodoItems.Queries.GetTodoItemsWithPagination;
-using BookShop.Application.TodoLists.Queries.GetTodos;
-using BookShop.Domain.Entities;
 using NUnit.Framework;
 
-namespace BookShop.Application.UnitTests.Common.Mappings;
-
+namespace AspireApp.Application.UnitTests.Common.Mappings;
 public class MappingTests
 {
     private readonly IConfigurationProvider _configuration;
@@ -17,7 +16,7 @@ public class MappingTests
 
     public MappingTests()
     {
-        _configuration = new MapperConfiguration(config => 
+        _configuration = new MapperConfiguration(config =>
             config.AddMaps(Assembly.GetAssembly(typeof(IApplicationDbContext))));
 
         _mapper = _configuration.CreateMapper();

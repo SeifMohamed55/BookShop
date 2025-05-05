@@ -1,4 +1,4 @@
-﻿namespace BookShop.Domain.Entities;
+﻿namespace AspireApp.Domain.Entities;
 
 public class TodoList : BaseAuditableEntity
 {

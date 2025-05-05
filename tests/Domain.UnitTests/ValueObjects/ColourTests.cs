@@ -1,10 +1,9 @@
-﻿using BookShop.Domain.Exceptions;
-using BookShop.Domain.ValueObjects;
+﻿using AspireApp.Domain.Exceptions;
+using AspireApp.Domain.ValueObjects;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace BookShop.Domain.UnitTests.ValueObjects;
-
+namespace AspireApp.Domain.UnitTests.ValueObjects;
 public class ColourTests
 {
     [Test]

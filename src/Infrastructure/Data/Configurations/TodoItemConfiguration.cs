@@ -1,9 +1,8 @@
-﻿using BookShop.Domain.Entities;
+﻿using AspireApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BookShop.Infrastructure.Data.Configurations;
-
+namespace AspireApp.Infrastructure.Data.Configurations;
 public class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
 {
     public void Configure(EntityTypeBuilder<TodoItem> builder)

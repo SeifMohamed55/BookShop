@@ -1,8 +1,7 @@
-﻿using BookShop.Application.WeatherForecasts.Queries.GetWeatherForecasts;
+﻿using AspireApp.Application.WeatherForecasts.Queries.GetWeatherForecasts;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace BookShop.Web.Endpoints;
-
+namespace AspireApp.Web.Endpoints;
 public class WeatherForecasts : EndpointGroupBase
 {
     public override void Map(WebApplication app)
@@ -15,7 +14,7 @@ public class WeatherForecasts : EndpointGroupBase
     public async Task<Ok<IEnumerable<WeatherForecast>>> GetWeatherForecasts(ISender sender)
     {
         var forecasts = await sender.Send(new GetWeatherForecastsQuery());
-        
+
         return TypedResults.Ok(forecasts);
     }
 }

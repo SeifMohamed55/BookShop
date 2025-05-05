@@ -1,4 +1,4 @@
-﻿namespace BookShop.Domain.Constants;
+﻿namespace AspireApp.Domain.Constants;
 
 public abstract class Policies
 {

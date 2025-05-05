@@ -1,12 +1,11 @@
-﻿using BookShop.Application.Common.Behaviours;
-using BookShop.Application.Common.Interfaces;
-using BookShop.Application.TodoItems.Commands.CreateTodoItem;
+﻿using AspireApp.Application.Common.Behaviours;
+using AspireApp.Application.Common.Interfaces;
+using AspireApp.Application.TodoItems.Commands.CreateTodoItem;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
-namespace BookShop.Application.UnitTests.Common.Behaviours;
-
+namespace AspireApp.Application.UnitTests.Common.Behaviours;
 public class RequestLoggerTests
 {
     private Mock<ILogger<CreateTodoItemCommand>> _logger = null!;

@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>BookShop.Infrastructure</RootNamespace>
-    <AssemblyName>BookShop.Infrastructure</AssemblyName>
+    <RootNamespace>AspireApp.Infrastructure</RootNamespace>
+    <AssemblyName>AspireApp.Infrastructure</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" />
     <PackageReference Include="Azure.Identity" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />

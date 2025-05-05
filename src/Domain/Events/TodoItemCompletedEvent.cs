@@ -1,4 +1,4 @@
-﻿namespace BookShop.Domain.Events;
+﻿namespace AspireApp.Domain.Events;
 
 public class TodoItemCompletedEvent : BaseEvent
 {

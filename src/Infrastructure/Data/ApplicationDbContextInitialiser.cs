@@ -1,14 +1,13 @@
-﻿using BookShop.Domain.Constants;
-using BookShop.Domain.Entities;
-using BookShop.Infrastructure.Identity;
+﻿using AspireApp.Domain.Constants;
+using AspireApp.Domain.Entities;
+using AspireApp.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace BookShop.Infrastructure.Data;
-
+namespace AspireApp.Infrastructure.Data;
 public static class InitialiserExtensions
 {
     public static async Task InitialiseDatabaseAsync(this WebApplication app)
@@ -82,7 +81,7 @@ public class ApplicationDbContextInitialiser
             await _userManager.CreateAsync(administrator, "Administrator1!");
             if (!string.IsNullOrWhiteSpace(administratorRole.Name))
             {
-                await _userManager.AddToRolesAsync(administrator, new [] { administratorRole.Name });
+                await _userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
             }
         }
 

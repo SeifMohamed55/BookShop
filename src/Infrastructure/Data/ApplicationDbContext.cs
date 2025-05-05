@@ -1,12 +1,11 @@
 ﻿using System.Reflection;
-using BookShop.Application.Common.Interfaces;
-using BookShop.Domain.Entities;
-using BookShop.Infrastructure.Identity;
+using AspireApp.Application.Common.Interfaces;
+using AspireApp.Domain.Entities;
+using AspireApp.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookShop.Infrastructure.Data;
-
+namespace AspireApp.Infrastructure.Data;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }

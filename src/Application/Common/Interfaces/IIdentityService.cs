@@ -1,7 +1,6 @@
-﻿using BookShop.Application.Common.Models;
+﻿using AspireApp.Application.Common.Models;
 
-namespace BookShop.Application.Common.Interfaces;
-
+namespace AspireApp.Application.Common.Interfaces;
 public interface IIdentityService
 {
     Task<string?> GetUserNameAsync(string userId);

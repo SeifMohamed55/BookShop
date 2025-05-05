@@ -1,4 +1,4 @@
-﻿global using BookShop.Web.AcceptanceTests.Pages;
+﻿global using AspireApp.Web.AcceptanceTests.Pages;
 global using BoDi;
 global using FluentAssertions;
 global using Microsoft.Playwright;

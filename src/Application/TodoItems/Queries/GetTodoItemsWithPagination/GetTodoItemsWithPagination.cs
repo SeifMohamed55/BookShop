@@ -1,9 +1,8 @@
-﻿using BookShop.Application.Common.Interfaces;
-using BookShop.Application.Common.Mappings;
-using BookShop.Application.Common.Models;
+﻿using AspireApp.Application.Common.Interfaces;
+using AspireApp.Application.Common.Mappings;
+using AspireApp.Application.Common.Models;
 
-namespace BookShop.Application.TodoItems.Queries.GetTodoItemsWithPagination;
-
+namespace AspireApp.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 public record GetTodoItemsWithPaginationQuery : IRequest<PaginatedList<TodoItemBriefDto>>
 {
     public int ListId { get; init; }

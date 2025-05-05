@@ -1,4 +1,4 @@
-﻿namespace BookShop.Domain.Exceptions;
+﻿namespace AspireApp.Domain.Exceptions;
 
 public class UnsupportedColourException : Exception
 {

@@ -1,7 +1,6 @@
-﻿using BookShop.Domain.Entities;
+﻿using AspireApp.Domain.Entities;
 
-namespace BookShop.Application.Common.Models;
-
+namespace AspireApp.Application.Common.Models;
 public class LookupDto
 {
     public int Id { get; init; }

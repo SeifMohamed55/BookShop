@@ -1,8 +1,7 @@
-﻿using BookShop.Domain.Events;
+﻿using AspireApp.Domain.Events;
 using Microsoft.Extensions.Logging;
 
-namespace BookShop.Application.TodoItems.EventHandlers;
-
+namespace AspireApp.Application.TodoItems.EventHandlers;
 public class TodoItemCompletedEventHandler : INotificationHandler<TodoItemCompletedEvent>
 {
     private readonly ILogger<TodoItemCompletedEventHandler> _logger;
@@ -14,7 +13,7 @@ public class TodoItemCompletedEventHandler : INotificationHandler<TodoItemComple
 
     public Task Handle(TodoItemCompletedEvent notification, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("BookShop Domain Event: {DomainEvent}", notification.GetType().Name);
+        _logger.LogInformation("AspireApp Domain Event: {DomainEvent}", notification.GetType().Name);
 
         return Task.CompletedTask;
     }

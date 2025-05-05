@@ -1,9 +1,8 @@
-﻿using BookShop.Application.Common.Exceptions;
+﻿using AspireApp.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookShop.Web.Infrastructure;
-
+namespace AspireApp.Web.Infrastructure;
 public class CustomExceptionHandler : IExceptionHandler
 {
     private readonly Dictionary<Type, Func<HttpContext, Exception, Task>> _exceptionHandlers;

@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 
-namespace BookShop.Web.Infrastructure;
-
+namespace AspireApp.Web.Infrastructure;
 public static class MethodInfoExtensions
 {
     public static bool IsAnonymous(this MethodInfo method)

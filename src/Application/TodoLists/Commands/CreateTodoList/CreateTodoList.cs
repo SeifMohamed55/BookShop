@@ -1,8 +1,7 @@
-﻿using BookShop.Application.Common.Interfaces;
-using BookShop.Domain.Entities;
+﻿using AspireApp.Application.Common.Interfaces;
+using AspireApp.Domain.Entities;
 
-namespace BookShop.Application.TodoLists.Commands.CreateTodoList;
-
+namespace AspireApp.Application.TodoLists.Commands.CreateTodoList;
 public record CreateTodoListCommand : IRequest<int>
 {
     public string? Title { get; init; }

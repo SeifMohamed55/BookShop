@@ -1,8 +1,7 @@
-﻿using BookShop.Application.Common.Interfaces;
-using BookShop.Domain.Events;
+﻿using AspireApp.Application.Common.Interfaces;
+using AspireApp.Domain.Events;
 
-namespace BookShop.Application.TodoItems.Commands.DeleteTodoItem;
-
+namespace AspireApp.Application.TodoItems.Commands.DeleteTodoItem;
 public record DeleteTodoItemCommand(int Id) : IRequest;
 
 public class DeleteTodoItemCommandHandler : IRequestHandler<DeleteTodoItemCommand>

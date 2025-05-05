@@ -1,11 +1,10 @@
-﻿using BookShop.Application.Common.Exceptions;
-using BookShop.Application.TodoLists.Commands.CreateTodoList;
-using BookShop.Domain.Entities;
-
-namespace BookShop.Application.FunctionalTests.TodoLists.Commands;
+﻿using AspireApp.Application.Common.Exceptions;
+using AspireApp.Application.TodoLists.Commands.CreateTodoList;
+using AspireApp.Domain.Entities;
 
 using static Testing;
 
+namespace AspireApp.Application.FunctionalTests.TodoLists.Commands;
 public class CreateTodoListTests : BaseTestFixture
 {
     [Test]

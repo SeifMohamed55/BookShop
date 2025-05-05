@@ -1,7 +1,6 @@
-﻿using BookShop.Application.Common.Interfaces;
+﻿using AspireApp.Application.Common.Interfaces;
 
-namespace BookShop.Application.TodoLists.Commands.CreateTodoList;
-
+namespace AspireApp.Application.TodoLists.Commands.CreateTodoList;
 public class CreateTodoListCommandValidator : AbstractValidator<CreateTodoListCommand>
 {
     private readonly IApplicationDbContext _context;

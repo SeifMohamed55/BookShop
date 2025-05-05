@@ -1,10 +1,9 @@
-﻿using BookShop.Application.Common.Exceptions;
+﻿using AspireApp.Application.Common.Exceptions;
 using FluentAssertions;
 using FluentValidation.Results;
 using NUnit.Framework;
 
-namespace BookShop.Application.UnitTests.Common.Exceptions;
-
+namespace AspireApp.Application.UnitTests.Common.Exceptions;
 public class ValidationExceptionTests
 {
     [Test]

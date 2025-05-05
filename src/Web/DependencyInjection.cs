@@ -1,12 +1,12 @@
-﻿using Azure.Identity;
-using BookShop.Application.Common.Interfaces;
-using BookShop.Infrastructure.Data;
-using BookShop.Web.Services;
+﻿using AspireApp.Application.Common.Interfaces;
+using AspireApp.Infrastructure.Data;
+using AspireApp.Web.Services;
+using Azure.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace Microsoft.Extensions.DependencyInjection;
-
 public static class DependencyInjection
 {
     public static void AddWebServices(this IHostApplicationBuilder builder)
@@ -16,12 +16,10 @@ public static class DependencyInjection
         builder.Services.AddScoped<IUser, CurrentUser>();
 
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddHealthChecks()
-            .AddDbContextCheck<ApplicationDbContext>();
 
         builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
-        builder.Services.AddRazorPages();
+        //builder.Services.AddRazorPages();
 
         // Customise default API behaviour
         builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -31,7 +29,7 @@ public static class DependencyInjection
 
         builder.Services.AddOpenApiDocument((configure, sp) =>
         {
-            configure.Title = "BookShop API";
+            configure.Title = "AspireApp API";
 
         });
     }
@@ -46,4 +44,5 @@ public static class DependencyInjection
                 new DefaultAzureCredential());
         }
     }
+
 }

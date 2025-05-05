@@ -1,10 +1,9 @@
 ﻿using System.Reflection;
-using BookShop.Application.Common.Exceptions;
-using BookShop.Application.Common.Interfaces;
-using BookShop.Application.Common.Security;
+using AspireApp.Application.Common.Exceptions;
+using AspireApp.Application.Common.Interfaces;
+using AspireApp.Application.Common.Security;
 
-namespace BookShop.Application.Common.Behaviours;
-
+namespace AspireApp.Application.Common.Behaviours;
 public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private readonly IUser _user;
