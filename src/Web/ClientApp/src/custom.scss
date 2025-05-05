@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
 
+// fonts
+
 .playfair {
   font-family: "Playfair Display", serif;
   font-optical-sizing: auto;
@@ -12,10 +14,23 @@
   font-style: normal;
 }
 
+.header-font {
+  font-size: 48px;
+}
+
+.small-font {
+  font-size: 13px;
+}
+
+.normal-font {
+  font-size: 15px;
+}
+
 .nav-font {
   font-size: 15px !important;
 }
 
+// navbar
 .nav-style {
   transition: all 200ms;
   padding: 8px;
@@ -35,13 +50,7 @@
   color: white !important;
 }
 
-.small-font {
-  font-size: 13px;
-}
-
-.normal-font {
-  font-size: 15px;
-}
+// ui components
 
 .vertical-card {
   width: 280px;
@@ -51,4 +60,49 @@
   position: absolute;
   top: 50%;
   left: 15px;
+}
+.popular-book {
+  width: 200px;
+  cursor: pointer;
+}
+
+.popular-book figure {
+  position: relative;
+  overflow: hidden;
+
+  img {
+    transition: transform 500ms;
+  }
+
+  .layer {
+    background-color: rgba(0, 0, 0, 0.3);
+    transition: opacity 500ms;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  &:hover {
+    .layer {
+      opacity: 1;
+    }
+
+    img {
+      transform: scale(1.1);
+    }
+  }
+}
+
+// home section
+
+.hero {
+  background: linear-gradient(to right, #fffbeb, #fef9c4);
+  max-height: 40vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }

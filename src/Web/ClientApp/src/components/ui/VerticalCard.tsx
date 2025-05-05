@@ -22,7 +22,7 @@ const VerticalCard = () => {
           </p>
         </div>
       </figure>
-      <div className="d-flex justify-content-evenly gap-0">
+      <div className="d-flex justify-content-evenly gap-3 px-2">
         <figure>
           <img
             src={myPic}
@@ -32,7 +32,7 @@ const VerticalCard = () => {
             height={120}
           />
         </figure>
-        <article className="d-flex justify-content-between  flex-column gap-1">
+        <article className="d-flex justify-content-between flex-column gap-1">
           <p className="inter normal-font fw-semibold">Currently Reading</p>
           <h4 className="playfair fs-6 fw-semibold ">The Midnight Library</h4>
           <p className="opacity-75 normal-font  ">by Matt Haig</p>
@@ -40,7 +40,7 @@ const VerticalCard = () => {
         </article>
       </div>
       <div className="p-3">
-        <button type="button" className="btn btn-dark w-100">
+        <button type="button" className="btn btn-dark w-100 fw-semibold">
           {"View Book Club"}
         </button>
       </div>

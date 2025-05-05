@@ -6,7 +6,7 @@ import {
   NavbarToggler,
   NavItem,
 } from "reactstrap";
-import myPic from "../images/my-pic.jpg";
+import myPic from "../../images/my-pic.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBook,
@@ -68,7 +68,7 @@ export class NavMenu extends Component {
                 </NavItem>
                 <NavItem>
                   <NavLink
-                    to="/counter"
+                    to="/my-books"
                     className={({ isActive }) =>
                       `text-dark inter nav-font nav-style ${
                         isActive ? "nav-active" : ""
@@ -81,7 +81,7 @@ export class NavMenu extends Component {
                 </NavItem>
                 <NavItem>
                   <NavLink
-                    to="/fetch-data"
+                    to="/book-clubs"
                     className={({ isActive }) =>
                       `text-dark inter nav-font nav-style ${
                         isActive ? "nav-active" : ""
