@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+
+.playfair {
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.inter {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.nav-font {
+  font-size: 15px !important;
+}
+
+.nav-style {
+  transition: all 200ms;
+  padding: 8px;
+  opacity: 0.75;
+  border-radius: 7px;
+  font-style: unset;
+  text-decoration: none;
+  &:hover {
+    background-color: #f5f5f5;
+    opacity: 1;
+  }
+}
+
+.nav-active {
+  opacity: 1;
+  background-color: black !important;
+  color: white !important;
+}
+
+.small-font {
+  font-size: 13px;
+}
+
+.normal-font {
+  font-size: 15px;
+}
+
+.vertical-card {
+  width: 280px;
+}
+
+.vertical-card-text {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+}
