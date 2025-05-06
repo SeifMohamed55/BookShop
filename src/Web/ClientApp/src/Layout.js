@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { NavMenu } from "./components/layout/NavMenu";
+import Nav from "./components/layout/Nav";
 import Footer from "./components/layout/footer";
 
 export class Layout extends Component {
@@ -8,7 +8,7 @@ export class Layout extends Component {
   render() {
     return (
       <div className="d-flex flex-column justify-content-between min-vh-100">
-        <NavMenu />
+        <Nav />
         {this.props.children}
         <Footer />
       </div>

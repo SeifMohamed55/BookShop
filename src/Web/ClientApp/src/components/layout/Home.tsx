@@ -19,6 +19,7 @@ export default function Home() {
     "non-fiction",
     "fantasy",
   ]);
+  
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   function handleLists(index: number): void {

@@ -1,5 +1,5 @@
-import { FetchData } from "./components/FetchData";
 import Home from "./components/layout/Home";
+import MyBooks from "./components/layout/MyBooks";
 
 const AppRoutes = [
   {
@@ -7,8 +7,8 @@ const AppRoutes = [
     element: <Home />,
   },
   {
-    path: "/fetch-data",
-    element: <FetchData />,
+    path: "/my-books",
+    element: <MyBooks />,
   },
 ];
 

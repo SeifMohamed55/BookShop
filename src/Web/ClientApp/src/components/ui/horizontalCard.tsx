@@ -1,4 +1,4 @@
-import { faBookmark, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark, faStar } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import myPic from "../../images/my-pic.jpg";
@@ -11,7 +11,9 @@ const HorizontalCard = () => {
         <img src={myPic} alt="book" className="img-fluid" height={250} />
         <div className="layer text-white pb-4 ps-3">
           <div className="position-absolute bottom-0">
-            <h6 className="h6 playfair">Atomic Habits</h6>
+            <h6 className="small-font fw-bold text-nowrap playfair">
+              Atomic Habits
+            </h6>
             <p className="times small-font opacity-75">by james Clear</p>
           </div>
         </div>
