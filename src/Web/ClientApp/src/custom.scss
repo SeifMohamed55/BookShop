@@ -14,6 +14,10 @@
   font-style: normal;
 }
 
+.times {
+  font-family: "Times New Roman", Times, serif;
+}
+
 .header-font {
   font-size: 48px;
 }
@@ -27,6 +31,8 @@
 }
 
 .nav-font {
+  text-transform: capitalize;
+  font-family: "Times New Roman", Times, serif;
   font-size: 15px !important;
 }
 

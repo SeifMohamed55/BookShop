@@ -26,10 +26,10 @@ const HorizontalCard = (): React.ReactNode => {
             <span className="px-2 fw-semibold inter small">{4.6}</span>
           </div>
         </div>
-        <p className="opacity-75 inter m-0">{"Matt Haig"}</p>
+        <p className="opacity-75 times m-0">{"Matt Haig"}</p>
         <div className="d-flex align-items-center gap-2">
           {Array.from({ length: 3 }).map((tag) => (
-            <div className="px-2 rounded-pill border inter text-capitalize small-font fw-semibold">
+            <div className="px-2 rounded-pill border times text-capitalize small-font fw-semibold">
               fiction
             </div>
           ))}

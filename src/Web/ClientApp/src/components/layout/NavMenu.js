@@ -57,7 +57,7 @@ export class NavMenu extends Component {
                   <NavLink
                     to="/"
                     className={({ isActive }) =>
-                      `text-dark inter nav-font nav-style ${
+                      `text-dark  nav-font nav-style ${
                         isActive ? "nav-active" : ""
                       }`
                     }
@@ -70,7 +70,7 @@ export class NavMenu extends Component {
                   <NavLink
                     to="/my-books"
                     className={({ isActive }) =>
-                      `text-dark inter nav-font nav-style ${
+                      `text-dark  nav-font nav-style ${
                         isActive ? "nav-active" : ""
                       }`
                     }
@@ -83,7 +83,7 @@ export class NavMenu extends Component {
                   <NavLink
                     to="/book-clubs"
                     className={({ isActive }) =>
-                      `text-dark inter nav-font nav-style ${
+                      `text-dark  nav-font nav-style ${
                         isActive ? "nav-active" : ""
                       }`
                     }
@@ -96,13 +96,13 @@ export class NavMenu extends Component {
                   <NavLink
                     to="/statistics"
                     className={({ isActive }) =>
-                      `text-dark inter nav-font nav-style ${
+                      `text-dark  nav-font nav-style ${
                         isActive ? "nav-active" : ""
                       }`
                     }
                   >
                     <FontAwesomeIcon icon={faSignal} className="me-2" />
-                    Account
+                    Reading Stats
                   </NavLink>
                 </NavItem>
               </div>
