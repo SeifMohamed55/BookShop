@@ -39,7 +39,7 @@ export class NavMenu extends Component {
     return (
       <header>
         <Navbar
-          className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3"
+          className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow "
           light
         >
           <NavbarBrand to="/" className="playfair fw-bold">
@@ -52,7 +52,7 @@ export class NavMenu extends Component {
             navbar
           >
             <ul className="navbar-nav flex-grow-1 d-flex align-items-center">
-              <div className="d-flex flex-grow-1 gap-3">
+              <div className="d-flex flex-grow-1 gap-4">
                 <NavItem>
                   <NavLink
                     to="/"

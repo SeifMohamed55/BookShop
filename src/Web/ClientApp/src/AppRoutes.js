@@ -1,5 +1,5 @@
 import { FetchData } from "./components/FetchData";
-import { Home } from "./components/layout/Home";
+import Home from "./components/layout/Home";
 
 const AppRoutes = [
   {

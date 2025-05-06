@@ -1,9 +1,8 @@
-import React from "react";
 import myPic from "../../images/my-pic.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 
-const PopularBook = (): React.ReactNode => {
+const PopularBook = () => {
   return (
     <div className="popular-book d-flex justify-content-between align-items-center flex-column gap-1 mx-auto">
       <figure className="popular-book overflow-hidden position-relative rounded-2">
@@ -23,8 +22,8 @@ const PopularBook = (): React.ReactNode => {
       <h5 className="playfair h6 m-0">Atomic Habits</h5>
       <p className="normal-font opacity-75 m-0 times">James Clear</p>
       <div className="d-flex justify-content-between align-items-center small-font">
-        {Array.from({ length: 5 }).map((star) => (
-          <FontAwesomeIcon icon={faStar} className="text-warning" />
+        {Array.from({ length: 5 }).map((star, idx) => (
+          <FontAwesomeIcon key={idx} icon={faStar} className="text-warning" />
         ))}
       </div>
     </div>
