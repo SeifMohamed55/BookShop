@@ -1,5 +1,8 @@
+using AspireApp.Application.Accounts.Commands.Register;
 using AspireApp.Application.Common.Interfaces;
 using AspireApp.Application.Common.Models;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,15 +13,19 @@ public class IdentityService : IIdentityService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
     private readonly IAuthorizationService _authorizationService;
+    private readonly SignInManager<ApplicationUser> _signInManager;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
-        IAuthorizationService authorizationService)
+        IAuthorizationService authorizationService,
+        SignInManager<ApplicationUser> signInManager
+        )
     {
         _userManager = userManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
+        _signInManager = signInManager;
     }
 
     public async Task<string?> GetUserNameAsync(string userId)
@@ -28,17 +35,20 @@ public class IdentityService : IIdentityService
         return user?.UserName;
     }
 
-    public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
+
+    public async Task<ApplicationIdentityResult> CreateUserAsync(RegisterCommand model, string imageUrl)
     {
         var user = new ApplicationUser
         {
-            UserName = userName,
-            Email = userName,
+            UserName = model.Email,
+            Email = model.Email,
+            FullName = model.Fullname,
+            ImageUrl = imageUrl
         };
 
-        var result = await _userManager.CreateAsync(user, password);
+        var result = await _userManager.CreateAsync(user, model.Password);
 
-        return (result.ToApplicationResult(), user.Id);
+        return result.ToApplicationResult();
     }
 
     public async Task<bool> IsInRoleAsync(string userId, string role)
@@ -64,14 +74,14 @@ public class IdentityService : IIdentityService
         return result.Succeeded;
     }
 
-    public async Task<Result> DeleteUserAsync(string userId)
+    public async Task<ApplicationIdentityResult> DeleteUserAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
-        return user != null ? await DeleteUserAsync(user) : Result.Success();
+        return user != null ? await DeleteUserAsync(user) : ApplicationIdentityResult.Success();
     }
 
-    public async Task<Result> DeleteUserAsync(ApplicationUser user)
+    public async Task<ApplicationIdentityResult> DeleteUserAsync(ApplicationUser user)
     {
         var result = await _userManager.DeleteAsync(user);
 

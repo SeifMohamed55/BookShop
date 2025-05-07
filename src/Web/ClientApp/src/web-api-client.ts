@@ -10,6 +10,94 @@
 
 import followIfLoginRedirect from './components/api-authorization/followIfLoginRedirect';
 
+export class AntiForgeryClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getAntiForgeryToken(): Promise<void> {
+        let url_ = this.baseUrl + "/api/v1/AntiForgery";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAntiForgeryToken(_response);
+        });
+    }
+
+    protected processGetAntiForgeryToken(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+}
+
+export class RegisterClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    registerUser(request: RegisterRequest): Promise<void> {
+        let url_ = this.baseUrl + "/api/v1/Register?";
+        if (request === undefined || request === null)
+            throw new Error("The parameter 'request' must be defined and cannot be null.");
+        else
+            url_ += "request=" + encodeURIComponent("" + request) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRegisterUser(_response);
+        });
+    }
+
+    protected processRegisterUser(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+}
+
 export class TodoItemsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -21,7 +109,7 @@ export class TodoItemsClient {
     }
 
     getTodoItemsWithPagination(listId: number, pageNumber: number, pageSize: number): Promise<PaginatedListOfTodoItemBriefDto> {
-        let url_ = this.baseUrl + "/api/TodoItems?";
+        let url_ = this.baseUrl + "/api/v1/TodoItems?";
         if (listId === undefined || listId === null)
             throw new Error("The parameter 'listId' must be defined and cannot be null.");
         else
@@ -68,7 +156,7 @@ export class TodoItemsClient {
     }
 
     createTodoItem(command: CreateTodoItemCommand): Promise<number> {
-        let url_ = this.baseUrl + "/api/TodoItems";
+        let url_ = this.baseUrl + "/api/v1/TodoItems";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -108,7 +196,7 @@ export class TodoItemsClient {
     }
 
     updateTodoItem(id: number, command: UpdateTodoItemCommand): Promise<void> {
-        let url_ = this.baseUrl + "/api/TodoItems/{id}";
+        let url_ = this.baseUrl + "/api/v1/TodoItems/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -150,7 +238,7 @@ export class TodoItemsClient {
     }
 
     deleteTodoItem(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/TodoItems/{id}";
+        let url_ = this.baseUrl + "/api/v1/TodoItems/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -184,7 +272,7 @@ export class TodoItemsClient {
     }
 
     updateTodoItemDetail(id: number, command: UpdateTodoItemDetailCommand): Promise<void> {
-        let url_ = this.baseUrl + "/api/TodoItems/UpdateDetail/{id}";
+        let url_ = this.baseUrl + "/api/v1/TodoItems/UpdateDetail/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -237,7 +325,7 @@ export class TodoListsClient {
     }
 
     getTodoLists(): Promise<TodosVm> {
-        let url_ = this.baseUrl + "/api/TodoLists";
+        let url_ = this.baseUrl + "/api/v1/TodoLists";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -272,7 +360,7 @@ export class TodoListsClient {
     }
 
     createTodoList(command: CreateTodoListCommand): Promise<number> {
-        let url_ = this.baseUrl + "/api/TodoLists";
+        let url_ = this.baseUrl + "/api/v1/TodoLists";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -312,7 +400,7 @@ export class TodoListsClient {
     }
 
     updateTodoList(id: number, command: UpdateTodoListCommand): Promise<void> {
-        let url_ = this.baseUrl + "/api/TodoLists/{id}";
+        let url_ = this.baseUrl + "/api/v1/TodoLists/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -354,7 +442,7 @@ export class TodoListsClient {
     }
 
     deleteTodoList(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/TodoLists/{id}";
+        let url_ = this.baseUrl + "/api/v1/TodoLists/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -399,7 +487,7 @@ export class WeatherForecastsClient {
     }
 
     getWeatherForecasts(): Promise<WeatherForecast[]> {
-        let url_ = this.baseUrl + "/api/WeatherForecasts";
+        let url_ = this.baseUrl + "/api/v1/WeatherForecasts";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -441,11 +529,65 @@ export class WeatherForecastsClient {
     }
 }
 
+export class RegisterRequest implements IRegisterRequest {
+    fullname?: string;
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+    image?: string;
+
+    constructor(data?: IRegisterRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.fullname = _data["fullname"];
+            this.email = _data["email"];
+            this.password = _data["password"];
+            this.confirmPassword = _data["confirmPassword"];
+            this.image = _data["image"];
+        }
+    }
+
+    static fromJS(data: any): RegisterRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fullname"] = this.fullname;
+        data["email"] = this.email;
+        data["password"] = this.password;
+        data["confirmPassword"] = this.confirmPassword;
+        data["image"] = this.image;
+        return data;
+    }
+}
+
+export interface IRegisterRequest {
+    fullname?: string;
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+    image?: string;
+}
+
 export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItemBriefDto {
     items?: TodoItemBriefDto[];
     pageNumber?: number;
     totalPages?: number;
     totalCount?: number;
+    pageSize?: number;
+    currentlyViewing?: string;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
 
@@ -468,6 +610,8 @@ export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItem
             this.pageNumber = _data["pageNumber"];
             this.totalPages = _data["totalPages"];
             this.totalCount = _data["totalCount"];
+            this.pageSize = _data["pageSize"];
+            this.currentlyViewing = _data["currentlyViewing"];
             this.hasPreviousPage = _data["hasPreviousPage"];
             this.hasNextPage = _data["hasNextPage"];
         }
@@ -490,6 +634,8 @@ export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItem
         data["pageNumber"] = this.pageNumber;
         data["totalPages"] = this.totalPages;
         data["totalCount"] = this.totalCount;
+        data["pageSize"] = this.pageSize;
+        data["currentlyViewing"] = this.currentlyViewing;
         data["hasPreviousPage"] = this.hasPreviousPage;
         data["hasNextPage"] = this.hasNextPage;
         return data;
@@ -501,6 +647,8 @@ export interface IPaginatedListOfTodoItemBriefDto {
     pageNumber?: number;
     totalPages?: number;
     totalCount?: number;
+    pageSize?: number;
+    currentlyViewing?: string;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
 }

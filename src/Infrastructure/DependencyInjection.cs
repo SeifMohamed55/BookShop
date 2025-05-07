@@ -1,9 +1,13 @@
-﻿using AspireApp.Application.Common.Interfaces;
+﻿using System.Data;
+using AspireApp.Application.Common.Interfaces;
 using AspireApp.Domain.Constants;
 using AspireApp.Infrastructure.Data;
 using AspireApp.Infrastructure.Data.Interceptors;
+using AspireApp.Infrastructure.FileStorage;
 using AspireApp.Infrastructure.Identity;
+using GraduationProject.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -29,14 +33,32 @@ public static class DependencyInjection
 
         builder.EnrichSqlServerDbContext<ApplicationDbContext>();
 
-        builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+        builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+
+        builder.Services.AddScoped<IUnitOfWork, DictionaryUnitOfWork>();
+
+        builder.Services.AddScoped<IImageStorageService, ImageStorageService>();
 
         builder.Services.AddScoped<ApplicationDbContextInitialiser>();
 
         builder.Services
-            .AddDefaultIdentity<ApplicationUser>()
+            .AddDefaultIdentity<ApplicationUser>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+
+                options.User.RequireUniqueEmail = true;
+
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 10;                  
+            })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
@@ -51,10 +73,21 @@ public static class DependencyInjection
         })
        .AddCookie(options =>
        {
-           options.LoginPath = "/account/login";  // URL to redirect if not logged in
-           options.LogoutPath = "/account/logout"; // URL for logout
            options.ExpireTimeSpan = TimeSpan.FromDays(30);
            options.SlidingExpiration = true;
+
+           options.Events.OnRedirectToLogin = context =>
+           {
+               context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+               return Task.CompletedTask;
+           };
+
+           options.Events.OnRedirectToAccessDenied = context =>
+           {
+               context.Response.StatusCode = StatusCodes.Status403Forbidden;
+               return Task.CompletedTask;
+           };
+
        });
     }
 }

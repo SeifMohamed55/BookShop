@@ -43,6 +43,8 @@ app.UseExceptionHandler(options => { });
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseAntiforgery();
+
 app.MapDefaultEndpoints();
 app.MapEndpoints();
 

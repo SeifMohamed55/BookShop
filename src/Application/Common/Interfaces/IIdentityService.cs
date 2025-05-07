@@ -1,4 +1,5 @@
-﻿using AspireApp.Application.Common.Models;
+﻿using AspireApp.Application.Accounts.Commands.Register;
+using AspireApp.Application.Common.Models;
 
 namespace AspireApp.Application.Common.Interfaces;
 public interface IIdentityService
@@ -9,7 +10,8 @@ public interface IIdentityService
 
     Task<bool> AuthorizeAsync(string userId, string policyName);
 
-    Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password);
+    Task<ApplicationIdentityResult> CreateUserAsync(RegisterCommand model, string imageUrl);
 
-    Task<Result> DeleteUserAsync(string userId);
+    Task<ApplicationIdentityResult> DeleteUserAsync(string userId);
+
 }

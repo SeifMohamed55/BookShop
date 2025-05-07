@@ -6,7 +6,44 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/TodoItems": {
+    "/api/v1/AntiForgery": {
+      "get": {
+        "tags": [
+          "AntiForgery"
+        ],
+        "operationId": "GetAntiForgeryToken",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/Register": {
+      "post": {
+        "tags": [
+          "Register"
+        ],
+        "operationId": "RegisterUser",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RegisterRequest"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/TodoItems": {
       "get": {
         "tags": [
           "TodoItems"
@@ -89,7 +126,7 @@
         }
       }
     },
-    "/api/TodoItems/{id}": {
+    "/api/v1/TodoItems/{id}": {
       "put": {
         "tags": [
           "TodoItems"
@@ -152,7 +189,7 @@
         }
       }
     },
-    "/api/TodoItems/UpdateDetail/{id}": {
+    "/api/v1/TodoItems/UpdateDetail/{id}": {
       "put": {
         "tags": [
           "TodoItems"
@@ -192,7 +229,7 @@
         }
       }
     },
-    "/api/TodoLists": {
+    "/api/v1/TodoLists": {
       "get": {
         "tags": [
           "TodoLists"
@@ -243,7 +280,7 @@
         }
       }
     },
-    "/api/TodoLists/{id}": {
+    "/api/v1/TodoLists/{id}": {
       "put": {
         "tags": [
           "TodoLists"
@@ -306,7 +343,7 @@
         }
       }
     },
-    "/api/WeatherForecasts": {
+    "/api/v1/WeatherForecasts": {
       "get": {
         "tags": [
           "WeatherForecasts"
@@ -332,6 +369,28 @@
   },
   "components": {
     "schemas": {
+      "RegisterRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fullname": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "confirmPassword": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      },
       "PaginatedListOfTodoItemBriefDto": {
         "type": "object",
         "additionalProperties": false,
@@ -353,6 +412,13 @@
           "totalCount": {
             "type": "integer",
             "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentlyViewing": {
+            "type": "string"
           },
           "hasPreviousPage": {
             "type": "boolean"

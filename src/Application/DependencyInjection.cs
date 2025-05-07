@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using AspireApp.Application.Common.Behaviours;
+using MediatR.Pipeline;
 using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,7 @@ public static class DependencyInjection
             cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
             cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+            cfg.AddBehavior(typeof(IRequestPreProcessor<>), typeof(LoggingBehaviour<>));
         });
     }
 }

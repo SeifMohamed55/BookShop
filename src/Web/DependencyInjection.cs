@@ -2,7 +2,6 @@
 using AspireApp.Infrastructure.Data;
 using AspireApp.Web.Services;
 using Azure.Identity;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -18,6 +17,8 @@ public static class DependencyInjection
         builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+        builder.Services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
 
         //builder.Services.AddRazorPages();
 
