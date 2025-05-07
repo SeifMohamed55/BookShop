@@ -165,6 +165,26 @@
   height: 600px;
   overflow-x: hidden;
   overflow-y: auto;
+  /* Scrollbar width */
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  /* Scrollbar track (the background) */
+  &::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  /* Scrollbar thumb (the draggable part) */
+  &::-webkit-scrollbar-thumb {
+    background-color: black;
+    border-radius: 4px; // optional: make it rounded
+  }
+
+  /* Optional: hover effect */
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: gray;
+  }
 }
 
 .like-comment-style {
@@ -209,4 +229,11 @@
 
 .pages {
   background-color: #f5f5f5;
+}
+
+.hover {
+  transition: opacity 300ms;
+  &:hover {
+    opacity: 0.75;
+  }
 }

@@ -1,11 +1,9 @@
 import { faBookOpen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import { useState } from "react";
 import MenuList from "../ui/menuList";
 import HorizontalCard from "../ui/horizontalCard";
 import {
-  LineChart,
-  Line,
   CartesianGrid,
   XAxis,
   YAxis,
@@ -14,6 +12,7 @@ import {
   AreaChart,
   Area,
 } from "recharts";
+import TagsDiv from "../ui/TagsDiv";
 const MyBooks = () => {
   const [listValues] = useState<string[]>([
     `📖 all books`,
@@ -33,6 +32,11 @@ const MyBooks = () => {
     { name: "May 6", pages: 35 },
     { name: "May 9", pages: 30 },
   ];
+  const [tagsValue] = useState<string[]>([
+    "Fiction",
+    "Science fiction",
+    "biography",
+  ]);
   return (
     <div className="container-lg py-5">
       <div className="row g-4">
@@ -134,10 +138,13 @@ const MyBooks = () => {
               </div>
             </div>
           </aside>
-          <div className="my-5 border p-4 rounded-2">
+          <div className="my-4 border p-4 rounded-2">
             <h2 className="playfair fw-bold h5 rounded-2 text-capitalize">
               favorite genres
             </h2>
+            <div className="py-4">
+              <TagsDiv values={tagsValue} isDark={true} />
+            </div>
           </div>
         </div>
       </div>

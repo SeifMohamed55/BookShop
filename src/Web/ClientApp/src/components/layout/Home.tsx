@@ -19,7 +19,7 @@ export default function Home() {
     "non-fiction",
     "fantasy",
   ]);
-  
+
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   function handleLists(index: number): void {
@@ -31,7 +31,7 @@ export default function Home() {
       {/* hero section  */}
       <section className="hero py-5">
         <div className="container d-flex justify-content-between align-items-center flex-column gap-3 py-5">
-          <h1 className="playfair fw-bold header-font">
+          <h1 className="playfair fw-bold header-font text-center">
             Your Digital Bookshelf
           </h1>
           <p className="text-center times h5 opacity-75">

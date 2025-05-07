@@ -2,8 +2,15 @@ import { faBookmark, faStar } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import myPic from "../../images/my-pic.jpg";
+import TagsDiv from "./TagsDiv";
+import { useState } from "react";
 
 const HorizontalCard = () => {
+  const [tagValues] = useState<string[]>([
+    "fiction",
+    "fantasy",
+    "contemporary",
+  ]);
   function handleClick(): void {}
   return (
     <div className="horizontal-card-div border p-3 d-flex align-items-start flex-md-row flex-column gap-3 rounded-2 w-100">
@@ -33,16 +40,7 @@ const HorizontalCard = () => {
           </div>
         </div>
         <p className="opacity-75 times m-0">{"Matt Haig"}</p>
-        <div className="d-flex align-items-center gap-2">
-          {Array.from({ length: 3 }).map((tag, idx) => (
-            <div
-              key={idx}
-              className="px-2 rounded-pill border times text-capitalize small-font fw-semibold"
-            >
-              fiction
-            </div>
-          ))}
-        </div>
+        <TagsDiv values={tagValues} isDark={false} />
         <p className="times normal-font fw-fw-semibold">
           {
             "An unforgettable memoir about a young girl who, kept out of school, leaves her survivalist family and goes on to earn a PhD from Cambridge University."

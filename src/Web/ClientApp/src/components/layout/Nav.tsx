@@ -27,73 +27,67 @@ export default function Nav() {
         className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow "
         light
       >
-        <NavbarBrand to="/" className="playfair fw-bold">
+        <NavbarBrand to="/" className="playfair fw-bold me-4">
           <FontAwesomeIcon icon={faBookOpen} className="me-2" /> MyBookShelf
         </NavbarBrand>
         <NavbarToggler onClick={toggle} className="mr-2" />
-        <Collapse
-          isOpen={isOpen}
-          className="d-sm-inline-flex flex-sm-row-reverse"
-          navbar
-        >
-          <ul className="navbar-nav flex-grow-1 d-flex align-items-center">
-            <div className="d-flex flex-grow-1 gap-4">
-              <NavItem>
-                <NavLink
-                  to="/"
-                  className={({ isActive }) =>
-                    `text-dark  nav-font nav-style ${
-                      isActive ? "nav-active" : ""
-                    }`
-                  }
-                >
-                  <FontAwesomeIcon icon={faEye} className="me-2" />
-                  Discover
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  to="/my-books"
-                  className={({ isActive }) =>
-                    `text-dark  nav-font nav-style ${
-                      isActive ? "nav-active" : ""
-                    }`
-                  }
-                >
-                  <FontAwesomeIcon icon={faBook} className="me-2" />
-                  My Books
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  to="/book-clubs"
-                  className={({ isActive }) =>
-                    `text-dark  nav-font nav-style ${
-                      isActive ? "nav-active" : ""
-                    }`
-                  }
-                >
-                  <FontAwesomeIcon icon={faUserGroup} className="me-2" />
-                  Book Clubs
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  to="/statistics"
-                  className={({ isActive }) =>
-                    `text-dark  nav-font nav-style ${
-                      isActive ? "nav-active" : ""
-                    }`
-                  }
-                >
-                  <FontAwesomeIcon icon={faSignal} className="me-2" />
-                  Reading Stats
-                </NavLink>
-              </NavItem>
-            </div>
+        <Collapse isOpen={isOpen} className="flex-column flex-sm-row" navbar>
+          <ul className="navbar-nav flex-column flex-sm-row flex-grow-1 align-items-stretch align-items-sm-center gap-2 gap-sm-4 py-2">
+            <NavItem className="w-100 text-center text-sm-start">
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  `text-dark nav-font nav-style d-block w-100 ${
+                    isActive ? "nav-active" : ""
+                  }`
+                }
+              >
+                <FontAwesomeIcon icon={faEye} className="me-md-2" />
+                <span className="d-none d-md-inline">Discover</span>
+              </NavLink>
+            </NavItem>
+            <NavItem className="w-100 text-center text-sm-start">
+              <NavLink
+                to="/my-books"
+                className={({ isActive }) =>
+                  `text-dark nav-font nav-style d-block w-100 ${
+                    isActive ? "nav-active" : ""
+                  }`
+                }
+              >
+                <FontAwesomeIcon icon={faBook} className="me-md-2" />
+                <span className="d-none d-md-inline">My Books</span>
+              </NavLink>
+            </NavItem>
+            <NavItem className="w-100 text-center text-sm-start">
+              <NavLink
+                to="/book-clubs"
+                className={({ isActive }) =>
+                  `text-dark nav-font nav-style d-block w-100 ${
+                    isActive ? "nav-active" : ""
+                  }`
+                }
+              >
+                <FontAwesomeIcon icon={faUserGroup} className="me-md-2" />
+                <span className="d-none d-md-inline">Book Clubs</span>
+              </NavLink>
+            </NavItem>
+            <NavItem className="w-100 text-center text-sm-start">
+              <NavLink
+                to="/statistics"
+                className={({ isActive }) =>
+                  `text-dark nav-font nav-style d-block w-100 ${
+                    isActive ? "nav-active" : ""
+                  }`
+                }
+              >
+                <FontAwesomeIcon icon={faSignal} className="me-md-2" />
+                <span className="d-none d-md-inline">Reading Stats</span>
+              </NavLink>
+            </NavItem>
 
-            {/* This pushes the image to the right end */}
-            <NavItem className="ms-auto">
+            {/* Profile image pushed to the right on large screens */}
+            <NavItem className="ms-sm-auto mx-auto mt-sm-0">
               <figure className="mb-0">
                 <img
                   src={myPic}
