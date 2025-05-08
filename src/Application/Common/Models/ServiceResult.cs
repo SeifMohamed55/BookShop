@@ -32,7 +32,12 @@ namespace GraduationProject.Application.Services
         {
             return new(false, default, message, code, result.Errors);
         }
-            
+
+
+        public static ServiceResult<T> Failure(string message, string[] errors, HttpStatusCode code = HttpStatusCode.BadRequest)
+        {
+            return new(false, default, message, code, errors);
+        }
 
         public static ServiceResult<T> Failure(string message, HttpStatusCode code = HttpStatusCode.BadRequest) 
             => new(false, default, message, code, null);

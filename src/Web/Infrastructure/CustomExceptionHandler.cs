@@ -1,8 +1,6 @@
 ﻿using AspireApp.Application.Common.Exceptions;
-using AspireApp.Application.Common.Models;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AspireApp.Web.Infrastructure;

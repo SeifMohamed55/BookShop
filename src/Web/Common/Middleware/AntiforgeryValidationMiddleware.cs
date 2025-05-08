@@ -23,7 +23,7 @@ public class AntiforgeryValidationMiddleware
         {
             var path = context.Request.Path.Value ?? "";
 
-            if (!path.StartsWith("/api/auth/login") && !path.StartsWith("/api/auth/register"))
+            if (!path.StartsWith("/api/v1/login") && !path.StartsWith("/api/v1/register"))
             {
                 await _antiforgery.ValidateRequestAsync(context);
             }

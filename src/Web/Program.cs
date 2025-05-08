@@ -53,7 +53,6 @@ app.MapEndpoints();         // 5. Handle requests
 
 app.MapFallbackToFile("index.html");
 
-
 app.Run();
 
 public partial class Program { }

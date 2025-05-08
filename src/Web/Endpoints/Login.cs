@@ -10,6 +10,7 @@ public class Login : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+            .DisableAntiforgery()
             .MapPost(LoginUser);
     }
     public async Task<IResult> LoginUser(LoginCommand command, ISender sender, HttpContext httpContext)

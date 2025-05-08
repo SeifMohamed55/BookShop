@@ -26,7 +26,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, ServiceRe
 
             return ServiceResult<bool>.Success(true, "User registered successfully");
         }
-        return ServiceResult<bool>.Failure("Couldn't register user");
+        return ServiceResult<bool>.Failure("Couldn't register user", res.Errors);
     }
 
 }

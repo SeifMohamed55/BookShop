@@ -11,6 +11,7 @@ public class Register : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+            .DisableAntiforgery() 
             .MapPost(RegisterUser);
     }
     public async Task<IResult> RegisterUser([FromForm] RegisterRequest request, ISender sender)

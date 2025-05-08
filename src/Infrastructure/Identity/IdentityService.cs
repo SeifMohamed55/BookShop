@@ -52,6 +52,10 @@ public class IdentityService : IIdentityService
         };
 
         var result = await _userManager.CreateAsync(user, model.Password);
+        if (!result.Succeeded)
+        {
+            return ServiceResult<UserDto>.Failure("Couldn't create user", result.ToApplicationResult());
+        }
 
         var dto = _mapper.Map<UserDto>(user);
         return ServiceResult<UserDto>.Success(dto, "User created successfully");
@@ -68,14 +72,13 @@ public class IdentityService : IIdentityService
 
         user.ImageUrl = url;
         var result = await _userManager.UpdateAsync(user);
-        if (result.Succeeded)
-        {
-            return ServiceResult<bool>.Success(true, "User image updated successfully");
-        }
-        else
+        if (!result.Succeeded)
         {
             return ServiceResult<bool>.Failure("Couldn't update user image", result.ToApplicationResult());
         }
+
+        return ServiceResult<bool>.Success(true, "User image updated successfully");
+
     }
 
     public async Task<bool> IsInRoleAsync(string userId, string role)

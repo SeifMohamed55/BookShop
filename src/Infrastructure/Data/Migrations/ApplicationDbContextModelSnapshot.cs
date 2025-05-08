@@ -66,7 +66,7 @@ namespace BookShop.Infrastructure.Data.Migrations
 
                     b.HasIndex("ListId");
 
-                    b.ToTable("TodoItems");
+                    b.ToTable("TodoItems", (string)null);
                 });
 
             modelBuilder.Entity("AspireApp.Domain.Entities.TodoList", b =>
@@ -96,7 +96,7 @@ namespace BookShop.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TodoLists");
+                    b.ToTable("TodoLists", (string)null);
                 });
 
             modelBuilder.Entity("AspireApp.Infrastructure.Identity.ApplicationUser", b =>
@@ -333,7 +333,7 @@ namespace BookShop.Infrastructure.Data.Migrations
 
                             b1.HasKey("TodoListId");
 
-                            b1.ToTable("TodoLists");
+                            b1.ToTable("TodoLists", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("TodoListId");

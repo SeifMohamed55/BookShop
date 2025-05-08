@@ -1,6 +1,8 @@
-﻿dotnet ef migrations add "AddingFullNameToAppUser" --project src\Infrastructure --startup-project src\Web --output-dir Data\Migrations
+﻿dotnet ef migrations add "AddingBookStructure" --project src\Infrastructure --startup-project src\Web --output-dir Data\Migrations
 
 dotnet ef database update --project src\Infrastructure --startup-project src\Web
+
+dotnet ef migrations remove --project src\Infrastructure --startup-project src\Web
 
 
 Add-Migration "SampleMigration" -Project src\Infrastructure -StartupProject src\Web -OutputDir Data\Migrations

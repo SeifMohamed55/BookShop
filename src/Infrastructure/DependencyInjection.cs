@@ -51,8 +51,6 @@ public static class DependencyInjection
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 6;
 
-                options.User.RequireUniqueEmail = true;
-
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 10;                  
             })
