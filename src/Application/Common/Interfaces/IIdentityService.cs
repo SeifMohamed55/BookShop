@@ -1,6 +1,6 @@
-﻿using AspireApp.Application.Accounts.Commands.Login;
-using AspireApp.Application.Accounts.Commands.Register;
-using AspireApp.Application.Common.Models;
+﻿using AspireApp.Application.Common.Models;
+using AspireApp.Application.UseCases.Accounts.Commands.Login;
+using AspireApp.Application.UseCases.Accounts.Commands.Register;
 using GraduationProject.Application.Services;
 
 namespace AspireApp.Application.Common.Interfaces;

@@ -1,4 +1,4 @@
-﻿using AspireApp.Application.Accounts.Commands.Login;
+﻿using AspireApp.Application.UseCases.Accounts.Commands.Login;
 using AspireApp.Web.Common.Extensions;
 using Microsoft.AspNetCore.Antiforgery;
 

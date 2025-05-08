@@ -14,6 +14,6 @@ public interface IImageStorageService
 
     public static string DefaultUserImageRelativePath => UserImageRelativePath +  "default.jpg";
 
-    Task<string> SaveImageAsync(byte[] image, string extension);
+    Task<string> SaveImageAsync(string base64Image);
     bool DeleteImageAsync(string filePath);
 }

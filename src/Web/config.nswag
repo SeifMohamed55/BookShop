@@ -90,6 +90,7 @@
       "configurationClass": null,
       "useTransformOptionsMethod": false,
       "useTransformResultMethod": false,
+      "useFormData": true,
       "generateDtoTypes": true,
       "operationGenerationMode": "MultipleClientsFromFirstTagAndOperationId",
       "markOptionalProperties": true,

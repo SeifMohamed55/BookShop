@@ -18,6 +18,7 @@ public class CustomExceptionHandler : IExceptionHandler
             { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
             { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
             { typeof(AntiforgeryValidationException), HandleAntiForgeryException },
+            { typeof(BadHttpRequestException), HandleBadHttpRequestException},
         };
     }
 
@@ -26,7 +27,8 @@ public class CustomExceptionHandler : IExceptionHandler
     {
         var exceptionType = exception.GetType();
         var csrfException = exception.InnerException as AntiforgeryValidationException;
-        if(csrfException != null)
+        var badRequestException = exception.InnerException as BadHttpRequestException;
+        if (csrfException != null)
         {
             await _exceptionHandlers[csrfException.GetType()].Invoke(httpContext, csrfException);
             return true;
@@ -36,10 +38,30 @@ public class CustomExceptionHandler : IExceptionHandler
             await _exceptionHandlers[exceptionType].Invoke(httpContext, exception);
             return true;
         }
+        else if (badRequestException != null)
+        {
+            await _exceptionHandlers[badRequestException.GetType()].Invoke(httpContext, badRequestException);
+            return true;
+        }
 
         return false;
     }
 
+    private async Task HandleBadHttpRequestException(HttpContext httpContext, Exception ex)
+    {
+        var exception = (BadHttpRequestException)ex;
+
+        httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails()
+        {
+            Status = StatusCodes.Status400BadRequest,
+            Type = "https://datatracker.ietf.org/doc/html/rfc6749#section-10.12",
+            Detail = exception.Message,
+            Title = "Bad Request",
+            Instance = exception.HelpLink,
+        });
+    }
 
     private async Task HandleAntiForgeryException(HttpContext httpContext, Exception ex)
     {

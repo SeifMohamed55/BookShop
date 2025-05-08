@@ -1,7 +1,7 @@
-﻿using AspireApp.Application.TodoLists.Commands.CreateTodoList;
-using AspireApp.Application.TodoLists.Commands.DeleteTodoList;
-using AspireApp.Application.TodoLists.Commands.UpdateTodoList;
-using AspireApp.Application.TodoLists.Queries.GetTodos;
+﻿using AspireApp.Application.UseCases.TodoLists.Commands.CreateTodoList;
+using AspireApp.Application.UseCases.TodoLists.Commands.DeleteTodoList;
+using AspireApp.Application.UseCases.TodoLists.Commands.UpdateTodoList;
+using AspireApp.Application.UseCases.TodoLists.Queries.GetTodos;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace AspireApp.Web.Endpoints;

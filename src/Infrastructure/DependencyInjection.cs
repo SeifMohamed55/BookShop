@@ -6,7 +6,6 @@ using AspireApp.Infrastructure.Data;
 using AspireApp.Infrastructure.Data.Interceptors;
 using AspireApp.Infrastructure.FileStorage;
 using AspireApp.Infrastructure.Identity;
-using GraduationProject.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -35,8 +34,6 @@ public static class DependencyInjection
         builder.EnrichSqlServerDbContext<ApplicationDbContext>();
 
         builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
-
-        builder.Services.AddScoped<IUnitOfWork, DictionaryUnitOfWork>();
 
         builder.Services.AddScoped<IImageStorageService, ImageStorageService>();
 

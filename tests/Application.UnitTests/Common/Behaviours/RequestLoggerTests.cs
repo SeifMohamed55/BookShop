@@ -1,6 +1,6 @@
 ﻿using AspireApp.Application.Common.Behaviours;
 using AspireApp.Application.Common.Interfaces;
-using AspireApp.Application.TodoItems.Commands.CreateTodoItem;
+using AspireApp.Application.UseCases.TodoItems.Commands.CreateTodoItem;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;

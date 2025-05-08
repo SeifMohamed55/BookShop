@@ -1,13 +1,11 @@
-using AspireApp.Application.Accounts.Commands.Login;
-using AspireApp.Application.Accounts.Commands.Register;
 using AspireApp.Application.Common.Interfaces;
 using AspireApp.Application.Common.Models;
+using AspireApp.Application.UseCases.Accounts.Commands.Login;
+using AspireApp.Application.UseCases.Accounts.Commands.Register;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using GraduationProject.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace AspireApp.Infrastructure.Identity;
 public class IdentityService : IIdentityService

@@ -1,5 +1,5 @@
 ﻿using AspireApp.Application.Common.Security;
-using AspireApp.Application.WeatherForecasts.Queries.GetWeatherForecasts;
+using AspireApp.Application.UseCases.WeatherForecasts.Queries.GetWeatherForecasts;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace AspireApp.Web.Endpoints;

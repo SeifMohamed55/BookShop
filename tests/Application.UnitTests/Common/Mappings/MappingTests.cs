@@ -2,8 +2,8 @@
 using System.Runtime.CompilerServices;
 using AspireApp.Application.Common.Interfaces;
 using AspireApp.Application.Common.Models;
-using AspireApp.Application.TodoItems.Queries.GetTodoItemsWithPagination;
-using AspireApp.Application.TodoLists.Queries.GetTodos;
+using AspireApp.Application.UseCases.TodoItems.Queries.GetTodoItemsWithPagination;
+using AspireApp.Application.UseCases.TodoLists.Queries.GetTodos;
 using AspireApp.Domain.Entities;
 using AutoMapper;
 using NUnit.Framework;

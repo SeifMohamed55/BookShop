@@ -1,9 +1,9 @@
 ﻿using AspireApp.Application.Common.Models;
-using AspireApp.Application.TodoItems.Commands.CreateTodoItem;
-using AspireApp.Application.TodoItems.Commands.DeleteTodoItem;
-using AspireApp.Application.TodoItems.Commands.UpdateTodoItem;
-using AspireApp.Application.TodoItems.Commands.UpdateTodoItemDetail;
-using AspireApp.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+using AspireApp.Application.UseCases.TodoItems.Commands.CreateTodoItem;
+using AspireApp.Application.UseCases.TodoItems.Commands.DeleteTodoItem;
+using AspireApp.Application.UseCases.TodoItems.Commands.UpdateTodoItem;
+using AspireApp.Application.UseCases.TodoItems.Commands.UpdateTodoItemDetail;
+using AspireApp.Application.UseCases.TodoItems.Queries.GetTodoItemsWithPagination;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace AspireApp.Web.Endpoints;

@@ -37,17 +37,18 @@
           "Register"
         ],
         "operationId": "RegisterUser",
-        "parameters": [
-          {
-            "name": "request",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/RegisterRequest"
-            },
-            "x-position": 1
-          }
-        ],
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": ""
@@ -396,7 +397,7 @@
           }
         }
       },
-      "RegisterRequest": {
+      "RegisterCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -414,7 +415,6 @@
           },
           "image": {
             "type": "string",
-            "format": "binary",
             "nullable": true
           }
         }
