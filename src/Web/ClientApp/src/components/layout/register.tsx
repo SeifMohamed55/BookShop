@@ -10,7 +10,7 @@ const Register = () => {
   const [validateImage, setValidateImage] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
   async function postData(data: any) {
-    const Register = new RegisterClient(process.env.BASE_URL);
+    const Register = new RegisterClient(process.env.BASE_URL as string);
     const res = await Register.registerUser(data);
     return res;
   }
@@ -50,7 +50,7 @@ const Register = () => {
           fullName: "",
           email: "",
           password: "",
-          rePassword: "",
+          confirmPassword: "",
         }}
         validationSchema={Yup.object({
           fullName: Yup.string().required("name field is required"),
@@ -60,7 +60,7 @@ const Register = () => {
           password: Yup.string()
             .required("password field is required")
             .min(6, "password must be more than 5 characters"),
-          rePassword: Yup.string()
+          confirmPassword: Yup.string()
             .required("Please confirm your password")
             .oneOf([Yup.ref("password")], "Passwords must match"),
         })}
@@ -151,21 +151,23 @@ const Register = () => {
             </div>
             <div className="w-100">
               <label
-                htmlFor="rePassword"
+                htmlFor="confirmPassword"
                 className="inter text-capitalize form-label"
               >
                 confirm password
               </label>
               <input
-                value={values.rePassword}
+                value={values.confirmPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 type="password"
-                id="rePassword"
+                id="confirmPassword"
                 className="form-control"
               />
               <p className="normal-font text-center pt-1 text-danger m-0">
-                {errors.rePassword && touched.rePassword && errors.rePassword}
+                {errors.confirmPassword &&
+                  touched.confirmPassword &&
+                  errors.confirmPassword}
               </p>
             </div>
             <div className="w-100">
