@@ -1,5 +1,6 @@
 ﻿using AspireApp.Web.Endpoints;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace AspireApp.Web.Common.Middleware;
 
@@ -16,20 +17,24 @@ public class AntiforgeryValidationMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        if (!HttpMethods.IsGet(context.Request.Method) &&
-            !HttpMethods.IsHead(context.Request.Method) &&
-            !HttpMethods.IsOptions(context.Request.Method) &&
-            !HttpMethods.IsTrace(context.Request.Method))
-        {
-            var path = context.Request.Path.Value ?? "";
+        var endpoint = context.GetEndpoint();
+        var antiforgeryMetadata = endpoint?.Metadata.GetMetadata<IAntiforgeryMetadata>();
 
-            if (!path.StartsWith("/api/v1/login") && !path.StartsWith("/api/v1/register"))
-            {
-                await _antiforgery.ValidateRequestAsync(context);
-            }
+        if (antiforgeryMetadata != null && antiforgeryMetadata.RequiresValidation == false)
+        {
+            await _next(context);
+            return;
+        }
+
+        if (HttpMethods.IsPost(context.Request.Method) ||
+            HttpMethods.IsPut(context.Request.Method) ||
+            HttpMethods.IsDelete(context.Request.Method))
+        {
+            await _antiforgery.ValidateRequestAsync(context);
         }
 
         await _next(context);
     }
 }
+
 
