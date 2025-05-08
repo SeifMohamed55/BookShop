@@ -5,7 +5,7 @@ using AspireApp.Application.Common.Models;
 namespace GraduationProject.Application.Services
 {
 
-    public class CommandHandlerResult<T>
+    public class ServiceResult<T>
     {
         public bool IsSuccess { get; }
         public T? Data { get; }  // Data is only available for success
@@ -14,7 +14,7 @@ namespace GraduationProject.Application.Services
 
         public string[] Errors { get; } = Array.Empty<string>();
 
-        private CommandHandlerResult(bool isSuccess, T? data, string message, HttpStatusCode code, string[]? errors = null)
+        private ServiceResult(bool isSuccess, T? data, string message, HttpStatusCode code, string[]? errors = null)
         {
             IsSuccess = isSuccess;
             Data = data;
@@ -25,16 +25,16 @@ namespace GraduationProject.Application.Services
         }
 
 
-        public static CommandHandlerResult<T> Success(T data, string message, HttpStatusCode code = HttpStatusCode.OK) 
+        public static ServiceResult<T> Success(T data, string message, HttpStatusCode code = HttpStatusCode.OK) 
             => new(true, data, message, code, null);
 
-        public static CommandHandlerResult<T> Failure(string message, ApplicationIdentityResult result, HttpStatusCode code = HttpStatusCode.BadRequest)
+        public static ServiceResult<T> Failure(string message, ApplicationIdentityResult result, HttpStatusCode code = HttpStatusCode.BadRequest)
         {
             return new(false, default, message, code, result.Errors);
         }
             
 
-        public static CommandHandlerResult<T> Failure(string message, HttpStatusCode code = HttpStatusCode.BadRequest) 
+        public static ServiceResult<T> Failure(string message, HttpStatusCode code = HttpStatusCode.BadRequest) 
             => new(false, default, message, code, null);
 
         public bool TryGetData([NotNullWhen(true)] out T? data)

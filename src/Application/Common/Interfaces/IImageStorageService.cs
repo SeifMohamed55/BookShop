@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 namespace AspireApp.Application.Common.Interfaces;
 public interface IImageStorageService
 {
+    public static string PhysicalUserImageDirectory =>
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", UserImageRelativePath);
+
+    public static string UserImageRelativePath => "uploadedImages/users/";
+
+    public static string DefaultUserImageRelativePath => UserImageRelativePath +  "default.jpg";
+
     Task<string> SaveImageAsync(byte[] image, string extension);
     bool DeleteImageAsync(string filePath);
 }

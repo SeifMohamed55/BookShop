@@ -1,5 +1,8 @@
 ﻿using AspireApp.Application.Common.Exceptions;
+using AspireApp.Application.Common.Models;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AspireApp.Web.Infrastructure;
@@ -11,25 +14,49 @@ public class CustomExceptionHandler : IExceptionHandler
     {
         // Register known exception types and handlers.
         _exceptionHandlers = new()
-            {
-                { typeof(ValidationException), HandleValidationException },
-                { typeof(NotFoundException), HandleNotFoundException },
-                { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
-                { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
-            };
+        {
+            { typeof(ValidationException), HandleValidationException },
+            { typeof(NotFoundException), HandleNotFoundException },
+            { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
+            { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
+            { typeof(AntiforgeryValidationException), HandleAntiForgeryException },
+        };
     }
+
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
         var exceptionType = exception.GetType();
-
-        if (_exceptionHandlers.ContainsKey(exceptionType))
+        var csrfException = exception.InnerException as AntiforgeryValidationException;
+        if(csrfException != null)
+        {
+            await _exceptionHandlers[csrfException.GetType()].Invoke(httpContext, csrfException);
+            return true;
+        }
+        else if (_exceptionHandlers.ContainsKey(exceptionType))
         {
             await _exceptionHandlers[exceptionType].Invoke(httpContext, exception);
             return true;
         }
 
         return false;
+    }
+
+
+    private async Task HandleAntiForgeryException(HttpContext httpContext, Exception ex)
+    {
+        var exception = (AntiforgeryValidationException)ex;
+
+        httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails()
+        {
+            Status = StatusCodes.Status403Forbidden,
+            Type = "https://datatracker.ietf.org/doc/html/rfc6749#section-10.12",
+            Detail = "Couldn't Perform the request because CSRF token was not found." ,
+            Title = "CSRF Token Not Found",
+            Instance = exception.HelpLink,
+        });
     }
 
     private async Task HandleValidationException(HttpContext httpContext, Exception ex)

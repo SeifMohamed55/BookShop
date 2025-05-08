@@ -1,4 +1,8 @@
+﻿using System.Reflection.PortableExecutable;
+using AspireApp.Application.Common.Models;
 using AspireApp.Infrastructure.Data;
+using AspireApp.Web.Common.Middleware;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,19 +38,21 @@ app.UseSwaggerUi(settings =>
     settings.DocumentPath = "/api/specification.json";
 });
 
-//app.MapRazorPages();
+
+app.UseExceptionHandler(opt => { });
+
+app.UseAuthentication();    // 2. Set the User.Identity
+
+app.UseMiddleware<AntiforgeryValidationMiddleware>();
+
+app.UseAuthorization();     // 3. Check if the user is allowed
+
+app.UseAntiforgery();       // 4. Validate CSRF tokens (for unsafe methods)
+
+app.MapEndpoints();         // 5. Handle requests
 
 app.MapFallbackToFile("index.html");
 
-app.UseExceptionHandler(options => { });
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.UseAntiforgery();
-
-app.MapDefaultEndpoints();
-app.MapEndpoints();
 
 app.Run();
 

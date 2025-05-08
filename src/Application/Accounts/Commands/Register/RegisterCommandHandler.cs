@@ -4,7 +4,7 @@ using GraduationProject.Application.Services;
 
 namespace AspireApp.Application.Accounts.Commands.Register;
 
-public class RegisterCommandHandler : IRequestHandler<RegisterCommand, CommandHandlerResult<bool>>
+public class RegisterCommandHandler : IRequestHandler<RegisterCommand, ServiceResult<bool>>
 {
     private readonly IIdentityService _identity;
     private readonly IImageStorageService _imageService;
@@ -15,17 +15,18 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, CommandHa
         _imageService = imageStorageService;
     }
 
-    public async Task<CommandHandlerResult<bool>> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<ServiceResult<bool>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var url = await _imageService.SaveImageAsync(request.Image, request.Extension);
-
-        var res  = await _identity.CreateUserAsync(request, url);
-        if (res.Succeeded)
+        var res  = await _identity.CreateUserAsync(request, IImageStorageService.DefaultUserImageRelativePath);
+        if (res.TryGetData(out var data))
         {
-            return CommandHandlerResult<bool>.Success(true, "User registered successfully");
-        }
-        return CommandHandlerResult<bool>.Failure("Couldn't register user", res);
-    }
+            var url = await _imageService.SaveImageAsync(request.Image, request.Extension);
 
+            await _identity.UpdateUserImage(data.Id, url);
+
+            return ServiceResult<bool>.Success(true, "User registered successfully");
+        }
+        return ServiceResult<bool>.Failure("Couldn't register user");
+    }
 
 }

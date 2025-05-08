@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Reflection;
 using AspireApp.Application.Common.Interfaces;
 using AspireApp.Domain.Constants;
 using AspireApp.Infrastructure.Data;
@@ -59,35 +60,13 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
-
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
 
         builder.Services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
 
-        builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        })
-       .AddCookie(options =>
-       {
-           options.ExpireTimeSpan = TimeSpan.FromDays(30);
-           options.SlidingExpiration = true;
 
-           options.Events.OnRedirectToLogin = context =>
-           {
-               context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-               return Task.CompletedTask;
-           };
-
-           options.Events.OnRedirectToAccessDenied = context =>
-           {
-               context.Response.StatusCode = StatusCodes.Status403Forbidden;
-               return Task.CompletedTask;
-           };
-
-       });
+        builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
     }
 }

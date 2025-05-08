@@ -1,5 +1,8 @@
-﻿namespace AspireApp.Application.WeatherForecasts.Queries.GetWeatherForecasts;
+﻿using AspireApp.Application.Common.Security;
 
+namespace AspireApp.Application.WeatherForecasts.Queries.GetWeatherForecasts;
+
+[Authorize]
 public record GetWeatherForecastsQuery : IRequest<IEnumerable<WeatherForecast>>;
 
 public class GetWeatherForecastsQueryHandler : IRequestHandler<GetWeatherForecastsQuery, IEnumerable<WeatherForecast>>

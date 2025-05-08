@@ -12,19 +12,14 @@ using Microsoft.Extensions.Logging;
 namespace AspireApp.Infrastructure.FileStorage;
 public class ImageStorageService : IImageStorageService
 {
-    internal static string UserImageDirectory => 
-                        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploadedImages", "users");
-
-    internal static string DefaultUserImagePath => Path.Combine(UserImageDirectory, "default.jpg");
-
     private readonly ILogger<ImageStorageService> _logger;
     public ImageStorageService(ILogger<ImageStorageService> logger)
     {
         _logger = logger;
 
-        if (!Directory.Exists(UserImageDirectory))
+        if (!Directory.Exists(IImageStorageService.PhysicalUserImageDirectory))
         {
-            Directory.CreateDirectory(UserImageDirectory); // Create the folder if it doesn't exist
+            Directory.CreateDirectory(IImageStorageService.PhysicalUserImageDirectory); // Create the folder if it doesn't exist
         }
 
     }
@@ -33,9 +28,13 @@ public class ImageStorageService : IImageStorageService
     {
         try
         {
+            if (file.Length == 0)
+            {
+                throw new ArgumentException("File is empty or null");
+            }
             // Generate a unique filename using a GUID
             var fileName = Guid.NewGuid().ToString() + extension;
-            var filePath = Path.Combine(UserImageDirectory, fileName);
+            var filePath = IImageStorageService.PhysicalUserImageDirectory + fileName;
 
             // Save the file to the specified path in wwwroot
             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -49,28 +48,30 @@ public class ImageStorageService : IImageStorageService
         {
             // Handle exceptions (e.g., log the error)
             _logger.LogError($"Error saving image: {ex.Message}");
-            return DefaultUserImagePath; // Return a default image path in case of an error
+            return IImageStorageService.DefaultUserImageRelativePath; // Return a default image path in case of an error
         }
     }
 
-    public bool DeleteImageAsync(string filePath)
+    public bool DeleteImageAsync(string dbRelativeFilePath)
     {
         try
         {
             // Check if the file path is valid and not the default image
-            if (string.IsNullOrWhiteSpace(filePath))
+            if (string.IsNullOrWhiteSpace(dbRelativeFilePath))
             {
                 return false;
             }
 
-            if (filePath.Equals(DefaultUserImagePath, StringComparison.OrdinalIgnoreCase))
+            if (dbRelativeFilePath.Equals(IImageStorageService.DefaultUserImageRelativePath, StringComparison.OrdinalIgnoreCase))
             {
                 return true; // Do not delete the default image
             }
 
-            if (File.Exists(filePath))
+            dbRelativeFilePath = IImageStorageService.PhysicalUserImageDirectory + dbRelativeFilePath.Split('/').Last();
+
+            if (File.Exists(dbRelativeFilePath))
             {
-                File.Delete(filePath);
+                File.Delete(dbRelativeFilePath);
                 return true;
             }
             return false; // File not found

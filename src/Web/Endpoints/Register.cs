@@ -15,7 +15,10 @@ public class Register : EndpointGroupBase
     }
     public async Task<IResult> RegisterUser([FromForm] RegisterRequest request, ISender sender)
     {
-        var imageBytes = await GetBytesAsync(request.Image);
+        byte[] imageBytes = Array.Empty<byte>();
+
+        if(request.Image != null)
+            imageBytes = await GetBytesAsync(request.Image);
 
         var command = new RegisterCommand
         {
@@ -24,8 +27,8 @@ public class Register : EndpointGroupBase
             Password = request.Password,
             ConfirmPassword = request.ConfirmPassword,
             Image = imageBytes,
-            ContentType = request.Image.ContentType,
-            Extension = Path.GetExtension(request.Image.FileName)
+            ContentType = request.Image?.ContentType ?? "image/jpeg",
+            Extension = Path.GetExtension(request.Image?.FileName) ?? ".jpg"
         };
 
         var res = await sender.Send(command);

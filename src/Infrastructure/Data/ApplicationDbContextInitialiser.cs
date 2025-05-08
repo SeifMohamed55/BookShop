@@ -1,4 +1,5 @@
-﻿using AspireApp.Domain.Constants;
+﻿using AspireApp.Application.Common.Interfaces;
+using AspireApp.Domain.Constants;
 using AspireApp.Domain.Entities;
 using AspireApp.Infrastructure.FileStorage;
 using AspireApp.Infrastructure.Identity;
@@ -80,7 +81,7 @@ public class ApplicationDbContextInitialiser
             UserName = "administrator@localhost",
             Email = "administrator@localhost" ,
             FullName = "Adminstrator",
-            ImageUrl = ImageStorageService.DefaultUserImagePath
+            ImageUrl = IImageStorageService.DefaultUserImageRelativePath
         };
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))

@@ -7,8 +7,8 @@ public class AntiForgery : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
-        app.MapGroup(this)
-            .MapGet(GetAntiForgeryToken);
+        app.MapGroup(this);
+            //.MapGet(GetAntiForgeryToken);
     }
     public IResult GetAntiForgeryToken(HttpContext context)
     {

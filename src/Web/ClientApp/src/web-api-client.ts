@@ -10,7 +10,7 @@
 
 import followIfLoginRedirect from './components/api-authorization/followIfLoginRedirect';
 
-export class AntiForgeryClient {
+export class LoginClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -20,22 +20,26 @@ export class AntiForgeryClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getAntiForgeryToken(): Promise<void> {
-        let url_ = this.baseUrl + "/api/v1/AntiForgery";
+    loginUser(command: LoginCommand): Promise<void> {
+        let url_ = this.baseUrl + "/api/v1/Login";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_: RequestInit = {
-            method: "GET",
+            body: content_,
+            method: "POST",
             headers: {
+                "Content-Type": "application/json",
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetAntiForgeryToken(_response);
+            return this.processLoginUser(_response);
         });
     }
 
-    protected processGetAntiForgeryToken(response: Response): Promise<void> {
+    protected processLoginUser(response: Response): Promise<void> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -529,12 +533,56 @@ export class WeatherForecastsClient {
     }
 }
 
+export class LoginCommand implements ILoginCommand {
+    email?: string;
+    password?: string;
+    rememberMe?: boolean;
+
+    constructor(data?: ILoginCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+            this.password = _data["password"];
+            this.rememberMe = _data["rememberMe"];
+        }
+    }
+
+    static fromJS(data: any): LoginCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoginCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["password"] = this.password;
+        data["rememberMe"] = this.rememberMe;
+        return data;
+    }
+}
+
+export interface ILoginCommand {
+    email?: string;
+    password?: string;
+    rememberMe?: boolean;
+}
+
 export class RegisterRequest implements IRegisterRequest {
     fullname?: string;
     email?: string;
     password?: string;
     confirmPassword?: string;
-    image?: string;
+    image?: string | undefined;
 
     constructor(data?: IRegisterRequest) {
         if (data) {
@@ -578,7 +626,7 @@ export interface IRegisterRequest {
     email?: string;
     password?: string;
     confirmPassword?: string;
-    image?: string;
+    image?: string | undefined;
 }
 
 export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItemBriefDto {

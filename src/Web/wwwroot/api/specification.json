@@ -6,12 +6,24 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/v1/AntiForgery": {
-      "get": {
+    "/api/v1/Login": {
+      "post": {
         "tags": [
-          "AntiForgery"
+          "Login"
         ],
-        "operationId": "GetAntiForgeryToken",
+        "operationId": "LoginUser",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": ""
@@ -369,6 +381,21 @@
   },
   "components": {
     "schemas": {
+      "LoginCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "rememberMe": {
+            "type": "boolean"
+          }
+        }
+      },
       "RegisterRequest": {
         "type": "object",
         "additionalProperties": false,
@@ -387,7 +414,8 @@
           },
           "image": {
             "type": "string",
-            "format": "binary"
+            "format": "binary",
+            "nullable": true
           }
         }
       },
