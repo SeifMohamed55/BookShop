@@ -4,16 +4,12 @@ import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { Formik } from "formik";
 import React, { useState } from "react";
-import { RegisterClient } from "../../web-api-client";
+import { RegisterClient, RegisterCommand } from "../../web-api-client";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const [validateImage, setValidateImage] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
-  async function postData(data: any) {
-    const Register = new RegisterClient(process.env.BASE_URL as string);
-    const res = await Register.registerUser(data);
-    return res;
-  }
   function handleImage(e: React.ChangeEvent<HTMLInputElement>): void {
     const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
     const FILE_SIZE = 2 * 1024 * 1024; // 2MB
@@ -37,7 +33,7 @@ const Register = () => {
     setValidateImage("");
   }
   return (
-    <div className="mx-auto border p-5 register rounded-2 flex justify-content-between align-items-center flex-column gap-3 my-5">
+    <div className="mx-auto border p-5 register rounded-2 flex justify-content-between align-items-center flex-column gap-3 my-5 w-100">
       <FontAwesomeIcon icon={faBookOpen} className="mx-auto w-100 book-style" />
       <h1 className="playfair fw-bold text-center text-capitalize py-2">
         Create an account
@@ -55,7 +51,7 @@ const Register = () => {
         validationSchema={Yup.object({
           fullName: Yup.string().required("name field is required"),
           email: Yup.string()
-            .email("email field ha invalid format")
+            .email("email field have invalid format")
             .required("email field is required"),
           password: Yup.string()
             .required("password field is required")
@@ -66,14 +62,39 @@ const Register = () => {
         })}
         onSubmit={async (values, { setSubmitting }) => {
           if (selectedFile) {
+            const base64: string = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => {
+                if (typeof reader.result === "string") {
+                  resolve(reader.result);
+                } else {
+                  reject("File reading error: not a string.");
+                }
+              };
+              reader.onerror = reject;
+              reader.readAsDataURL(selectedFile);
+            });
+            const finalData: RegisterCommand = new RegisterCommand({
+              fullname: values.fullName,
+              email: values.email,
+              confirmPassword: values.confirmPassword,
+              password: values.password,
+              image: base64,
+            });
+            const Register = new RegisterClient();
+            const res = Register.registerUser(finalData);
+            res
+              .then((success) => {
+                toast.success(success.message || "Email Created Successfully");
+              })
+              .catch((err) => {
+                if (err) {
+                  toast.error(err.errors[0]);
+                } else {
+                  toast.error("something went wrong try again later");
+                }
+              });
             setValidateImage("");
-            const data = new FormData();
-            for (const [key, value] of Object.entries(values)) {
-              data.append(key, value);
-            }
-            console.log(process.env.BASE_URL as string);
-            if (selectedFile) data.append("image", selectedFile);
-            console.log(await postData(values));
           } else {
             setValidateImage("image field is required");
           }

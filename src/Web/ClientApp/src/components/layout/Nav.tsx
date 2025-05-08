@@ -22,8 +22,8 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import { useEffect, useState } from "react";
 
-export default function Nav() {
-  const [islogged, setIsLogged] = useState<boolean>(false);
+export default function Nav() { 
+  const [islogged] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
   const toggle = () => setIsOpen(!isOpen);
@@ -109,7 +109,7 @@ export default function Nav() {
               <NavLink
                 to="/register"
                 className={({ isActive }) =>
-                  `text-dark nav-font nav-style d-block nav-responsive ${
+                  `text-dark mx-auto nav-font nav-style d-block nav-responsive ${
                     isActive ? "nav-active" : ""
                   }`
                 }
@@ -125,7 +125,7 @@ export default function Nav() {
               <NavLink
                 to="/login"
                 className={({ isActive }) =>
-                  `text-dark nav-font nav-style d-block nav-responsive ${
+                  `text-dark nav-font mx-auto nav-style d-block nav-responsive ${
                     isActive ? "nav-active" : ""
                   }`
                 }

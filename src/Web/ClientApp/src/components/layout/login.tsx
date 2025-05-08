@@ -4,13 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Yup from "yup";
 import { faBookOpen } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { LoginClient } from "../../web-api-client";
+import { LoginClient, LoginCommand } from "../../web-api-client";
+import toast from "react-hot-toast";
 const Login = () => {
-  async function postdata(data: any) {
-    const client = new LoginClient();
-    const res = await client.loginUser(data);
-    return res;
-  }
   return (
     <div className="mx-auto border p-5 login rounded-2 flex justify-content-between align-items-center flex-column gap-3 my-5">
       <FontAwesomeIcon icon={faBookOpen} className="mx-auto w-100 book-style" />
@@ -28,16 +24,29 @@ const Login = () => {
         }}
         validationSchema={Yup.object({
           email: Yup.string()
-            .email("email field ha invalid format")
+            .email("email field have invalid format")
             .required("email field is required"),
           password: Yup.string()
             .required("password field is required")
             .min(6, "password must be more than 5 characters"),
           rememberMe: Yup.boolean(),
         })}
-        onSubmit={async (values, { setSubmitting }) => {
-          console.log(values);
-          console.log(await postdata(values));
+        onSubmit={(values, { setSubmitting }) => {
+          const finalValues: LoginCommand = new LoginCommand(values);
+          const client = new LoginClient();
+          client
+            .loginUser(finalValues)
+            .then((res) => {
+              console.log(res);
+              toast.success(res.message || "User Logged in Successfully");
+            })
+            .catch((err) => {
+              if (err) {
+                toast.error(err.message);
+              } else {
+                toast.error("something went wrong try again later");
+              }
+            });
           setSubmitting(false);
         }}
       >
@@ -100,7 +109,7 @@ const Login = () => {
                 remember me
               </label>
               <input
-                value={values.rememberMe}
+                checked={values.rememberMe}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 type="checkbox"
