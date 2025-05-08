@@ -71,8 +71,9 @@ const Register = () => {
             for (const [key, value] of Object.entries(values)) {
               data.append(key, value);
             }
+            console.log(process.env.BASE_URL as string);
             if (selectedFile) data.append("image", selectedFile);
-            console.log(await postData(data));
+            console.log(await postData(values));
           } else {
             setValidateImage("image field is required");
           }

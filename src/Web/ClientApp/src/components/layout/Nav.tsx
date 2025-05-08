@@ -9,11 +9,9 @@ import {
 import myPic from "../../images/my-pic.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowRight,
   faBook,
   faBookOpen,
   faRightToBracket,
-  faShare,
   faSignal,
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
@@ -40,9 +38,9 @@ export default function Nav() {
     }
   }, [isProfileOpen]);
   return (
-    <header className="position-relative">
+    <header className="position-relative border-bottom">
       <Navbar
-        className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow "
+        className="navbar-expand-sm navbar-toggleable-sm ng-white  box-shadow container"
         light
       >
         <NavbarBrand className="playfair fw-bold me-5">
@@ -60,8 +58,8 @@ export default function Nav() {
                   }`
                 }
               >
-                <FontAwesomeIcon icon={faEye} className="me-md-2" />
-                <span className="d-none d-md-inline">Discover</span>
+                <FontAwesomeIcon icon={faEye} className="me-lg-2" />
+                <span className="d-none d-lg-inline">Discover</span>
               </NavLink>
             </NavItem>
             <NavItem className="w-100 text-center text-sm-start">
@@ -73,8 +71,8 @@ export default function Nav() {
                   }`
                 }
               >
-                <FontAwesomeIcon icon={faBook} className="me-md-2" />
-                <span className="d-none d-md-inline">My Books</span>
+                <FontAwesomeIcon icon={faBook} className="me-lg-2" />
+                <span className="d-none d-lg-inline">My Books</span>
               </NavLink>
             </NavItem>
             <NavItem className="w-100 text-center text-sm-start">
@@ -86,8 +84,8 @@ export default function Nav() {
                   }`
                 }
               >
-                <FontAwesomeIcon icon={faUserGroup} className="me-md-2" />
-                <span className="d-none d-md-inline">Book Clubs</span>
+                <FontAwesomeIcon icon={faUserGroup} className="me-lg-2" />
+                <span className="d-none d-lg-inline">Book Clubs</span>
               </NavLink>
             </NavItem>
             <NavItem className="w-100 text-center text-sm-start">
@@ -99,8 +97,8 @@ export default function Nav() {
                   }`
                 }
               >
-                <FontAwesomeIcon icon={faSignal} className="me-md-2" />
-                <span className="d-none d-md-inline">Reading Stats</span>
+                <FontAwesomeIcon icon={faSignal} className="me-lg-2" />
+                <span className="d-none d-lg-inline">Reading Stats</span>
               </NavLink>
             </NavItem>
             <NavItem
