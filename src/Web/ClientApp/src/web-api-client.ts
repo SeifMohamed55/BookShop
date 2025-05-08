@@ -20,7 +20,7 @@ export class LoginClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    loginUser(command: LoginCommand): Promise<void> {
+    loginUser(command: LoginCommand): Promise<SuccessResponseOfUserDto> {
         let url_ = this.baseUrl + "/api/v1/Login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -31,6 +31,7 @@ export class LoginClient {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
@@ -39,20 +40,30 @@ export class LoginClient {
         });
     }
 
-    protected processLoginUser(response: Response): Promise<void> {
+    protected processLoginUser(response: Response): Promise<SuccessResponseOfUserDto> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SuccessResponseOfUserDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ErrorResponse.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<SuccessResponseOfUserDto>(null as any);
     }
 }
 
@@ -66,7 +77,7 @@ export class RegisterClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    registerUser(request: RegisterCommand): Promise<void> {
+    registerUser(request: RegisterCommand): Promise<SuccessResponseOfBoolean> {
         let url_ = this.baseUrl + "/api/v1/Register";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -77,6 +88,7 @@ export class RegisterClient {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
@@ -85,20 +97,30 @@ export class RegisterClient {
         });
     }
 
-    protected processRegisterUser(response: Response): Promise<void> {
+    protected processRegisterUser(response: Response): Promise<SuccessResponseOfBoolean> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SuccessResponseOfBoolean.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ErrorResponse.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<SuccessResponseOfBoolean>(null as any);
     }
 }
 
@@ -533,6 +555,166 @@ export class WeatherForecastsClient {
     }
 }
 
+export abstract class ApiResponse implements IApiResponse {
+    success?: boolean;
+    message?: string;
+
+    constructor(data?: IApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.message = _data["message"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponse {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'ApiResponse' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["message"] = this.message;
+        return data;
+    }
+}
+
+export interface IApiResponse {
+    success?: boolean;
+    message?: string;
+}
+
+export class SuccessResponseOfUserDto extends ApiResponse implements ISuccessResponseOfUserDto {
+    data?: UserDto | undefined;
+
+    constructor(data?: ISuccessResponseOfUserDto) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.data = _data["data"] ? UserDto.fromJS(_data["data"]) : <any>undefined;
+        }
+    }
+
+    static override fromJS(data: any): SuccessResponseOfUserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SuccessResponseOfUserDto();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data ? this.data.toJSON() : <any>undefined;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ISuccessResponseOfUserDto extends IApiResponse {
+    data?: UserDto | undefined;
+}
+
+export class UserDto implements IUserDto {
+    id?: string;
+    fullName?: string;
+    email?: string;
+    imageUrl?: string;
+
+    constructor(data?: IUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.email = _data["email"];
+            this.imageUrl = _data["imageUrl"];
+        }
+    }
+
+    static fromJS(data: any): UserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["email"] = this.email;
+        data["imageUrl"] = this.imageUrl;
+        return data;
+    }
+}
+
+export interface IUserDto {
+    id?: string;
+    fullName?: string;
+    email?: string;
+    imageUrl?: string;
+}
+
+export class ErrorResponse extends ApiResponse implements IErrorResponse {
+    errors?: string[];
+
+    constructor(data?: IErrorResponse) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static override fromJS(data: any): ErrorResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ErrorResponse();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IErrorResponse extends IApiResponse {
+    errors?: string[];
+}
+
 export class LoginCommand implements ILoginCommand {
     email?: string;
     password?: string;
@@ -575,6 +757,39 @@ export interface ILoginCommand {
     email?: string;
     password?: string;
     rememberMe?: boolean;
+}
+
+export class SuccessResponseOfBoolean extends ApiResponse implements ISuccessResponseOfBoolean {
+    data?: boolean;
+
+    constructor(data?: ISuccessResponseOfBoolean) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.data = _data["data"];
+        }
+    }
+
+    static override fromJS(data: any): SuccessResponseOfBoolean {
+        data = typeof data === 'object' ? data : {};
+        let result = new SuccessResponseOfBoolean();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ISuccessResponseOfBoolean extends IApiResponse {
+    data?: boolean;
 }
 
 export class RegisterCommand implements IRegisterCommand {

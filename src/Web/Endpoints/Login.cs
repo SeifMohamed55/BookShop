@@ -1,6 +1,8 @@
-﻿using AspireApp.Application.UseCases.Accounts.Commands.Login;
+﻿using AspireApp.Application.Common.Models;
+using AspireApp.Application.UseCases.Accounts.Commands.Login;
 using AspireApp.Web.Common.Extensions;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace AspireApp.Web.Endpoints;
@@ -13,6 +15,9 @@ public class Login : EndpointGroupBase
             .DisableAntiforgery()
             .MapPost(LoginUser);
     }
+
+    [ProducesResponseType(typeof(SuccessResponse<UserDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IResult> LoginUser(LoginCommand command, ISender sender, HttpContext httpContext)
     {
         var res = await sender.Send(command);

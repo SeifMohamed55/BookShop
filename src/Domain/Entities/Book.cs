@@ -81,7 +81,7 @@ public class BookCategory : BaseEntity
 public class Category : BaseEntity
 {
     public required string Name { get; set; }
-    public ICollection<Book> BookCategories { get; set; } = [];
+    public ICollection<Book> Books { get; set; } = [];
 }
 
 public class BookClub : BaseAuditableEntity
