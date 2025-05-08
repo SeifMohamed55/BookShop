@@ -1,15 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import myPic from "../../images/my-pic.jpg";
-
+import horizontalPic from "../../images/horizontal-image.jpeg";
 const VerticalCard = () => {
   return (
     <div className="vertical-card shadow rounded-2 overflow-hidden w-100">
       <figure className="position-relative">
         <img
-          src={myPic}
+          src={horizontalPic}
           alt=""
-          className="object-fit-cover w-100 w-md-auto"
+          className="img-fluid w-100 w-md-auto"
           width={280}
           height={120}
         />
@@ -25,7 +25,7 @@ const VerticalCard = () => {
         <figure className="overflow-hidden position-relative rounded-2">
           <img src={myPic} alt="" className="img-fluid w-100" />
           <div className="layer text-white pb-4 ps-2">
-            <div className="position-absolute bottom-0">
+            <div className="position-absolute bottom-0 m-0">
               <h6 className="small-font playfair text-nowrap">Atomic Habits</h6>
               <p className="times small-font opacity-75">by james Clear</p>
             </div>

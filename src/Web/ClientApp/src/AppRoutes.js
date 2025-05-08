@@ -1,5 +1,6 @@
 import Home from "./components/layout/Home";
 import MyBooks from "./components/layout/MyBooks";
+import Register from "./components/layout/register";
 
 const AppRoutes = [
   {
@@ -9,6 +10,10 @@ const AppRoutes = [
   {
     path: "/my-books",
     element: <MyBooks />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
   },
 ];
 

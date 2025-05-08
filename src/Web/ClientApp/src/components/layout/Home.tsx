@@ -34,7 +34,7 @@ export default function Home() {
           <h1 className="playfair fw-bold header-font text-center">
             Your Digital Bookshelf
           </h1>
-          <p className="text-center times h5 opacity-75">
+          <p className="text-center times large-font opacity-75">
             Track your reading journey, discover new books, and connect with a
             community of fellow book lovers.
           </p>

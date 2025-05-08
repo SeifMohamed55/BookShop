@@ -1,6 +1,5 @@
 import { faBookmark, faStar } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import myPic from "../../images/my-pic.jpg";
 import TagsDiv from "./TagsDiv";
 import { useState } from "react";
@@ -15,7 +14,12 @@ const HorizontalCard = () => {
   return (
     <div className="horizontal-card-div border p-3 d-flex align-items-start flex-md-row flex-column gap-3 rounded-2 w-100">
       <figure className="horizontal-card mx-auto overflow-hidden position-relative rounded-2">
-        <img src={myPic} alt="book" className="img-fluid" height={250} />
+        <img
+          src={myPic}
+          alt="book"
+          className="img-fluid"
+          height={250}
+        />
         <div className="layer text-white pb-4 ps-3">
           <div className="position-absolute bottom-0">
             <h6 className="small-font fw-bold text-nowrap playfair">
