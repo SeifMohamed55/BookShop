@@ -2,11 +2,40 @@ import { faBookOpen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
-import { ErrorMessage, Formik } from "formik";
+import { Formik } from "formik";
+import React, { useState } from "react";
+import { RegisterClient } from "../../web-api-client";
 
 const Register = () => {
-  const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
-  const FILE_SIZE = 2 * 1024 * 1024; // 2MB
+  const [validateImage, setValidateImage] = useState<string>("");
+  const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
+  async function postData(data: any) {
+    const Register = new RegisterClient(process.env.BASE_URL);
+    const res = await Register.registerUser(data);
+    return res;
+  }
+  function handleImage(e: React.ChangeEvent<HTMLInputElement>): void {
+    const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
+    const FILE_SIZE = 2 * 1024 * 1024; // 2MB
+    const file = e.target.files?.[0];
+    if (!file) {
+      setSelectedFile(undefined);
+      setValidateImage("image field is required");
+      return;
+    }
+    if (!SUPPORTED_FORMATS.includes(file.type)) {
+      setSelectedFile(undefined);
+      setValidateImage(`image must be one of this types "jpg, jpeg ,png"`);
+      return;
+    }
+    if (file.size > FILE_SIZE) {
+      setSelectedFile(undefined);
+      setValidateImage("image size must be below 2MB");
+      return;
+    }
+    setSelectedFile(file);
+    setValidateImage("");
+  }
   return (
     <div className="mx-auto border p-5 register rounded-2 flex justify-content-between align-items-center flex-column gap-3 my-5">
       <FontAwesomeIcon icon={faBookOpen} className="mx-auto w-100 book-style" />
@@ -18,13 +47,13 @@ const Register = () => {
       </p>
       <Formik
         initialValues={{
-          name: "",
+          fullName: "",
           email: "",
           password: "",
           rePassword: "",
         }}
         validationSchema={Yup.object({
-          name: Yup.string().required("name field is required"),
+          fullName: Yup.string().required("name field is required"),
           email: Yup.string()
             .email("email field ha invalid format")
             .required("email field is required"),
@@ -35,8 +64,18 @@ const Register = () => {
             .required("Please confirm your password")
             .oneOf([Yup.ref("password")], "Passwords must match"),
         })}
-        onSubmit={(values, { setSubmitting }) => {
-          console.log(values);
+        onSubmit={async (values, { setSubmitting }) => {
+          if (selectedFile) {
+            setValidateImage("");
+            const data = new FormData();
+            for (const [key, value] of Object.entries(values)) {
+              data.append(key, value);
+            }
+            if (selectedFile) data.append("image", selectedFile);
+            console.log(await postData(data));
+          } else {
+            setValidateImage("image field is required");
+          }
           setSubmitting(false);
         }}
       >
@@ -55,21 +94,21 @@ const Register = () => {
           >
             <div className="w-100">
               <label
-                htmlFor="name"
+                htmlFor="fullName"
                 className="inter text-capitalize form-label"
               >
                 full name
               </label>
               <input
-                value={values.name}
+                value={values.fullName}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 type="text"
-                id="name"
+                id="fullName"
                 className="form-control"
               />
               <p className="normal-font text-center pt-1 text-danger m-0">
-                {errors.name && touched.name && errors.name}
+                {errors.fullName && touched.fullName && errors.fullName}
               </p>
             </div>
             <div className="w-100">
@@ -137,10 +176,14 @@ const Register = () => {
                 profile picture
               </label>
               <input
+                onChange={handleImage}
                 type="file"
                 id="image"
                 className="form-control"
               />
+              <p className="normal-font text-center pt-1 text-danger m-0">
+                {validateImage}
+              </p>
             </div>
             <button
               disabled={isSubmitting}
