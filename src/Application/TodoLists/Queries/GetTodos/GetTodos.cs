@@ -4,7 +4,6 @@ using AspireApp.Application.Common.Security;
 using AspireApp.Domain.Enums;
 
 namespace AspireApp.Application.TodoLists.Queries.GetTodos;
-[Authorize]
 public record GetTodosQuery : IRequest<TodosVm>;
 
 public class GetTodosQueryHandler : IRequestHandler<GetTodosQuery, TodosVm>

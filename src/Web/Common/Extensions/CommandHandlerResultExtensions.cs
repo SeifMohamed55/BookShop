@@ -8,7 +8,7 @@ namespace AspireApp.Web.Common.Extensions;
 
 public static class CommandHandlerResultExtensions
 {
-    public static IResult ToResult<T>(this CommandHandlerResult<T> result)
+    public static IResult ToResult<T>(this ServiceResult<T> result)
     {
         if (result.TryGetData(out var data))
             return TypedResults.Ok(new SuccessResponse<T>(data, result.Message));

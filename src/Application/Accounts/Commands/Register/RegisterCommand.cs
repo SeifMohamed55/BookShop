@@ -2,7 +2,7 @@
 
 namespace AspireApp.Application.Accounts.Commands.Register;
 
-public record RegisterCommand : IRequest<CommandHandlerResult<bool>>
+public record RegisterCommand : IRequest<ServiceResult<bool>>
 {
     public required string Fullname { get; init; }
     public required string Email { get; init; }
