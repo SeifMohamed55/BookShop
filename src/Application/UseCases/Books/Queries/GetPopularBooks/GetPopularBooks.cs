@@ -22,13 +22,11 @@ public class GetPopularBooksQueryHandler :
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
-    private readonly IIdentityService _identityService;
 
-    public GetPopularBooksQueryHandler(IApplicationDbContext context, IMapper mapper, IIdentityService userService)
+    public GetPopularBooksQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
-        _identityService = userService;
     }
 
 
