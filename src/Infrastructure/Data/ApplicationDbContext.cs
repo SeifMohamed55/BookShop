@@ -14,6 +14,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
 
+    public DbSet<Book> Books => Set<Book>();
+    public DbSet<Review> Reviews => Set<Review>();
+    public DbSet<UserBookProgress> UserBookProgresses => Set<UserBookProgress>();
+    public DbSet<BookProgressHistory> BookProgressHistories => Set<BookProgressHistory>();
+    public DbSet<BookCategory> BookCategories => Set<BookCategory>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<BookClub> BookClubs => Set<BookClub>();
+    public DbSet<BookClubMember> BookClubMembers => Set<BookClubMember>();
+
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

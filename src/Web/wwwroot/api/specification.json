@@ -146,6 +146,18 @@
           "TodoItems"
         ],
         "operationId": "CreateTodoItem",
+        "parameters": [
+          {
+            "name": "X-XSRF-TOKEN",
+            "in": "header",
+            "description": "CSRF protection token",
+            "schema": {
+              "type": "string"
+            },
+            "x-internal": true,
+            "x-transform-options-skip": true
+          }
+        ],
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -189,6 +201,16 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "X-XSRF-TOKEN",
+            "in": "header",
+            "description": "CSRF protection token",
+            "schema": {
+              "type": "string"
+            },
+            "x-internal": true,
+            "x-transform-options-skip": true
           }
         ],
         "requestBody": {
@@ -227,6 +249,16 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "X-XSRF-TOKEN",
+            "in": "header",
+            "description": "CSRF protection token",
+            "schema": {
+              "type": "string"
+            },
+            "x-internal": true,
+            "x-transform-options-skip": true
           }
         ],
         "responses": {
@@ -252,6 +284,16 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "X-XSRF-TOKEN",
+            "in": "header",
+            "description": "CSRF protection token",
+            "schema": {
+              "type": "string"
+            },
+            "x-internal": true,
+            "x-transform-options-skip": true
           }
         ],
         "requestBody": {
@@ -300,6 +342,18 @@
           "TodoLists"
         ],
         "operationId": "CreateTodoList",
+        "parameters": [
+          {
+            "name": "X-XSRF-TOKEN",
+            "in": "header",
+            "description": "CSRF protection token",
+            "schema": {
+              "type": "string"
+            },
+            "x-internal": true,
+            "x-transform-options-skip": true
+          }
+        ],
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -343,6 +397,16 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "X-XSRF-TOKEN",
+            "in": "header",
+            "description": "CSRF protection token",
+            "schema": {
+              "type": "string"
+            },
+            "x-internal": true,
+            "x-transform-options-skip": true
           }
         ],
         "requestBody": {
@@ -381,6 +445,16 @@
               "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "X-XSRF-TOKEN",
+            "in": "header",
+            "description": "CSRF protection token",
+            "schema": {
+              "type": "string"
+            },
+            "x-internal": true,
+            "x-transform-options-skip": true
           }
         ],
         "responses": {
@@ -402,10 +476,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
+                  "$ref": "#/components/schemas/SuccessResponseOfIEnumerableOfWeatherForecast"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -774,6 +855,26 @@
             "nullable": true
           }
         }
+      },
+      "SuccessResponseOfIEnumerableOfWeatherForecast": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiResponse"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "data": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/WeatherForecast"
+                }
+              }
+            }
+          }
+        ]
       },
       "WeatherForecast": {
         "type": "object",

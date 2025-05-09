@@ -37,7 +37,8 @@ public static class DependencyInjection
         builder.Services.AddOpenApiDocument((configure, sp) =>
         {
             configure.Title = "AspireApp API";
-
+            configure.OperationProcessors.Add(new AddCsrfHeaderOperationProcessor());
+            configure.OperationProcessors.Add(new CustomTransformOptionsProcessor());
         });
 
         builder.Services.AddAuthentication(options=>
@@ -48,7 +49,7 @@ public static class DependencyInjection
         .AddCookie(options =>
         {
             options.ExpireTimeSpan = TimeSpan.FromDays(30);
-            options.SlidingExpiration = true;
+            options.SlidingExpiration = false;
             options.Cookie.HttpOnly = true;
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             options.Cookie.SameSite = SameSiteMode.None;
@@ -65,6 +66,12 @@ public static class DependencyInjection
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 return Task.CompletedTask;
             };
+        });
+
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            options.ExpireTimeSpan = TimeSpan.FromDays(30); // Change to your desired timespan
+            options.SlidingExpiration = false; // Resets expiration on activity
         });
 
         builder.Logging.ClearProviders();

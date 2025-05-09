@@ -10,12 +10,37 @@
 
 import followIfLoginRedirect from './components/api-authorization/followIfLoginRedirect';
 
-export class LoginClient {
+export class ApiClientBase {
+    protected getCookieValue(name: string): string {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) {
+            return parts.pop()?.split(';').shift() || '';
+        }
+        return '';
+    }
+
+    protected transformOptions(options: RequestInit): Promise<RequestInit> {
+        if (options.method !== 'GET') {
+            const token = this.getCookieValue('XSRF-TOKEN');
+            if (token) {
+                options.headers = {
+                    ...options.headers,
+                    'X-XSRF-TOKEN': token
+                };
+            }
+        }
+        return Promise.resolve(options);
+    }
+}
+
+export class LoginClient extends ApiClientBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
@@ -35,7 +60,9 @@ export class LoginClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processLoginUser(_response);
         });
     }
@@ -67,12 +94,13 @@ export class LoginClient {
     }
 }
 
-export class RegisterClient {
+export class RegisterClient extends ApiClientBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
@@ -92,7 +120,9 @@ export class RegisterClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processRegisterUser(_response);
         });
     }
@@ -124,12 +154,13 @@ export class RegisterClient {
     }
 }
 
-export class TodoItemsClient {
+export class TodoItemsClient extends ApiClientBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
@@ -157,7 +188,9 @@ export class TodoItemsClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetTodoItemsWithPagination(_response);
         });
     }
@@ -181,7 +214,10 @@ export class TodoItemsClient {
         return Promise.resolve<PaginatedListOfTodoItemBriefDto>(null as any);
     }
 
-    createTodoItem(command: CreateTodoItemCommand): Promise<number> {
+    /**
+     * @param x_XSRF_TOKEN (optional) CSRF protection token
+     */
+    createTodoItem(x_XSRF_TOKEN: string | undefined, command: CreateTodoItemCommand): Promise<number> {
         let url_ = this.baseUrl + "/api/v1/TodoItems";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -191,12 +227,15 @@ export class TodoItemsClient {
             body: content_,
             method: "POST",
             headers: {
+                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processCreateTodoItem(_response);
         });
     }
@@ -221,7 +260,10 @@ export class TodoItemsClient {
         return Promise.resolve<number>(null as any);
     }
 
-    updateTodoItem(id: number, command: UpdateTodoItemCommand): Promise<void> {
+    /**
+     * @param x_XSRF_TOKEN (optional) CSRF protection token
+     */
+    updateTodoItem(id: number, x_XSRF_TOKEN: string | undefined, command: UpdateTodoItemCommand): Promise<void> {
         let url_ = this.baseUrl + "/api/v1/TodoItems/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -234,11 +276,14 @@ export class TodoItemsClient {
             body: content_,
             method: "PUT",
             headers: {
+                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
                 "Content-Type": "application/json",
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processUpdateTodoItem(_response);
         });
     }
@@ -263,7 +308,10 @@ export class TodoItemsClient {
         return Promise.resolve<void>(null as any);
     }
 
-    deleteTodoItem(id: number): Promise<void> {
+    /**
+     * @param x_XSRF_TOKEN (optional) CSRF protection token
+     */
+    deleteTodoItem(id: number, x_XSRF_TOKEN: string | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/v1/TodoItems/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -273,10 +321,13 @@ export class TodoItemsClient {
         let options_: RequestInit = {
             method: "DELETE",
             headers: {
+                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processDeleteTodoItem(_response);
         });
     }
@@ -297,7 +348,10 @@ export class TodoItemsClient {
         return Promise.resolve<void>(null as any);
     }
 
-    updateTodoItemDetail(id: number, command: UpdateTodoItemDetailCommand): Promise<void> {
+    /**
+     * @param x_XSRF_TOKEN (optional) CSRF protection token
+     */
+    updateTodoItemDetail(id: number, x_XSRF_TOKEN: string | undefined, command: UpdateTodoItemDetailCommand): Promise<void> {
         let url_ = this.baseUrl + "/api/v1/TodoItems/UpdateDetail/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -310,11 +364,14 @@ export class TodoItemsClient {
             body: content_,
             method: "PUT",
             headers: {
+                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
                 "Content-Type": "application/json",
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processUpdateTodoItemDetail(_response);
         });
     }
@@ -340,12 +397,13 @@ export class TodoItemsClient {
     }
 }
 
-export class TodoListsClient {
+export class TodoListsClient extends ApiClientBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
@@ -361,7 +419,9 @@ export class TodoListsClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetTodoLists(_response);
         });
     }
@@ -385,7 +445,10 @@ export class TodoListsClient {
         return Promise.resolve<TodosVm>(null as any);
     }
 
-    createTodoList(command: CreateTodoListCommand): Promise<number> {
+    /**
+     * @param x_XSRF_TOKEN (optional) CSRF protection token
+     */
+    createTodoList(x_XSRF_TOKEN: string | undefined, command: CreateTodoListCommand): Promise<number> {
         let url_ = this.baseUrl + "/api/v1/TodoLists";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -395,12 +458,15 @@ export class TodoListsClient {
             body: content_,
             method: "POST",
             headers: {
+                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processCreateTodoList(_response);
         });
     }
@@ -425,7 +491,10 @@ export class TodoListsClient {
         return Promise.resolve<number>(null as any);
     }
 
-    updateTodoList(id: number, command: UpdateTodoListCommand): Promise<void> {
+    /**
+     * @param x_XSRF_TOKEN (optional) CSRF protection token
+     */
+    updateTodoList(id: number, x_XSRF_TOKEN: string | undefined, command: UpdateTodoListCommand): Promise<void> {
         let url_ = this.baseUrl + "/api/v1/TodoLists/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -438,11 +507,14 @@ export class TodoListsClient {
             body: content_,
             method: "PUT",
             headers: {
+                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
                 "Content-Type": "application/json",
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processUpdateTodoList(_response);
         });
     }
@@ -467,7 +539,10 @@ export class TodoListsClient {
         return Promise.resolve<void>(null as any);
     }
 
-    deleteTodoList(id: number): Promise<void> {
+    /**
+     * @param x_XSRF_TOKEN (optional) CSRF protection token
+     */
+    deleteTodoList(id: number, x_XSRF_TOKEN: string | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/v1/TodoLists/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -477,10 +552,13 @@ export class TodoListsClient {
         let options_: RequestInit = {
             method: "DELETE",
             headers: {
+                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processDeleteTodoList(_response);
         });
     }
@@ -502,17 +580,18 @@ export class TodoListsClient {
     }
 }
 
-export class WeatherForecastsClient {
+export class WeatherForecastsClient extends ApiClientBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getWeatherForecasts(): Promise<WeatherForecast[]> {
+    getWeatherForecasts(): Promise<SuccessResponseOfIEnumerableOfWeatherForecast> {
         let url_ = this.baseUrl + "/api/v1/WeatherForecasts";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -523,12 +602,14 @@ export class WeatherForecastsClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetWeatherForecasts(_response);
         });
     }
 
-    protected processGetWeatherForecasts(response: Response): Promise<WeatherForecast[]> {
+    protected processGetWeatherForecasts(response: Response): Promise<SuccessResponseOfIEnumerableOfWeatherForecast> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -536,22 +617,22 @@ export class WeatherForecastsClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(WeatherForecast.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = SuccessResponseOfIEnumerableOfWeatherForecast.fromJS(resultData200);
             return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ErrorResponse.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<WeatherForecast[]>(null as any);
+        return Promise.resolve<SuccessResponseOfIEnumerableOfWeatherForecast>(null as any);
     }
 }
 
@@ -1387,6 +1468,47 @@ export interface IUpdateTodoListCommand {
     title?: string | undefined;
 }
 
+export class SuccessResponseOfIEnumerableOfWeatherForecast extends ApiResponse implements ISuccessResponseOfIEnumerableOfWeatherForecast {
+    data?: WeatherForecast[] | undefined;
+
+    constructor(data?: ISuccessResponseOfIEnumerableOfWeatherForecast) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(WeatherForecast.fromJS(item));
+            }
+        }
+    }
+
+    static override fromJS(data: any): SuccessResponseOfIEnumerableOfWeatherForecast {
+        data = typeof data === 'object' ? data : {};
+        let result = new SuccessResponseOfIEnumerableOfWeatherForecast();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ISuccessResponseOfIEnumerableOfWeatherForecast extends IApiResponse {
+    data?: WeatherForecast[] | undefined;
+}
+
 export class WeatherForecast implements IWeatherForecast {
     date?: Date;
     temperatureC?: number;
@@ -1465,3 +1587,5 @@ function throwException(message: string, status: number, response: string, heade
     else
         throw new SwaggerException(message, status, response, headers, null);
 }
+
+// api-client-base.ts

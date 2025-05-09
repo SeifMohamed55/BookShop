@@ -5,13 +5,14 @@ public class Book : BaseAuditableEntity
     public required string Author { get; set; }
     public required string Description { get; set; } 
     public required string ImagePath { get; set; }
-    public required int TotalPages { get; set; }
+    public required int TotalPages { get; init; }
     public required bool IsHidden { get; set; }
     public required string BookFilePath { get; set; }
+    public float AverageRating { get; set; } // update by AvgAsync
 
     public required string UserId { get; set; } 
     public ICollection<Review> Reviews { get; set; } = [];
-    public ICollection<Category> BookCategories { get; set; } = [];
+    public ICollection<Category> Categories { get; set; } = [];
 
 }
 
@@ -25,21 +26,8 @@ public class Review : BaseAuditableEntity
 
     public required string UserId { get; set; }
 
-    public int Likes { get; init; } // HasComputedColumn
-    public int Dislikes { get; init; } // HasComputedColumn
+    public int Likes { get; init; } // update with every like
 
-
-    public ICollection<ReviewLikeDislike> ReviewLikeDislikes { get; set; } = [];
-}
-
-public class ReviewLikeDislike : BaseAuditableEntity
-{
-    public bool IsLike { get; set; } // true for like, false for dislike
-
-    public int ReviewId { get; set; }
-    public required Review Review { get; set; }
-
-    public required string UserId { get; set; }
 }
 
 public class UserBookProgress : BaseAuditableEntity
@@ -48,9 +36,11 @@ public class UserBookProgress : BaseAuditableEntity
     public bool IsCompleted { get; set; } // true if the book is completed
 
     public int BookId { get; set; }
-    public required Book Book { get; set; }
+    public Book Book { get; set; } = null!;
 
-    public required string UserId { get; set; }
+    public ICollection<BookProgressHistory> BookProgressHistories { get; set; } = [];
+
+    public string UserId { get; set; } = null!;
 
     public void UpdateProgress(int page)
     {
@@ -67,7 +57,8 @@ public class BookProgressHistory : BaseAuditableEntity
     public int BookId { get; set; }
     public required Book Book { get; set; }
 
-    public required string UserId { get; set; }
+    public int BookProgressId { get; set; } 
+    public UserBookProgress UserBookProgress { get; set; } = null!;
 }
 
 public class BookCategory : BaseEntity
@@ -102,7 +93,7 @@ public class BookClubMember : BaseEntity
 
     public required string UserId { get; set; } 
 
-    public DateTime JoinedDate { get; set; }
+    public required DateTime JoinedDate { get; set; }
     public MemberRole Role { get; set; }
 }
 

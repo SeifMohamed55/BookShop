@@ -43,8 +43,8 @@ public class ApplicationDbContextInitialiser
     {
         try
         {
-             await Task.CompletedTask;
-            //await _context.Database.MigrateAsync();
+            await Task.CompletedTask;
+            await _context.Database.MigrateAsync();
         }
         catch (Exception ex)
         {

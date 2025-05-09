@@ -31,12 +31,19 @@ public class Login : EndpointGroupBase
         var antiforgery = httpContext.RequestServices.GetRequiredService<IAntiforgery>();
         var tokens = antiforgery.GetAndStoreTokens(httpContext);
 
-        httpContext.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken!, new CookieOptions
+        CookieOptions options = new CookieOptions
         {
             HttpOnly = false, // must be accessible by JavaScript
             Secure = true,    // only over HTTPS
             SameSite = SameSiteMode.None
-        });
+        };
+        if(command.RememberMe)
+            options.Expires = DateTimeOffset.UtcNow.AddDays(30);
+
+
+        httpContext.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken!, options);
+
+        httpContext.Response.Cookies.Append("isSignedIn", "true", options);
 
         return res.ToResult();
     }

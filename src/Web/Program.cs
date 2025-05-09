@@ -45,7 +45,7 @@ app.UseExceptionHandler(opt => { });
 
 app.UseAuthentication();    // 2. Set the User.Identity
 
-app.UseMiddleware<AntiforgeryValidationMiddleware>();
+//app.UseMiddleware<AntiforgeryValidationMiddleware>();
 
 app.UseAuthorization();     // 3. Check if the user is allowed
 

@@ -27,7 +27,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, ServiceRe
                 await _identity.UpdateUserImage(data.Id, url);
             }
 
-            return ServiceResult<bool>.Success(true, "User registered successfully");
+            return ServiceResult<bool>.Success(true, "Email created successfully");
         }
         return ServiceResult<bool>.Failure("Couldn't register user", res.Errors);
     }

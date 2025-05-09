@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AspireApp.Domain.Entities;
+﻿using AspireApp.Domain.Entities;
 using AspireApp.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AspireApp.Infrastructure.Data.Configurations;
@@ -14,6 +8,10 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
 {
     public void Configure(EntityTypeBuilder<Book> builder)
     {
+        builder.ToTable("Books");
+
+        builder.HasKey(x => x.Id);
+
         builder.Property(b => b.Title)
             .HasMaxLength(200)
             .IsRequired();
@@ -40,25 +38,30 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
         builder.HasOne<ApplicationUser>()
             .WithMany(x=> x.PublishedBooks)
             .HasForeignKey(b => b.UserId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasMany(b => b.BookCategories)
+
+        builder.HasMany(b => b.Categories)
             .WithMany(c => c.Books)
             .UsingEntity<BookCategory>(
                 j => j
                     .HasOne(bc => bc.Category)
                     .WithMany()
-                    .HasForeignKey(bc => bc.CategoryId),
+                    .HasForeignKey(bc => bc.CategoryId)
+                    .OnDelete(DeleteBehavior.Cascade),
                 j => j
                     .HasOne(bc => bc.Book)
                     .WithMany()
-                    .HasForeignKey(bc => bc.BookId),
+                    .HasForeignKey(bc => bc.BookId)
+                    .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
-                    j.HasKey(t => new { t.BookId, t.CategoryId });
                     j.ToTable("BookCategories");
-                }
-            );
+                    j.HasKey(bc => new { bc.BookId, bc.CategoryId });
+                    j.HasIndex(bc => bc.BookId);
+                    j.HasIndex(bc => bc.CategoryId);
+                });
+
 
     }
 
