@@ -22,4 +22,6 @@ public interface IIdentityService
 
     Task<UserDto> GetRandomUser();
 
+    Task<ServiceResult<bool>> SignOutAsync();
+
 }

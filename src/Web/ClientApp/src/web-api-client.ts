@@ -34,6 +34,62 @@ export class ApiClientBase {
     }
 }
 
+export class BooksClient extends ApiClientBase {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getPopularBooks(): Promise<SuccessResponseOfIEnumerableOfPopularBookDto> {
+        let url_ = this.baseUrl + "/api/v1/Books/popular";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetPopularBooks(_response);
+        });
+    }
+
+    protected processGetPopularBooks(response: Response): Promise<SuccessResponseOfIEnumerableOfPopularBookDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SuccessResponseOfIEnumerableOfPopularBookDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            let result500: any = null;
+            let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result500 = ErrorResponse.fromJS(resultData500);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result500);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SuccessResponseOfIEnumerableOfPopularBookDto>(null as any);
+    }
+}
+
 export class LoginClient extends ApiClientBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -91,6 +147,66 @@ export class LoginClient extends ApiClientBase {
             });
         }
         return Promise.resolve<SuccessResponseOfUserDto>(null as any);
+    }
+}
+
+export class LogoutClient extends ApiClientBase {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param x_XSRF_TOKEN (optional) CSRF protection token
+     */
+    logoutUser(x_XSRF_TOKEN: string | undefined): Promise<SuccessResponseOfBoolean> {
+        let url_ = this.baseUrl + "/api/v1/Logout";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processLogoutUser(_response);
+        });
+    }
+
+    protected processLogoutUser(response: Response): Promise<SuccessResponseOfBoolean> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SuccessResponseOfBoolean.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ErrorResponse.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SuccessResponseOfBoolean>(null as any);
     }
 }
 
@@ -674,6 +790,144 @@ export interface IApiResponse {
     message?: string;
 }
 
+export class SuccessResponseOfIEnumerableOfPopularBookDto extends ApiResponse implements ISuccessResponseOfIEnumerableOfPopularBookDto {
+    data?: PopularBookDto[] | undefined;
+
+    constructor(data?: ISuccessResponseOfIEnumerableOfPopularBookDto) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(PopularBookDto.fromJS(item));
+            }
+        }
+    }
+
+    static override fromJS(data: any): SuccessResponseOfIEnumerableOfPopularBookDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SuccessResponseOfIEnumerableOfPopularBookDto();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ISuccessResponseOfIEnumerableOfPopularBookDto extends IApiResponse {
+    data?: PopularBookDto[] | undefined;
+}
+
+export class PopularBookDto implements IPopularBookDto {
+    id?: number;
+    title?: string;
+    author?: string;
+    imagePath?: string;
+    totalPages?: number;
+    averageRating?: number;
+
+    constructor(data?: IPopularBookDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.title = _data["title"];
+            this.author = _data["author"];
+            this.imagePath = _data["imagePath"];
+            this.totalPages = _data["totalPages"];
+            this.averageRating = _data["averageRating"];
+        }
+    }
+
+    static fromJS(data: any): PopularBookDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PopularBookDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["title"] = this.title;
+        data["author"] = this.author;
+        data["imagePath"] = this.imagePath;
+        data["totalPages"] = this.totalPages;
+        data["averageRating"] = this.averageRating;
+        return data;
+    }
+}
+
+export interface IPopularBookDto {
+    id?: number;
+    title?: string;
+    author?: string;
+    imagePath?: string;
+    totalPages?: number;
+    averageRating?: number;
+}
+
+export class ErrorResponse extends ApiResponse implements IErrorResponse {
+    errors?: string[];
+
+    constructor(data?: IErrorResponse) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static override fromJS(data: any): ErrorResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new ErrorResponse();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IErrorResponse extends IApiResponse {
+    errors?: string[];
+}
+
 export class SuccessResponseOfUserDto extends ApiResponse implements ISuccessResponseOfUserDto {
     data?: UserDto | undefined;
 
@@ -753,47 +1007,6 @@ export interface IUserDto {
     fullName?: string;
     email?: string;
     imageUrl?: string;
-}
-
-export class ErrorResponse extends ApiResponse implements IErrorResponse {
-    errors?: string[];
-
-    constructor(data?: IErrorResponse) {
-        super(data);
-    }
-
-    override init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            if (Array.isArray(_data["errors"])) {
-                this.errors = [] as any;
-                for (let item of _data["errors"])
-                    this.errors!.push(item);
-            }
-        }
-    }
-
-    static override fromJS(data: any): ErrorResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new ErrorResponse();
-        result.init(data);
-        return result;
-    }
-
-    override toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.errors)) {
-            data["errors"] = [];
-            for (let item of this.errors)
-                data["errors"].push(item);
-        }
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface IErrorResponse extends IApiResponse {
-    errors?: string[];
 }
 
 export class LoginCommand implements ILoginCommand {

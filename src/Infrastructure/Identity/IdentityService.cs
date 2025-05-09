@@ -80,6 +80,18 @@ public class IdentityService : IIdentityService
 
     }
 
+    public async Task<ServiceResult<bool>> SignOutAsync()
+    {
+        if(_signInManager.IsSignedIn(_signInManager.Context.User))
+        {
+            await _signInManager.SignOutAsync();
+            return ServiceResult<bool>.Success(true, "User signed out successfully");
+        }
+        return ServiceResult<bool>.Success(false,"User is not signed in");
+
+    }
+
+
 
     public async Task<UserDto> GetRandomUser()
     {
