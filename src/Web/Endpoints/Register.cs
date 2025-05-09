@@ -10,7 +10,6 @@ public class Register : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .DisableAntiforgery()
             .MapPost(RegisterUser);
     }
 

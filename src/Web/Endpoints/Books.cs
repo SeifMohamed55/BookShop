@@ -12,9 +12,7 @@ public class Books : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapGet(GetPopularBooks, "/popular")
-             .MapGet(GetBooksByGenre, "/{genre}")
-             .MapGet(GetAllBooks);
+            .MapGet(GetPopularBooks, "/popular");
     }
 
     [ProducesResponseType(typeof(SuccessResponse<IEnumerable<PopularBookDto>>), StatusCodes.Status200OK)]

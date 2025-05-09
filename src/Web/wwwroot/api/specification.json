@@ -6,6 +6,36 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/v1/Books/popular": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "operationId": "GetPopularBooks",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponseOfIEnumerableOfPopularBookDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/Login": {
       "post": {
         "tags": [
@@ -31,6 +61,48 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SuccessResponseOfUserDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/Logout": {
+      "post": {
+        "tags": [
+          "Logout"
+        ],
+        "operationId": "LogoutUser",
+        "parameters": [
+          {
+            "name": "X-XSRF-TOKEN",
+            "in": "header",
+            "description": "CSRF protection token",
+            "schema": {
+              "type": "string"
+            },
+            "x-internal": true,
+            "x-transform-options-skip": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponseOfBoolean"
                 }
               }
             }
@@ -497,6 +569,85 @@
   },
   "components": {
     "schemas": {
+      "SuccessResponseOfIEnumerableOfPopularBookDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiResponse"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "data": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/PopularBookDto"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "PopularBookDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "imagePath": {
+            "type": "string"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "averageRating": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiResponse"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "errors": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      },
       "SuccessResponseOfUserDto": {
         "allOf": [
           {
@@ -535,38 +686,6 @@
             "type": "string"
           }
         }
-      },
-      "ApiResponse": {
-        "type": "object",
-        "x-abstract": true,
-        "additionalProperties": false,
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      },
-      "ErrorResponse": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ApiResponse"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "errors": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ]
       },
       "LoginCommand": {
         "type": "object",
