@@ -20,4 +20,6 @@ public interface IIdentityService
 
     Task<ServiceResult<bool>> UpdateUserImage(string userId, string url);
 
+    Task<UserDto> GetRandomUser();
+
 }

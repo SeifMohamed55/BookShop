@@ -6,6 +6,7 @@ using AutoMapper;
 using GraduationProject.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspireApp.Infrastructure.Identity;
 public class IdentityService : IIdentityService
@@ -77,6 +78,16 @@ public class IdentityService : IIdentityService
 
         return ServiceResult<bool>.Success(true, "User image updated successfully");
 
+    }
+
+
+    public async Task<UserDto> GetRandomUser()
+    {
+        var users = await _userManager.Users.ToListAsync();
+
+        var randomUser = users[new Random().Next(users.Count)];
+        var userDto = _mapper.Map<UserDto>(randomUser);
+        return userDto;
     }
 
     public async Task<bool> IsInRoleAsync(string userId, string role)
