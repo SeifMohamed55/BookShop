@@ -53,7 +53,5 @@ public class GetPopularBooksQueryHandler :
                 "An error occurred while retrieving popular books.",
                 HttpStatusCode.InternalServerError);
         }
-
-
     }
 }

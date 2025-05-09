@@ -82,7 +82,6 @@ public class BookClub : BaseAuditableEntity
     public required string ImagePath { get; set; }
     public ICollection<Book> Books { get; set; } = [];
     public ICollection<BookClubMember> UserBookClubs { get; set; } = [];
-
 }
 
 // Domain/Entities/BookClubMember.cs
