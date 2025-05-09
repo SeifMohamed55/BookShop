@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom"; // Use NavLink directly from react-router-dom
+import { Link, NavLink } from "react-router-dom";
 import {
   Collapse,
   Navbar,
@@ -6,13 +6,11 @@ import {
   NavbarToggler,
   NavItem,
 } from "reactstrap";
-import myPic from "../../images/my-pic.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBook,
   faBookOpen,
   faRightToBracket,
-  faSignal,
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -20,40 +18,55 @@ import {
   faEye,
   faUser,
 } from "@fortawesome/free-regular-svg-icons";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../../contexts/userDataProvider";
+import Cookies from "js-cookie";
 
-export default function Nav() { 
-  const [islogged] = useState<boolean>(false);
+export default function Nav() {
+  const context = useContext(UserContext);
+
+  if (!context) {
+    throw new Error("UserContext must be used within a UserDataProvider");
+  }
+
+  const { userData, setUserData } = context;
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
-  const toggle = () => setIsOpen(!isOpen);
-  const toggleProfile = (): void => {
-    setIsProfileOpen(!isProfileOpen);
-  };
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const toggleNavbar = () => setIsOpen(!isOpen);
+  const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
+
   useEffect(() => {
-    if (isProfileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    document.body.style.overflow = isProfileOpen ? "hidden" : "auto";
   }, [isProfileOpen]);
+
+  const handleLogout = () => {
+    Cookies.remove("isSignedIn");
+    localStorage.clear();
+    setUserData(null);
+    setIsSignedIn(false);
+    setIsProfileOpen(false);
+  };
+
   return (
     <header className="position-relative border-bottom">
       <Navbar
-        className="navbar-expand-sm navbar-toggleable-sm ng-white  box-shadow container"
+        className="navbar-expand-sm navbar-toggleable-sm ng-white box-shadow container"
         light
       >
         <NavbarBrand className="playfair fw-bold me-5">
-          <FontAwesomeIcon icon={faBookOpen} className="me-2" /> MyBookShelf
+          <FontAwesomeIcon icon={faBookOpen} className="me-2" />
+          MyBookShelf
         </NavbarBrand>
-        <NavbarToggler onClick={toggle} className="mr-2" />
+        <NavbarToggler onClick={toggleNavbar} />
         <Collapse isOpen={isOpen} className="flex-column flex-sm-row" navbar>
           <div className="navbar-nav flex-column flex-sm-row flex-grow-1 align-items-stretch align-items-sm-center gap-2 gap-sm-4 py-2">
             <NavItem className="w-100 text-center text-sm-start">
               <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  `text-dark nav-font nav-style d-block nav-responsive ${
+                  `text-dark nav-font nav-style mx-auto d-block nav-responsive ${
                     isActive ? "nav-active" : ""
                   }`
                 }
@@ -64,22 +77,9 @@ export default function Nav() {
             </NavItem>
             <NavItem className="w-100 text-center text-sm-start">
               <NavLink
-                to="/my-books"
-                className={({ isActive }) =>
-                  `text-dark nav-font nav-style d-block nav-responsive ${
-                    isActive ? "nav-active" : ""
-                  }`
-                }
-              >
-                <FontAwesomeIcon icon={faBook} className="me-lg-2" />
-                <span className="d-none d-lg-inline">My Books</span>
-              </NavLink>
-            </NavItem>
-            <NavItem className="w-100 text-center text-sm-start">
-              <NavLink
                 to="/book-clubs"
                 className={({ isActive }) =>
-                  `text-dark nav-font nav-style d-block nav-responsive ${
+                  `text-dark nav-font nav-style mx-auto d-block nav-responsive ${
                     isActive ? "nav-active" : ""
                   }`
                 }
@@ -90,70 +90,66 @@ export default function Nav() {
             </NavItem>
             <NavItem className="w-100 text-center text-sm-start">
               <NavLink
-                to="/statistics"
+                to="/my-books"
                 className={({ isActive }) =>
-                  `text-dark nav-font nav-style d-block nav-responsive ${
+                  `text-dark nav-font nav-style mx-auto d-block nav-responsive ${
                     isActive ? "nav-active" : ""
                   }`
                 }
               >
-                <FontAwesomeIcon icon={faSignal} className="me-lg-2" />
-                <span className="d-none d-lg-inline">Reading Stats</span>
-              </NavLink>
-            </NavItem>
-            <NavItem
-              className={`w-100 text-center text-sm-start ${
-                islogged ? "d-none" : ""
-              }`}
-            >
-              <NavLink
-                to="/register"
-                className={({ isActive }) =>
-                  `text-dark mx-auto nav-font nav-style d-block nav-responsive ${
-                    isActive ? "nav-active" : ""
-                  }`
-                }
-              >
-                <span className="d-md-inline">Register</span>
-              </NavLink>
-            </NavItem>
-            <NavItem
-              className={`w-100 text-center text-sm-start ${
-                islogged ? "d-none" : ""
-              }`}
-            >
-              <NavLink
-                to="/login"
-                className={({ isActive }) =>
-                  `text-dark nav-font mx-auto nav-style d-block nav-responsive ${
-                    isActive ? "nav-active" : ""
-                  }`
-                }
-              >
-                <span className="d-md-inline">Login</span>
+                <FontAwesomeIcon icon={faBook} className="me-lg-2" />
+                <span className="d-none d-lg-inline">My Books</span>
               </NavLink>
             </NavItem>
 
-            {/* Profile image pushed to the right on large screens */}
-            <NavItem
-              className={`ms-sm-auto mx-auto mt-sm-0 ${
-                islogged ? "" : "d-none"
-              }`}
-            >
-              <figure className="mb-0">
-                <img
-                  src={myPic}
-                  alt="user profile"
-                  width={40}
-                  height={40}
-                  className="rounded-circle ratio-1x1 pointer"
-                  onClick={toggleProfile}
-                />
-              </figure>
-            </NavItem>
+            {!userData && (
+              <>
+                <NavItem className="w-100 text-center text-sm-start">
+                  <NavLink
+                    to="/register"
+                    className={({ isActive }) =>
+                      `text-dark mx-auto nav-font nav-style d-block nav-responsive ${
+                        isActive ? "nav-active" : ""
+                      }`
+                    }
+                  >
+                    <span className="d-md-inline">Register</span>
+                  </NavLink>
+                </NavItem>
+                <NavItem className="w-100 text-center text-sm-start">
+                  <NavLink
+                    to="/login"
+                    className={({ isActive }) =>
+                      `text-dark nav-font mx-auto nav-style d-block nav-responsive ${
+                        isActive ? "nav-active" : ""
+                      }`
+                    }
+                  >
+                    <span className="d-md-inline">Login</span>
+                  </NavLink>
+                </NavItem>
+              </>
+            )}
+
+            {userData && (
+              <NavItem className="ms-sm-auto mx-auto mt-sm-0">
+                <figure className="mb-0">
+                  <img
+                    src={userData?.imageUrl}
+                    alt="user profile"
+                    width={40}
+                    height={40}
+                    className="rounded-circle ratio-1x1 pointer"
+                    onClick={toggleProfile}
+                  />
+                </figure>
+              </NavItem>
+            )}
           </div>
         </Collapse>
       </Navbar>
+
+      {/* Profile Modal */}
       <div
         className={`profile-div ${
           isProfileOpen ? "profile-scale-open" : "profile-scale-closed"
@@ -162,31 +158,32 @@ export default function Nav() {
         <div className="closing-section">
           <FontAwesomeIcon
             icon={faCircleXmark}
-            onClick={() => {
-              setIsProfileOpen(false);
-            }}
+            onClick={() => setIsProfileOpen(false)}
           />
         </div>
         <div className="d-flex justify-content-between flex-column gap-2 p-3 w-100 h-100">
           <div className="border-bottom w-100">
-            <p className="playfair fw-semibold m-0">Alex Johnson</p>
-            <p className="times small-font opacity-75 m-0 py-1">@alexreads</p>
+            <p className="playfair fw-semibold m-0">{userData?.fullName}</p>
+            <p className="times small-font opacity-75 m-0 py-1">
+              {userData?.email}
+            </p>
           </div>
           <div className="border-bottom w-100 profile-hover">
             <Link
-              to={"/profile"}
+              to="/profile"
               className="times fw-semibold text-capitalize pb-1 m-0 pointer text-decoration-none text-black"
+              onClick={() => setIsProfileOpen(false)}
             >
               <FontAwesomeIcon icon={faUser} className="me-2" />
-              profile
+              Profile
             </Link>
           </div>
           <p
-            onClick={() => {}}
-            className="times fw-semibold text-capitalize m-0 pointer profile-hover "
+            onClick={handleLogout}
+            className="times fw-semibold text-capitalize m-0 pointer profile-hover"
           >
             <FontAwesomeIcon icon={faRightToBracket} className="me-2" />
-            log out
+            Log out
           </p>
         </div>
       </div>

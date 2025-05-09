@@ -1,12 +1,29 @@
 import { Formik } from "formik";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Yup from "yup";
 import { faBookOpen } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { LoginClient, LoginCommand } from "../../web-api-client";
 import toast from "react-hot-toast";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../../contexts/userDataProvider";
+import Cookies from "js-cookie";
 const Login = () => {
+  const context = useContext(UserContext);
+
+  if (!context) {
+    throw new Error("UserContext must be used within a UserDataProvider");
+  }
+
+  const { userData, setUserData } = context;
+  useEffect(() => {
+    if (userData) {
+      localStorage.setItem("fullName", userData.fullName as string);
+      localStorage.setItem("email", userData.email as string);
+      localStorage.setItem("id", userData.id as string);
+      localStorage.setItem("imageUrl", userData.imageUrl as string);
+    }
+  }, [userData]);
   return (
     <div className="mx-auto border p-5 login rounded-2 flex justify-content-between align-items-center flex-column gap-3 my-5">
       <FontAwesomeIcon icon={faBookOpen} className="mx-auto w-100 book-style" />
@@ -38,6 +55,8 @@ const Login = () => {
             .loginUser(finalValues)
             .then((res) => {
               console.log(res);
+              setUserData({ ...res.data });
+              Cookies.set("isSignedIn", "true"); // ✅ Add this line
               toast.success(res.message || "User Logged in Successfully");
             })
             .catch((err) => {
@@ -129,7 +148,7 @@ const Login = () => {
             </button>
             <p className="text-capitalize inter">
               you don't have an account ?
-              <Link to="/login" className="text-decoration-none ms-2">
+              <Link to="/register" className="text-decoration-none ms-2">
                 sign up
               </Link>
             </p>

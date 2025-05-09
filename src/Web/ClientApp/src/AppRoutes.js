@@ -1,3 +1,5 @@
+import PrivateRoute from "./components/api-authorization/privateRoute";
+import BookClubsPage from "./components/layout/BookClubs";
 import Home from "./components/layout/Home";
 import Login from "./components/layout/login";
 import MyBooks from "./components/layout/MyBooks";
@@ -9,8 +11,18 @@ const AppRoutes = [
     element: <Home />,
   },
   {
+    path: "/book-clubs",
+    element: <BookClubsPage />,
+  },
+  {
     path: "/my-books",
-    element: <MyBooks />,
+    element: <PrivateRoute />,
+    Children: [
+      {
+        index: true,
+        element: <MyBooks />,
+      },
+    ],
   },
   {
     path: "/register",

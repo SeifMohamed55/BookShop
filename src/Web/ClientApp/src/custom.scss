@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
 
 * {
   margin: 0;
@@ -299,9 +301,74 @@
   font-size: 35px;
 }
 
+// login
+
 .login {
   max-width: 600px;
   min-height: 500px;
+}
+
+//book clubs
+
+.book-clubs-page .hero-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.book-clubs-page .hero-section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: url("https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=1000&q=80")
+    center center;
+  opacity: 0.05;
+  z-index: 0;
+}
+
+.book-clubs-page .hero-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+
+
+/* Button styles */
+
+.btn-dark {
+  background-color: #1a1f2c;
+  border-color: #1a1f2c;
+  transition: all 0.3s ease;
+}
+
+.btn-dark:hover {
+  background-color: #30374a;
+  border-color: #30374a;
+}
+
+/* Badge styles */
+.badge {
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.badge:hover {
+  opacity: 0.9;
+}
+
+/* Form styles */
+.modal-header {
+  border-bottom: 2px solid #9b87f5;
+}
+
+.modal-footer {
+  border-top: none;
+}
+
+.slick-slide > div {
+  padding: 0 10px; /* 10px left and right padding between slides */
 }
 // media query
 
