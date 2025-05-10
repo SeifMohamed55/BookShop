@@ -1,8 +1,10 @@
 ﻿using AspireApp.Application.Common.Interfaces;
+using AspireApp.Domain.Entities;
+using GraduationProject.Application.Services;
 
 namespace AspireApp.Application.Categories.Queries.GetTop3Categories;
 
-public record GetTop3CategoriesQuery : IRequest<object>
+public record GetTop3CategoriesQuery : IRequest<ServiceResult<IEnumerable<CategoryDto>>>
 {
 }
 
@@ -13,7 +15,7 @@ public class GetTop3CategoriesQueryValidator : AbstractValidator<GetTop3Categori
     }
 }
 
-public class GetTop3CategoriesQueryHandler : IRequestHandler<GetTop3CategoriesQuery, object>
+public class GetTop3CategoriesQueryHandler : IRequestHandler<GetTop3CategoriesQuery, ServiceResult<IEnumerable<CategoryDto>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -22,8 +24,17 @@ public class GetTop3CategoriesQueryHandler : IRequestHandler<GetTop3CategoriesQu
         _context = context;
     }
 
-    public async Task<object> Handle(GetTop3CategoriesQuery request, CancellationToken cancellationToken)
+    public async Task<ServiceResult<IEnumerable<CategoryDto>>> Handle(GetTop3CategoriesQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var categories = await _context.Categories
+            .OrderByDescending(c => c.Books.Count)
+            .Take(3)
+            .ToListAsync(cancellationToken);
+        var categoryDtos = categories.Select(c => new CategoryDto
+        {
+            Id = c.Id,
+            Name = c.Name,
+        });
+        return ServiceResult<IEnumerable<CategoryDto>>.Success(categoryDtos, "Successfully retrieved top 3 categories.");
     }
 }

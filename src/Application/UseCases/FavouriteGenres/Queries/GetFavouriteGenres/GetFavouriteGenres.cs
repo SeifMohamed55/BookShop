@@ -14,14 +14,14 @@ namespace AspireApp.Application.FavouriteGenres.Queries.GetFavouriteGenres
 
     public class GetFavouriteGenresQueryValidator : AbstractValidator<GetFavouriteGenresQuery>
     {
-        private readonly ICurrentUser Service _currentUser ;
+        private readonly IUser _currentUser ;
 
-        public GetFavouriteGenresQueryValidator(ICurrentUser Service currentUser )
+        public GetFavouriteGenresQueryValidator(IUser currentUser)
         {
             _currentUser = currentUser;
 
             RuleFor(x => x)
-                .Must(_ => !string.IsNullOrEmpty(_currentUser.UserId))
+                .Must(_ => !string.IsNullOrEmpty(_currentUser.Id))
                 .WithMessage("User  must be authenticated to retrieve favorite genres.");
         }
     }
@@ -29,18 +29,18 @@ namespace AspireApp.Application.FavouriteGenres.Queries.GetFavouriteGenres
     public class GetFavouriteGenresQueryHandler : IRequestHandler<GetFavouriteGenresQuery, List<CategoryDto>>
     {
         private readonly IApplicationDbContext _context;
-        private readonly ICurrentUser Service _currentUser Service;
+        private readonly IUser _currentUser;
 
-        public GetFavouriteGenresQueryHandler(IApplicationDbContext context, ICurrentUser Service currentUser Service)
+        public GetFavouriteGenresQueryHandler(IApplicationDbContext context, IUser currentUser)
         {
             _context = context;
-            _currentUser Service = currentUser Service;
+            _currentUser = currentUser;
         }
 
         public async Task<List<CategoryDto>> Handle(GetFavouriteGenresQuery request, CancellationToken cancellationToken)
         {
             var userBooks = await _context.UserBookProgresses
-                .Where(ubp => ubp.UserId == _currentUser Service.UserId)
+                .Where(ubp => ubp.UserId == _currentUser.Id)
                 .Include(ubp => ubp.Book)
                     .ThenInclude(book => book.Categories)
                 .ToListAsync(cancellationToken);

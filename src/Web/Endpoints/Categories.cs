@@ -1,6 +1,9 @@
 ﻿
+using AspireApp.Application.Categories.Queries.GetCategories;
+using AspireApp.Application.Categories.Queries.GetTop3Categories;
 using AspireApp.Application.Common.Models;
 using AspireApp.Domain.Entities;
+using AspireApp.Web.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AspireApp.Web.Endpoints;

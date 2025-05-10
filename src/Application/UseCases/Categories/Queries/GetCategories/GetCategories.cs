@@ -1,4 +1,5 @@
-﻿using AspireApp.Application.Common.Interfaces;
+﻿using System.Net;
+using AspireApp.Application.Common.Interfaces;
 using AspireApp.Domain.Entities;
 using GraduationProject.Application.Services;
 
@@ -33,10 +34,14 @@ public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, Ser
             var categories = await _context.Categories
                 .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider, cancellationToken)
                 .ToListAsync();
-        }
+
+            return ServiceResult<IEnumerable<CategoryDto>>.Success(categories, "Categories retrieved successfully");
+                }
         catch
         {
-
+            return ServiceResult<IEnumerable<CategoryDto>>.Failure(
+                "An error occurred while retrieving categories.",
+                HttpStatusCode.InternalServerError);
         }
 
 

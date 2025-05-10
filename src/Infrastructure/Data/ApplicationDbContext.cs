@@ -10,10 +10,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-    public DbSet<TodoList> TodoLists => Set<TodoList>();
-
-    public DbSet<TodoItem> TodoItems => Set<TodoItem>();
-
     public DbSet<Book> Books => Set<Book>();
     public DbSet<Review> Reviews => Set<Review>();
     public DbSet<UserBookProgress> UserBookProgresses => Set<UserBookProgress>();
