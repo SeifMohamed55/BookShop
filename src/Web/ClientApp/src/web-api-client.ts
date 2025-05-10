@@ -34,6 +34,62 @@ export class ApiClientBase {
     }
 }
 
+export class BookClubsClient extends ApiClientBase {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getBookClubs(): Promise<SuccessResponseOfIEnumerableOfBookClubDto> {
+        let url_ = this.baseUrl + "/api/v1/BookClubs";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetBookClubs(_response);
+        });
+    }
+
+    protected processGetBookClubs(response: Response): Promise<SuccessResponseOfIEnumerableOfBookClubDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SuccessResponseOfIEnumerableOfBookClubDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            let result500: any = null;
+            let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result500 = ErrorResponse.fromJS(resultData500);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result500);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SuccessResponseOfIEnumerableOfBookClubDto>(null as any);
+    }
+}
+
 export class BooksClient extends ApiClientBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -350,6 +406,62 @@ export class LogoutClient extends ApiClientBase {
             });
         }
         return Promise.resolve<SuccessResponseOfBoolean>(null as any);
+    }
+}
+
+export class ReadingStatsClient extends ApiClientBase {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getReadingStats(): Promise<SuccessResponseOfIEnumerableOfReadingStatsDto> {
+        let url_ = this.baseUrl + "/api/v1/ReadingStats";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetReadingStats(_response);
+        });
+    }
+
+    protected processGetReadingStats(response: Response): Promise<SuccessResponseOfIEnumerableOfReadingStatsDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SuccessResponseOfIEnumerableOfReadingStatsDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            let result500: any = null;
+            let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result500 = ErrorResponse.fromJS(resultData500);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result500);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SuccessResponseOfIEnumerableOfReadingStatsDto>(null as any);
     }
 }
 
@@ -933,10 +1045,10 @@ export interface IApiResponse {
     message?: string;
 }
 
-export class SuccessResponseOfIEnumerableOfPopularBookDto extends ApiResponse implements ISuccessResponseOfIEnumerableOfPopularBookDto {
-    data?: PopularBookDto[] | undefined;
+export class SuccessResponseOfIEnumerableOfBookClubDto extends ApiResponse implements ISuccessResponseOfIEnumerableOfBookClubDto {
+    data?: BookClubDto[] | undefined;
 
-    constructor(data?: ISuccessResponseOfIEnumerableOfPopularBookDto) {
+    constructor(data?: ISuccessResponseOfIEnumerableOfBookClubDto) {
         super(data);
     }
 
@@ -946,14 +1058,14 @@ export class SuccessResponseOfIEnumerableOfPopularBookDto extends ApiResponse im
             if (Array.isArray(_data["data"])) {
                 this.data = [] as any;
                 for (let item of _data["data"])
-                    this.data!.push(PopularBookDto.fromJS(item));
+                    this.data!.push(BookClubDto.fromJS(item));
             }
         }
     }
 
-    static override fromJS(data: any): SuccessResponseOfIEnumerableOfPopularBookDto {
+    static override fromJS(data: any): SuccessResponseOfIEnumerableOfBookClubDto {
         data = typeof data === 'object' ? data : {};
-        let result = new SuccessResponseOfIEnumerableOfPopularBookDto();
+        let result = new SuccessResponseOfIEnumerableOfBookClubDto();
         result.init(data);
         return result;
     }
@@ -970,8 +1082,68 @@ export class SuccessResponseOfIEnumerableOfPopularBookDto extends ApiResponse im
     }
 }
 
-export interface ISuccessResponseOfIEnumerableOfPopularBookDto extends IApiResponse {
-    data?: PopularBookDto[] | undefined;
+export interface ISuccessResponseOfIEnumerableOfBookClubDto extends IApiResponse {
+    data?: BookClubDto[] | undefined;
+}
+
+export class BookClubDto implements IBookClubDto {
+    name?: string;
+    description?: string;
+    imagePath?: string;
+    books?: PopularBookDto[];
+    numberOfMembers?: number;
+
+    constructor(data?: IBookClubDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.imagePath = _data["imagePath"];
+            if (Array.isArray(_data["books"])) {
+                this.books = [] as any;
+                for (let item of _data["books"])
+                    this.books!.push(PopularBookDto.fromJS(item));
+            }
+            this.numberOfMembers = _data["numberOfMembers"];
+        }
+    }
+
+    static fromJS(data: any): BookClubDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BookClubDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["imagePath"] = this.imagePath;
+        if (Array.isArray(this.books)) {
+            data["books"] = [];
+            for (let item of this.books)
+                data["books"].push(item.toJSON());
+        }
+        data["numberOfMembers"] = this.numberOfMembers;
+        return data;
+    }
+}
+
+export interface IBookClubDto {
+    name?: string;
+    description?: string;
+    imagePath?: string;
+    books?: PopularBookDto[];
+    numberOfMembers?: number;
 }
 
 export class PopularBookDto implements IPopularBookDto {
@@ -1069,6 +1241,47 @@ export class ErrorResponse extends ApiResponse implements IErrorResponse {
 
 export interface IErrorResponse extends IApiResponse {
     errors?: string[];
+}
+
+export class SuccessResponseOfIEnumerableOfPopularBookDto extends ApiResponse implements ISuccessResponseOfIEnumerableOfPopularBookDto {
+    data?: PopularBookDto[] | undefined;
+
+    constructor(data?: ISuccessResponseOfIEnumerableOfPopularBookDto) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(PopularBookDto.fromJS(item));
+            }
+        }
+    }
+
+    static override fromJS(data: any): SuccessResponseOfIEnumerableOfPopularBookDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SuccessResponseOfIEnumerableOfPopularBookDto();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ISuccessResponseOfIEnumerableOfPopularBookDto extends IApiResponse {
+    data?: PopularBookDto[] | undefined;
 }
 
 export class SuccessResponseOfIEnumerableOfBooksByGenreDto extends ApiResponse implements ISuccessResponseOfIEnumerableOfBooksByGenreDto {
@@ -1607,6 +1820,159 @@ export class SuccessResponseOfBoolean extends ApiResponse implements ISuccessRes
 
 export interface ISuccessResponseOfBoolean extends IApiResponse {
     data?: boolean;
+}
+
+export class SuccessResponseOfIEnumerableOfReadingStatsDto extends ApiResponse implements ISuccessResponseOfIEnumerableOfReadingStatsDto {
+    data?: ReadingStatsDto[] | undefined;
+
+    constructor(data?: ISuccessResponseOfIEnumerableOfReadingStatsDto) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(ReadingStatsDto.fromJS(item));
+            }
+        }
+    }
+
+    static override fromJS(data: any): SuccessResponseOfIEnumerableOfReadingStatsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SuccessResponseOfIEnumerableOfReadingStatsDto();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ISuccessResponseOfIEnumerableOfReadingStatsDto extends IApiResponse {
+    data?: ReadingStatsDto[] | undefined;
+}
+
+export class ReadingStatsDto implements IReadingStatsDto {
+    startPage?: number;
+    endPage?: number;
+    bookProgressId?: number;
+    readPages?: number;
+    totalPages?: number;
+    progressPercentage?: number;
+    summary?: string;
+    dailyReadingProgress?: DailyReadingRecordDto[];
+
+    constructor(data?: IReadingStatsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.startPage = _data["startPage"];
+            this.endPage = _data["endPage"];
+            this.bookProgressId = _data["bookProgressId"];
+            this.readPages = _data["readPages"];
+            this.totalPages = _data["totalPages"];
+            this.progressPercentage = _data["progressPercentage"];
+            this.summary = _data["summary"];
+            if (Array.isArray(_data["dailyReadingProgress"])) {
+                this.dailyReadingProgress = [] as any;
+                for (let item of _data["dailyReadingProgress"])
+                    this.dailyReadingProgress!.push(DailyReadingRecordDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ReadingStatsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReadingStatsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["startPage"] = this.startPage;
+        data["endPage"] = this.endPage;
+        data["bookProgressId"] = this.bookProgressId;
+        data["readPages"] = this.readPages;
+        data["totalPages"] = this.totalPages;
+        data["progressPercentage"] = this.progressPercentage;
+        data["summary"] = this.summary;
+        if (Array.isArray(this.dailyReadingProgress)) {
+            data["dailyReadingProgress"] = [];
+            for (let item of this.dailyReadingProgress)
+                data["dailyReadingProgress"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IReadingStatsDto {
+    startPage?: number;
+    endPage?: number;
+    bookProgressId?: number;
+    readPages?: number;
+    totalPages?: number;
+    progressPercentage?: number;
+    summary?: string;
+    dailyReadingProgress?: DailyReadingRecordDto[];
+}
+
+export class DailyReadingRecordDto implements IDailyReadingRecordDto {
+    readPages?: number;
+    date?: Date;
+
+    constructor(data?: IDailyReadingRecordDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.readPages = _data["readPages"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): DailyReadingRecordDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DailyReadingRecordDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["readPages"] = this.readPages;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IDailyReadingRecordDto {
+    readPages?: number;
+    date?: Date;
 }
 
 export class RegisterCommand implements IRegisterCommand {

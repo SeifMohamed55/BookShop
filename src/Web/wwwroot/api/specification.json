@@ -6,6 +6,36 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/v1/BookClubs": {
+      "get": {
+        "tags": [
+          "BookClubs"
+        ],
+        "operationId": "GetBookClubs",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponseOfIEnumerableOfBookClubDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/Books/popular": {
       "get": {
         "tags": [
@@ -231,6 +261,36 @@
             }
           },
           "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ReadingStats": {
+      "get": {
+        "tags": [
+          "ReadingStats"
+        ],
+        "operationId": "GetReadingStats",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponseOfIEnumerableOfReadingStatsDto"
+                }
+              }
+            }
+          },
+          "500": {
             "description": "",
             "content": {
               "application/json": {
@@ -692,7 +752,7 @@
   },
   "components": {
     "schemas": {
-      "SuccessResponseOfIEnumerableOfPopularBookDto": {
+      "SuccessResponseOfIEnumerableOfBookClubDto": {
         "allOf": [
           {
             "$ref": "#/components/schemas/ApiResponse"
@@ -705,12 +765,37 @@
                 "type": "array",
                 "nullable": true,
                 "items": {
-                  "$ref": "#/components/schemas/PopularBookDto"
+                  "$ref": "#/components/schemas/BookClubDto"
                 }
               }
             }
           }
         ]
+      },
+      "BookClubDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "imagePath": {
+            "type": "string"
+          },
+          "books": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PopularBookDto"
+            }
+          },
+          "numberOfMembers": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "PopularBookDto": {
         "type": "object",
@@ -765,6 +850,26 @@
                 "type": "array",
                 "items": {
                   "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "SuccessResponseOfIEnumerableOfPopularBookDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiResponse"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "data": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/PopularBookDto"
                 }
               }
             }
@@ -1124,6 +1229,79 @@
             }
           }
         ]
+      },
+      "SuccessResponseOfIEnumerableOfReadingStatsDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiResponse"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "data": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/ReadingStatsDto"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ReadingStatsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "startPage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "endPage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bookProgressId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "readPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "progressPercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "dailyReadingProgress": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DailyReadingRecordDto"
+            }
+          }
+        }
+      },
+      "DailyReadingRecordDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "readPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       },
       "RegisterCommand": {
         "type": "object",
