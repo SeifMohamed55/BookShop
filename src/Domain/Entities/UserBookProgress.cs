@@ -19,7 +19,3 @@ public class UserBookProgress : BaseAuditableEntity
     }
 }
 
-
-
-
-

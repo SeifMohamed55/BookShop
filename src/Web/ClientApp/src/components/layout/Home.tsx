@@ -20,7 +20,9 @@ export default function Home() {
     undefined
   );
   const [allBooks, setAllBooks] = useState<Book[] | undefined>(undefined);
-
+  const [mostPopularBook, setMostPopularBook] = useState<
+    PopularBooks | undefined
+  >(undefined);
   const [listValues] = useState<string[]>([
     "all genres",
     "fiction",
@@ -74,6 +76,15 @@ export default function Home() {
           console.error(err);
         });
     }
+
+    client
+      .getMostPopularBook()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, [activeIndex]);
 
   return (
@@ -175,14 +186,14 @@ export default function Home() {
                         />
                       </figure>
                       <div className="d-flex justify-content-between gap-2 flex-column">
-                        <div className="d-flex justify-content-between align-items-center flex-column flex-sm-row">
-                          <div className="d-flex align-items-center">
-                            <h2 className="times normal-font text-nowrap m-0">
+                        <div className="w-100 d-flex justify-content-between align-items-center flex-column flex-sm-row">
+                          <div className="d-flex align-items-center justify-content-between w-100">
+                            <h2 className="times normal-font text-nowrap m-0 ">
                               @bookworm42
                             </h2>
-                            <span className="ms-3 small-font opacity-75 times">
+                            <p className="small-font m-0 opacity-75 times ">
                               about 2 years ago
-                            </span>
+                            </p>
                           </div>
                         </div>
                         <p className="times normal-gont">
