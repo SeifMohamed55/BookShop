@@ -1,6 +1,6 @@
 import { faBookOpen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MenuList from "../ui/menuList";
 import HorizontalCard from "../ui/horizontalCard";
 import {
@@ -15,6 +15,10 @@ import {
 import TagsDiv from "../ui/TagsDiv";
 import { Book } from "../../types/interfaces/Book";
 const MyBooks = () => {
+  useEffect(() => {
+
+    
+  }, []);
   const [listValues] = useState<string[]>([
     `📖 all books`,
     `🚩 currently reading`,

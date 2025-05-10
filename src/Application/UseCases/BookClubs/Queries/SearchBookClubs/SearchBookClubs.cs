@@ -1,4 +1,5 @@
-﻿using AspireApp.Application.BookClubs.Queries.SearchBookClubs;
+﻿using System.Net;
+using AspireApp.Application.BookClubs.Queries.SearchBookClubs;
 using AspireApp.Application.Common.Interfaces;
 using AspireApp.Application.Common.Models;
 using GraduationProject.Application.Services;
@@ -32,20 +33,32 @@ public class SearchBookClubsQueryHandler : IRequestHandler<SearchBookClubsQuery,
 
     public async Task<ServiceResult< IEnumerable<BookClubDto>>> Handle(SearchBookClubsQuery request, CancellationToken cancellationToken)
     {
-        var query = _context.BookClubs
+        try
+        {
+            var query = _context.BookClubs
             .Include(bc => bc.Books)
             .Include(bc => bc.UserBookClubs)
             .AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(request.Keyword))
-        {
-            query = query.Where(bc =>
-                bc.Name.Contains(request.Keyword) ||
-                bc.Description.Contains(request.Keyword) ||
-                bc.Books.Any(b => b.Title.Contains(request.Keyword)));
-        }
+            if (!string.IsNullOrWhiteSpace(request.Keyword))
+            {
+                query = query.Where(bc =>
+                    bc.Name.Contains(request.Keyword) ||
+                    bc.Description.Contains(request.Keyword) ||
+                    bc.Books.Any(b => b.Title.Contains(request.Keyword)));
+            }
 
-        var bookClubs = await query.ToListAsync(cancellationToken);
-        return _mapper.Map<ServiceResult<IEnumerable<BookClubDto>>>(bookClubs);
+            var bookClubs = await query.ProjectTo<BookClubDto>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+
+            return ServiceResult<IEnumerable<BookClubDto>>.Success(bookClubs, "Book clubs fetched successfully.");
+        }
+        catch
+        {
+            return ServiceResult<IEnumerable<BookClubDto>>.Failure(
+                "An error occurred while searching for book clubs.",
+                HttpStatusCode.InternalServerError);
+        }
+        
     }
 }

@@ -1973,8 +1973,6 @@ export class BookDto implements IBookDto {
     averageRating?: number;
     description?: string;
     bookFilePath?: string;
-    isHidden?: boolean;
-    userId?: string;
     reviews?: ReviewDto[];
     categories?: CategoryDto[];
 
@@ -1997,8 +1995,6 @@ export class BookDto implements IBookDto {
             this.averageRating = _data["averageRating"];
             this.description = _data["description"];
             this.bookFilePath = _data["bookFilePath"];
-            this.isHidden = _data["isHidden"];
-            this.userId = _data["userId"];
             if (Array.isArray(_data["reviews"])) {
                 this.reviews = [] as any;
                 for (let item of _data["reviews"])
@@ -2029,8 +2025,6 @@ export class BookDto implements IBookDto {
         data["averageRating"] = this.averageRating;
         data["description"] = this.description;
         data["bookFilePath"] = this.bookFilePath;
-        data["isHidden"] = this.isHidden;
-        data["userId"] = this.userId;
         if (Array.isArray(this.reviews)) {
             data["reviews"] = [];
             for (let item of this.reviews)
@@ -2054,8 +2048,6 @@ export interface IBookDto {
     averageRating?: number;
     description?: string;
     bookFilePath?: string;
-    isHidden?: boolean;
-    userId?: string;
     reviews?: ReviewDto[];
     categories?: CategoryDto[];
 }

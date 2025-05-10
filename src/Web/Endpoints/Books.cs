@@ -21,7 +21,7 @@ public class Books : EndpointGroupBase
             .MapGet(GetAllBooks)
             .MapPost(AddBook)
             .MapGet(GetMyBooks, "/my")
-            .MapGet(GetMostPopularBook, "/most-popular"); // ✅ Added line; 
+            .MapGet(GetMostPopularBook, "/most-popular"); 
     }
 
     [ProducesResponseType(typeof(SuccessResponse<IEnumerable<PopularBookDto>>), StatusCodes.Status200OK)]

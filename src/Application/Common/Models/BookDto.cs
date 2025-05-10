@@ -17,8 +17,6 @@ public class BookDto
     public float AverageRating { get; set; }
     public string Description { get; set; } = null!;
     public string BookFilePath { get; set; } = null!;
-    public bool IsHidden { get; set; }
-    public string UserId { get; set; } = null!;
     public ICollection<ReviewDto> Reviews { get; set; } = new List<ReviewDto>();
 
     public ICollection<CategoryDto> Categories { get; set; } = new List<CategoryDto>();

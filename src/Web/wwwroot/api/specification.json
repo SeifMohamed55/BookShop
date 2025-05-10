@@ -1399,19 +1399,13 @@
           "bookFilePath": {
             "type": "string"
           },
-          "isHidden": {
-            "type": "boolean"
-          },
-          "userId": {
-            "type": "string"
-          },
           "reviews": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ReviewDto"
             }
           },
-          "categoriesDto": {
+          "categories": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/CategoryDto"
