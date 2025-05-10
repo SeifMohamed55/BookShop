@@ -4,7 +4,7 @@ using GraduationProject.Application.Services;
 
 namespace AspireApp.Application.Books.Queries.GetMostPopularBook;
 
-public record GetMostPopularBookQuery : IRequest<ServiceResult<IEnumerable<BookDto>>>
+public record GetMostPopularBookQuery : IRequest<ServiceResult<BookDto>>
 {
 }
 
@@ -15,7 +15,7 @@ public class GetMostPopularBookQueryValidator : AbstractValidator<GetMostPopular
     }
 }
 
-public class GetMostPopularBookQueryHandler : IRequestHandler<GetMostPopularBookQuery, ServiceResult<IEnumerable<BookDto>>>
+public class GetMostPopularBookQueryHandler : IRequestHandler<GetMostPopularBookQuery, ServiceResult<BookDto>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -26,22 +26,21 @@ public class GetMostPopularBookQueryHandler : IRequestHandler<GetMostPopularBook
         _mapper = mapper;
     }
 
-    public async Task<ServiceResult<IEnumerable<BookDto>>> Handle(GetMostPopularBookQuery request, CancellationToken cancellationToken)
+    public async Task<ServiceResult<BookDto>> Handle(GetMostPopularBookQuery request, CancellationToken cancellationToken)
     {
         var mostPopularBook = await _context.Books
             .Include(b => b.Reviews)
             .Include(b => b.Categories)
             .OrderByDescending(b => b.AverageRating)
+            .ProjectTo<BookDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (mostPopularBook == null)
         {
-            return ServiceResult<IEnumerable<BookDto>>.Failure("No books found");
+            return ServiceResult<BookDto>.Failure("No books found");
         }
 
-        var bookDto = _mapper.Map<BookDto>(mostPopularBook);
-
-        return ServiceResult<IEnumerable<BookDto>>.Success(new[] { bookDto }, "Most popular book retrieved successfully");
+        return ServiceResult<BookDto>.Success(mostPopularBook, "Most popular book retrieved successfully");
     }
 }
 
