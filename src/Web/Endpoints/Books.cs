@@ -10,12 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 using AspireApp.Application.Books.Queries.GetMostPopularBook;
 using AspireApp.Application.Books.Queries.GetBookById;
 using AspireApp.Application.Books.Queries.GetBookPage;
-
+using AspireApp.Application.UserBookProgresses.Commands.AddUserBookProgress;
 namespace AspireApp.Web.Endpoints;
 
 public class Books : EndpointGroupBase
 {
-
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
@@ -26,8 +25,8 @@ public class Books : EndpointGroupBase
             .MapGet(GetMostPopularBook, "/most-popular")
             .MapGet(GetBookById, "/book")
             .MapGet(GetBookPage, "/page")
-            .MapPost(AddBook);
-
+            .MapPost(AddBook)
+            .MapPost(AddUserBookProgress, "/progress"); 
     }
 
     public async Task<IResult> GetBookPage(ISender sender, [FromQuery]  int bookId, [FromQuery] int page)
@@ -77,6 +76,7 @@ public class Books : EndpointGroupBase
         var res = await sender.Send(command);
         return res.ToResult();
     }
+
     [ProducesResponseType(typeof(SuccessResponse<IEnumerable<MyBooksDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IResult> GetMyBooks(ISender sender, [FromQuery] string userId, [FromQuery] string? status)
@@ -91,5 +91,13 @@ public class Books : EndpointGroupBase
         var result = await sender.Send(new GetMostPopularBookQuery());
         return result.ToResult();
 
+    }
+
+    [ProducesResponseType(typeof(SuccessResponse<ServiceResult<bool>>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IResult> AddUserBookProgress(ISender sender, AddUserBookProgressCommand command)
+    {
+        var res = await sender.Send(command);
+        return res.ToResult();
     }
 }

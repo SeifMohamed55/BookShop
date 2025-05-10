@@ -34,7 +34,15 @@ public class GetTop3CategoriesQueryHandler : IRequestHandler<GetTop3CategoriesQu
         {
             Id = c.Id,
             Name = c.Name,
+        }).ToList();
+
+        categoryDtos.Insert(0, new CategoryDto
+        {
+            Id = 0,
+            Name = "All Genres"
         });
+
+
         return ServiceResult<IEnumerable<CategoryDto>>.Success(categoryDtos, "Successfully retrieved top 3 categories.");
     }
 }
