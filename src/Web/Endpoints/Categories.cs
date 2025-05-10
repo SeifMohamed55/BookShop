@@ -12,7 +12,9 @@ public class Categories : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
-        app.MapGroup(this);
+        app.MapGroup(this)
+            .MapGet(GetCategories)
+            .MapGet(GetTop3Categories, "top-3");
     }
 
     [ProducesResponseType(typeof(SuccessResponse<IEnumerable<CategoryDto>>), StatusCodes.Status200OK)]

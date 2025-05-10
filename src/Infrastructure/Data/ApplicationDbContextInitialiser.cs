@@ -122,6 +122,34 @@ public class ApplicationDbContextInitialiser
 
             await _context.SaveChangesAsync();
         }
+
+        /*if (!_context.Reviews.Any())
+        {
+            var book = await _context.Books.FirstAsync();
+            var user = await _context.Users.FirstAsync();
+
+            _context.Reviews.AddRange(new List<Review>
+            {
+                new Review
+                {
+                    UserId = user.Id,
+                    Rating = 5,
+                    Comment = "An amazing book! Highly recommend it.",
+                    Book = book,
+                    Likes = 10
+                },
+                new Review
+                {
+                    UserId = user.Id,
+                    Rating = 4,
+                    Comment = "Good book has better.",
+                    Book = book,
+                    Likes = 0
+                }
+            });
+
+            await _context.SaveChangesAsync();
+        }*/
    
     }
 }

@@ -6,7 +6,7 @@ public class Review : BaseAuditableEntity
     public required string Comment { get; set; } 
 
     public int BookId { get; set; }
-    public required Book Book { get; set; }
+    public Book Book { get; set; } = null!;
 
     public required string UserId { get; set; }
 
