@@ -4,7 +4,7 @@
 public class BookClubMember : BaseEntity
 {
     public int BookClubId { get; set; }
-    public required BookClub BookClub { get; set; }
+    public BookClub BookClub { get; set; } = null!;
 
     public required string UserId { get; set; } 
 

@@ -123,6 +123,35 @@ public class ApplicationDbContextInitialiser
             await _context.SaveChangesAsync();
         }
 
+        if(!_context.BookClubs.Any())
+        {
+            var user = await _context.Users.OrderBy(x=> x.Id).FirstAsync();
+            var user2 = await _context.Users.OrderBy(x => x.Id).LastAsync();
+            var bookClub = new BookClub
+            {
+                Name = "Book Lovers Club",
+                Description = "A club for book lovers to discuss their favorite books.",
+                ImagePath = "",
+                UserBookClubs = new List<BookClubMember>
+                {
+                    new BookClubMember
+                    {
+                        UserId = user.Id,
+                        Role = Domain.Enums.MemberRole.Admin,
+                        JoinedDate = DateTime.UtcNow,
+                    },
+                    new BookClubMember
+                    {
+                        UserId = user2.Id,
+                        Role = Domain.Enums.MemberRole.Member,
+                        JoinedDate = DateTime.UtcNow,
+                    }
+                }
+            };
+            _context.BookClubs.Add(bookClub);
+            await _context.SaveChangesAsync();
+        }
+
         /*if (!_context.Reviews.Any())
         {
             var book = await _context.Books.FirstAsync();
@@ -150,6 +179,6 @@ public class ApplicationDbContextInitialiser
 
             await _context.SaveChangesAsync();
         }*/
-   
+
     }
 }

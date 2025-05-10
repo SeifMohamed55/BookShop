@@ -30,8 +30,12 @@ public class GetBookPageQueryHandler : IRequestHandler<GetBookPageQuery, Service
 
     public async Task<ServiceResult<byte[]>> Handle(GetBookPageQuery request, CancellationToken cancellationToken)
     {
-        var books = await _context.Books.ToListAsync();
+        var book = await _context.Books.FirstOrDefaultAsync(x => x.Id == request.bookId);
+        if(book == null)
+            return ServiceResult<byte[]>.Failure("Book not found", HttpStatusCode.NotFound);
 
-        return ServiceResult<byte[]>.Success(Array.Empty<byte>(), "success");
+        return ServiceResult<byte[]>.Success(
+            _storageService.GetBookPage(book.BookFilePath, request.page),
+            "Successfully retrieved book page.");
     }
 }

@@ -13,6 +13,7 @@ public class BookClubDto
     public required string Description { get; set; }
     public required string ImagePath { get; set; }
     public BookDto? MostPopularBook { get; set; }
+    public string Author { get; set; } = null!;
     public int NumberOfMembers { get; set; }
 
     private class BookClubProfile : Profile
@@ -25,7 +26,10 @@ public class BookClubDto
                 .ForMember(dest => dest.MostPopularBook,
                     opt => opt.MapFrom(src => src.Books
                         .OrderByDescending(b => b.AverageRating)
-                        .FirstOrDefault()));
+                        .FirstOrDefault()))
+                .ForMember(dest => dest.Author, 
+                    opt => opt.MapFrom(src => src.UserBookClubs
+                        .FirstOrDefault(x=> x.Role == Domain.Enums.MemberRole.Admin)));
         }
     }
 }

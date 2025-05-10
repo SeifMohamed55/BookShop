@@ -651,6 +651,9 @@
               }
             ]
           },
+          "author": {
+            "type": "string"
+          },
           "numberOfMembers": {
             "type": "integer",
             "format": "int32"

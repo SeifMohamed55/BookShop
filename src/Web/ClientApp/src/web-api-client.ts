@@ -941,6 +941,7 @@ export class BookClubDto implements IBookClubDto {
     description?: string;
     imagePath?: string;
     mostPopularBook?: BookDto | undefined;
+    author?: string;
     numberOfMembers?: number;
 
     constructor(data?: IBookClubDto) {
@@ -959,6 +960,7 @@ export class BookClubDto implements IBookClubDto {
             this.description = _data["description"];
             this.imagePath = _data["imagePath"];
             this.mostPopularBook = _data["mostPopularBook"] ? BookDto.fromJS(_data["mostPopularBook"]) : <any>undefined;
+            this.author = _data["author"];
             this.numberOfMembers = _data["numberOfMembers"];
         }
     }
@@ -977,6 +979,7 @@ export class BookClubDto implements IBookClubDto {
         data["description"] = this.description;
         data["imagePath"] = this.imagePath;
         data["mostPopularBook"] = this.mostPopularBook ? this.mostPopularBook.toJSON() : <any>undefined;
+        data["author"] = this.author;
         data["numberOfMembers"] = this.numberOfMembers;
         return data;
     }
@@ -988,6 +991,7 @@ export interface IBookClubDto {
     description?: string;
     imagePath?: string;
     mostPopularBook?: BookDto | undefined;
+    author?: string;
     numberOfMembers?: number;
 }
 
