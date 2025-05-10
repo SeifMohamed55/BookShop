@@ -91,6 +91,29 @@ public class IdentityService : IIdentityService
 
     }
 
+    public async Task<ServiceResult<IDictionary<string, UserDto>>> GetUsersDtos(IEnumerable<string> ids)
+    {
+        var users = await _userManager.Users
+            .Where(x => ids.Contains(x.Id))
+            .ToListAsync();
+        if (users.Count == 0)
+        {
+            return ServiceResult<IDictionary<string, UserDto>>.Failure("No users found");
+        }
+        var userDtos = users.ToDictionary(user => user.Id, _mapper.Map<UserDto>);
+        return ServiceResult<IDictionary<string, UserDto>>.Success(userDtos, "Users retrieved successfully");
+    }
+
+    public async Task<ServiceResult<UserDto>> GetUserDtoById(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return ServiceResult<UserDto>.Failure("User doesn't exist");
+        }
+        var userDto = _mapper.Map<UserDto>(user);
+        return ServiceResult<UserDto>.Success(userDto, "User retrieved successfully");
+    }
 
 
     public async Task<UserDto> GetRandomUser()

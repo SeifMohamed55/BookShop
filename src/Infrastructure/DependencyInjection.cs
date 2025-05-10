@@ -35,7 +35,7 @@ public static class DependencyInjection
 
         builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
-        builder.Services.AddScoped<IImageStorageService, ImageStorageService>();
+        builder.Services.AddScoped<IStorageService, StorageService>();
 
         builder.Services.AddScoped<ApplicationDbContextInitialiser>();
 

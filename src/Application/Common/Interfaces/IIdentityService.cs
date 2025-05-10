@@ -24,4 +24,6 @@ public interface IIdentityService
 
     Task<ServiceResult<bool>> SignOutAsync();
 
+    Task<ServiceResult<UserDto>> GetUserDtoById(string userId);
+
 }

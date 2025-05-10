@@ -20,13 +20,11 @@ public class GetAllBooksQueryHandler : IRequestHandler<GetAllBooksQuery, Service
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
-    private readonly IIdentityService _identityService;
 
-    public GetAllBooksQueryHandler(IApplicationDbContext context, IMapper mapper, IIdentityService userService)
+    public GetAllBooksQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
-        _identityService = userService;
     }
 
     public async Task<ServiceResult<IEnumerable<BooksByGenreDto>>> 

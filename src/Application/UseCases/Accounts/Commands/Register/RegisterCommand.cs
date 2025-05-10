@@ -8,6 +8,6 @@ public record RegisterCommand : IRequest<ServiceResult<bool>>
     public required string Email { get; init; }
     public required string Password { get; init; }
     public required string ConfirmPassword { get; init; }
-    public required string? Image { get; init; }
+    public string? Image { get; init; }
 
 }

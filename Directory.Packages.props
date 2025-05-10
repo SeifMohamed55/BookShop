@@ -39,6 +39,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EfcoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="$(EfcoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EfcoreVersion)" />
+    <PackageVersion Include="PDFsharp" Version="6.1.1" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.8" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfcoreVersion)" />

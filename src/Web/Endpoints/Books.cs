@@ -1,8 +1,10 @@
-﻿using AspireApp.Application.Books.Queries.GetAllBooks;
+﻿using AspireApp.Application.Books.Commands.AddBook;
+using AspireApp.Application.Books.Queries.GetAllBooks;
 using AspireApp.Application.Books.Queries.GetBooksByGenre;
 using AspireApp.Application.Books.Queries.GetPopularBooks;
 using AspireApp.Application.Common.Models;
 using AspireApp.Web.Common.Extensions;
+using GraduationProject.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AspireApp.Web.Endpoints;
@@ -12,7 +14,10 @@ public class Books : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapGet(GetPopularBooks, "/popular");
+            .MapGet(GetPopularBooks, "/popular")
+            .MapGet(GetBooksByGenre, "/{genre}")
+            .MapGet(GetAllBooks)
+            .MapPost(AddBook);
     }
 
     [ProducesResponseType(typeof(SuccessResponse<IEnumerable<PopularBookDto>>), StatusCodes.Status200OK)]
@@ -25,7 +30,7 @@ public class Books : EndpointGroupBase
 
 
     [ProducesResponseType(typeof(SuccessResponse<IEnumerable<BooksByGenreDto>>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IResult> GetBooksByGenre(ISender sender, string genre)
     {
         var res = await sender.Send(new GetBooksByGenreQuery(genre));
@@ -33,10 +38,18 @@ public class Books : EndpointGroupBase
     }
 
     [ProducesResponseType(typeof(SuccessResponse<IEnumerable<BooksByGenreDto>>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IResult> GetAllBooks(ISender sender)
     {
         var res = await sender.Send(new GetAllBooksQuery());
+        return res.ToResult();
+    }
+
+    [ProducesResponseType(typeof(SuccessResponse<ServiceResult<int>>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IResult> AddBook(ISender sender, AddBookCommand command)
+    {
+        var res = await sender.Send(command);
         return res.ToResult();
     }
 

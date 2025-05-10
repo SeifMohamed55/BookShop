@@ -82,7 +82,7 @@ public class ApplicationDbContextInitialiser
             UserName = "administrator@localhost",
             Email = "administrator@localhost" ,
             FullName = "Adminstrator",
-            ImageUrl = IImageStorageService.DefaultUserImageRelativePath
+            ImageUrl = IStorageService.DefaultUserImageRelativePath
         };
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
@@ -92,6 +92,33 @@ public class ApplicationDbContextInitialiser
             {
                 await _userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
             }
+        }
+
+        if (!_context.Categories.Any())
+        {
+            await _context.Categories.AddRangeAsync([
+                new Category { Name = "Fiction" },
+                new Category { Name = "Non-Fiction" },
+                new Category { Name = "Science Fiction" },
+                new Category { Name = "Fantasy" },
+                new Category { Name = "Mystery" },
+                new Category { Name = "Biography" },
+                new Category { Name = "Self-Help" },
+                new Category { Name = "History" },
+                new Category { Name = "Poetry" },
+                new Category { Name = "Romance" },
+                new Category { Name = "Thriller" },
+                new Category { Name = "Health & Wellness" },
+                new Category { Name = "Business" },
+                new Category { Name = "Education" },
+                new Category { Name = "Children's Books" },
+                new Category { Name = "Young Adult" },
+                new Category { Name = "Philosophy" },
+                new Category { Name = "Travel" },
+                new Category { Name = "Cooking" },
+                new Category { Name = "Spirituality" },
+                new Category { Name = "Comics & Graphic Novels" }
+            ]);
         }
      
     }

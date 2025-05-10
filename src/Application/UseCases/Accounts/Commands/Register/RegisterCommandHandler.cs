@@ -7,9 +7,9 @@ namespace AspireApp.Application.UseCases.Accounts.Commands.Register;
 public class RegisterCommandHandler : IRequestHandler<RegisterCommand, ServiceResult<bool>>
 {
     private readonly IIdentityService _identity;
-    private readonly IImageStorageService _imageService;
+    private readonly IStorageService _imageService;
 
-    public RegisterCommandHandler(IIdentityService identity, IImageStorageService imageStorageService)
+    public RegisterCommandHandler(IIdentityService identity, IStorageService imageStorageService)
     {
         _identity = identity;
         _imageService = imageStorageService;
@@ -17,12 +17,12 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, ServiceRe
 
     public async Task<ServiceResult<bool>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var res  = await _identity.CreateUserAsync(request, IImageStorageService.DefaultUserImageRelativePath);
+        var res  = await _identity.CreateUserAsync(request, IStorageService.DefaultUserImageRelativePath);
         if (res.TryGetData(out var data))
         {
             if (!string.IsNullOrEmpty(request.Image))
             {
-                var url = await _imageService.SaveImageAsync(request.Image);
+                var url = await _imageService.SaveImageAsync(request.Image, FileType.UserImage);
 
                 await _identity.UpdateUserImage(data.Id, url);
             }
