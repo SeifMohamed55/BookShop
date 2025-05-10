@@ -11,7 +11,7 @@ import { BookClubsClient } from "../../web-api-client";
 import { BookClub } from "../../types/interfaces/BookClubData";
 
 const BookClubsPage: React.FC = () => {
-  const [bookClub, setBookClub] = useState<BookClub[]>([]);
+  const [bookClub, setBookClub] = useState<BookClub[] | undefined>(undefined);
 
   useEffect(() => {
     const client = new BookClubsClient();
@@ -19,6 +19,7 @@ const BookClubsPage: React.FC = () => {
       .getBookClubs()
       .then((res) => {
         console.log(res);
+        res.data?.length === 0 ? setBookClub(undefined) : setBookClub(res.data);
       })
       .catch((err) => {
         console.error(err);
@@ -71,7 +72,11 @@ const BookClubsPage: React.FC = () => {
 
       {/* Search and Filter Section */}
       <Container className="my-5">
-        <FilterBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        <FilterBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          valueSetter={setBookClub}
+        />
 
         {/* Book Clubs Section */}
       </Container>

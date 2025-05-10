@@ -1,6 +1,6 @@
 import { faBookOpen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MenuList from "../ui/menuList";
 import HorizontalCard from "../ui/horizontalCard";
 import CreateBookModal from "../ui/CreateBookModal";
@@ -19,11 +19,6 @@ import { Book } from "../../types/interfaces/Book";
 const MyBooks = () => {
   const [modal, setModal] = useState(false);
   const toggleModal = () => setModal(!modal);
-
-  useEffect(() => {
-
-    
-  }, []);
   const [listValues] = useState<string[]>([
     `📖 all books`,
     `🚩 currently reading`,

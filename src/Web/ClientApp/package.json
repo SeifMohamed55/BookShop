@@ -10,6 +10,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.15.3",
+    "@types/react-select": "^5.0.1",
     "bootstrap": "^5.2.3",
     "formik": "^2.4.6",
     "http-proxy-middleware": "^2.0.7",
