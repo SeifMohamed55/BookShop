@@ -31,10 +31,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ toggleModal }) => {
                 <FontAwesomeIcon icon={faPlus} className="me-2" /> Create a Book
                 Club
               </Button>
-              <Button color="light" outline className="fw-bold">
-                <FontAwesomeIcon icon={faSearch} className="me-2" /> Browse
-                Popular Clubs
-              </Button>
             </div>
           </Col>
           <Col md={5} className="d-none d-md-block">

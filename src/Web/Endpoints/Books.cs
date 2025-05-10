@@ -2,10 +2,12 @@
 using AspireApp.Application.Books.Queries.GetAllBooks;
 using AspireApp.Application.Books.Queries.GetBooksByGenre;
 using AspireApp.Application.Books.Queries.GetPopularBooks;
+using AspireApp.Application.Books.Queries.GetMyBooks;
 using AspireApp.Application.Common.Models;
 using AspireApp.Web.Common.Extensions;
 using GraduationProject.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using AspireApp.Application.Books.Queries.GetMostPopularBook;
 
 namespace AspireApp.Web.Endpoints;
 
@@ -17,7 +19,9 @@ public class Books : EndpointGroupBase
             .MapGet(GetPopularBooks, "/popular")
             .MapGet(GetBooksByGenre, "/{genre}")
             .MapGet(GetAllBooks)
-            .MapPost(AddBook);
+            .MapPost(AddBook)
+            .MapGet(GetMyBooks, "/my")
+            .MapGet(GetMostPopularBook, "/most-popular"); // ✅ Added line; 
     }
 
     [ProducesResponseType(typeof(SuccessResponse<IEnumerable<PopularBookDto>>), StatusCodes.Status200OK)]
@@ -52,5 +56,19 @@ public class Books : EndpointGroupBase
         var res = await sender.Send(command);
         return res.ToResult();
     }
+    [ProducesResponseType(typeof(SuccessResponse<IEnumerable<MyBooksDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IResult> GetMyBooks(ISender sender, [FromQuery] string userId, [FromQuery] string? status)
+    {
+        var result = await sender.Send(new GetMyBooksQuery(userId, status));
+        return result.ToResult();
+    }
+    [ProducesResponseType(typeof(SuccessResponse<BookDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<IResult> GetMostPopularBook(ISender sender)
+    {
+        var result = await sender.Send(new GetMostPopularBookQuery());
+        return result.ToResult();
 
+    }
 }

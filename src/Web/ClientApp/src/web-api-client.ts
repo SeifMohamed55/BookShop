@@ -335,6 +335,100 @@ export class BooksClient extends ApiClientBase {
         }
         return Promise.resolve<SuccessResponseOfServiceResultOfInteger>(null as any);
     }
+
+    getMyBooks(userId: string, status: string | null | undefined): Promise<SuccessResponseOfIEnumerableOfMyBooksDto> {
+        let url_ = this.baseUrl + "/api/v1/Books/my?";
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined and cannot be null.");
+        else
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
+        if (status !== undefined && status !== null)
+            url_ += "status=" + encodeURIComponent("" + status) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetMyBooks(_response);
+        });
+    }
+
+    protected processGetMyBooks(response: Response): Promise<SuccessResponseOfIEnumerableOfMyBooksDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SuccessResponseOfIEnumerableOfMyBooksDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ErrorResponse.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SuccessResponseOfIEnumerableOfMyBooksDto>(null as any);
+    }
+
+    getMostPopularBook(): Promise<SuccessResponseOfBookDto> {
+        let url_ = this.baseUrl + "/api/v1/Books/most-popular";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetMostPopularBook(_response);
+        });
+    }
+
+    protected processGetMostPopularBook(response: Response): Promise<SuccessResponseOfBookDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SuccessResponseOfBookDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ErrorResponse.fromJS(resultData404);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SuccessResponseOfBookDto>(null as any);
+    }
 }
 
 export class LoginClient extends ApiClientBase {
@@ -1712,23 +1806,148 @@ export interface ICategoryDto {
     name?: string;
 }
 
-export class SuccessResponseOfUserDto extends ApiResponse implements ISuccessResponseOfUserDto {
-    data?: UserDto | undefined;
+export class SuccessResponseOfIEnumerableOfMyBooksDto extends ApiResponse implements ISuccessResponseOfIEnumerableOfMyBooksDto {
+    data?: MyBooksDto[] | undefined;
 
-    constructor(data?: ISuccessResponseOfUserDto) {
+    constructor(data?: ISuccessResponseOfIEnumerableOfMyBooksDto) {
         super(data);
     }
 
     override init(_data?: any) {
         super.init(_data);
         if (_data) {
-            this.data = _data["data"] ? UserDto.fromJS(_data["data"]) : <any>undefined;
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(MyBooksDto.fromJS(item));
+            }
         }
     }
 
-    static override fromJS(data: any): SuccessResponseOfUserDto {
+    static override fromJS(data: any): SuccessResponseOfIEnumerableOfMyBooksDto {
         data = typeof data === 'object' ? data : {};
-        let result = new SuccessResponseOfUserDto();
+        let result = new SuccessResponseOfIEnumerableOfMyBooksDto();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ISuccessResponseOfIEnumerableOfMyBooksDto extends IApiResponse {
+    data?: MyBooksDto[] | undefined;
+}
+
+export class MyBooksDto implements IMyBooksDto {
+    id?: number;
+    title?: string;
+    author?: string;
+    description?: string;
+    imagePath?: string;
+    totalPages?: number;
+    averageRating?: number;
+    categories?: string[];
+    readingPercentage?: number;
+    readingStatus?: string;
+    isCompleted?: boolean;
+
+    constructor(data?: IMyBooksDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.title = _data["title"];
+            this.author = _data["author"];
+            this.description = _data["description"];
+            this.imagePath = _data["imagePath"];
+            this.totalPages = _data["totalPages"];
+            this.averageRating = _data["averageRating"];
+            if (Array.isArray(_data["categories"])) {
+                this.categories = [] as any;
+                for (let item of _data["categories"])
+                    this.categories!.push(item);
+            }
+            this.readingPercentage = _data["readingPercentage"];
+            this.readingStatus = _data["readingStatus"];
+            this.isCompleted = _data["isCompleted"];
+        }
+    }
+
+    static fromJS(data: any): MyBooksDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MyBooksDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["title"] = this.title;
+        data["author"] = this.author;
+        data["description"] = this.description;
+        data["imagePath"] = this.imagePath;
+        data["totalPages"] = this.totalPages;
+        data["averageRating"] = this.averageRating;
+        if (Array.isArray(this.categories)) {
+            data["categories"] = [];
+            for (let item of this.categories)
+                data["categories"].push(item);
+        }
+        data["readingPercentage"] = this.readingPercentage;
+        data["readingStatus"] = this.readingStatus;
+        data["isCompleted"] = this.isCompleted;
+        return data;
+    }
+}
+
+export interface IMyBooksDto {
+    id?: number;
+    title?: string;
+    author?: string;
+    description?: string;
+    imagePath?: string;
+    totalPages?: number;
+    averageRating?: number;
+    categories?: string[];
+    readingPercentage?: number;
+    readingStatus?: string;
+    isCompleted?: boolean;
+}
+
+export class SuccessResponseOfBookDto extends ApiResponse implements ISuccessResponseOfBookDto {
+    data?: BookDto | undefined;
+
+    constructor(data?: ISuccessResponseOfBookDto) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.data = _data["data"] ? BookDto.fromJS(_data["data"]) : <any>undefined;
+        }
+    }
+
+    static override fromJS(data: any): SuccessResponseOfBookDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SuccessResponseOfBookDto();
         result.init(data);
         return result;
     }
@@ -1741,8 +1960,160 @@ export class SuccessResponseOfUserDto extends ApiResponse implements ISuccessRes
     }
 }
 
-export interface ISuccessResponseOfUserDto extends IApiResponse {
-    data?: UserDto | undefined;
+export interface ISuccessResponseOfBookDto extends IApiResponse {
+    data?: BookDto | undefined;
+}
+
+export class BookDto implements IBookDto {
+    id?: number;
+    title?: string;
+    author?: string;
+    imagePath?: string;
+    totalPages?: number;
+    averageRating?: number;
+    description?: string;
+    bookFilePath?: string;
+    isHidden?: boolean;
+    userId?: string;
+    reviews?: ReviewDto[];
+    categories?: CategoryDto[];
+
+    constructor(data?: IBookDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.title = _data["title"];
+            this.author = _data["author"];
+            this.imagePath = _data["imagePath"];
+            this.totalPages = _data["totalPages"];
+            this.averageRating = _data["averageRating"];
+            this.description = _data["description"];
+            this.bookFilePath = _data["bookFilePath"];
+            this.isHidden = _data["isHidden"];
+            this.userId = _data["userId"];
+            if (Array.isArray(_data["reviews"])) {
+                this.reviews = [] as any;
+                for (let item of _data["reviews"])
+                    this.reviews!.push(ReviewDto.fromJS(item));
+            }
+            if (Array.isArray(_data["categories"])) {
+                this.categories = [] as any;
+                for (let item of _data["categories"])
+                    this.categories!.push(CategoryDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): BookDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BookDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["title"] = this.title;
+        data["author"] = this.author;
+        data["imagePath"] = this.imagePath;
+        data["totalPages"] = this.totalPages;
+        data["averageRating"] = this.averageRating;
+        data["description"] = this.description;
+        data["bookFilePath"] = this.bookFilePath;
+        data["isHidden"] = this.isHidden;
+        data["userId"] = this.userId;
+        if (Array.isArray(this.reviews)) {
+            data["reviews"] = [];
+            for (let item of this.reviews)
+                data["reviews"].push(item.toJSON());
+        }
+        if (Array.isArray(this.categories)) {
+            data["categories"] = [];
+            for (let item of this.categories)
+                data["categories"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IBookDto {
+    id?: number;
+    title?: string;
+    author?: string;
+    imagePath?: string;
+    totalPages?: number;
+    averageRating?: number;
+    description?: string;
+    bookFilePath?: string;
+    isHidden?: boolean;
+    userId?: string;
+    reviews?: ReviewDto[];
+    categories?: CategoryDto[];
+}
+
+export class ReviewDto implements IReviewDto {
+    id?: number;
+    user?: UserDto;
+    comment?: string;
+    likes?: number;
+    rating?: number;
+    lastModified?: Date;
+
+    constructor(data?: IReviewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.user = _data["user"] ? UserDto.fromJS(_data["user"]) : <any>undefined;
+            this.comment = _data["comment"];
+            this.likes = _data["likes"];
+            this.rating = _data["rating"];
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ReviewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReviewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["comment"] = this.comment;
+        data["likes"] = this.likes;
+        data["rating"] = this.rating;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IReviewDto {
+    id?: number;
+    user?: UserDto;
+    comment?: string;
+    likes?: number;
+    rating?: number;
+    lastModified?: Date;
 }
 
 export class UserDto implements IUserDto {
@@ -1791,6 +2162,39 @@ export interface IUserDto {
     fullName?: string;
     email?: string;
     imageUrl?: string;
+}
+
+export class SuccessResponseOfUserDto extends ApiResponse implements ISuccessResponseOfUserDto {
+    data?: UserDto | undefined;
+
+    constructor(data?: ISuccessResponseOfUserDto) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.data = _data["data"] ? UserDto.fromJS(_data["data"]) : <any>undefined;
+        }
+    }
+
+    static override fromJS(data: any): SuccessResponseOfUserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SuccessResponseOfUserDto();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data ? this.data.toJSON() : <any>undefined;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ISuccessResponseOfUserDto extends IApiResponse {
+    data?: UserDto | undefined;
 }
 
 export class LoginCommand implements ILoginCommand {

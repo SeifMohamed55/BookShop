@@ -99,8 +99,8 @@ export default function Home() {
         </h2>
         <div className="row g-5">
           {popularBooks ? (
-            popularBooks.map((book, idx) => (
-              <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12">
+            popularBooks.map((book) => (
+              <div key={book.id} className="col-lg-3 col-md-4 col-sm-6 col-12">
                 <PopularBook bookVal={book} />
               </div>
             ))
@@ -125,11 +125,15 @@ export default function Home() {
               activeIndex={activeIndex}
             />
             <div className="d-flex justify-content-between align-items-center gap-5 flex-column">
-              {allBooks
-                ? allBooks.map((book) => (
-                    <HorizontalCard bookDetails={book} key={book.id} />
-                  ))
-                : "no available books at the moment !"}
+              {allBooks ? (
+                allBooks.map((book) => (
+                  <HorizontalCard bookDetails={book} key={book.id} />
+                ))
+              ) : (
+                <h2 className="pt-3 playfair text-danger">
+                  no available books at the moment !
+                </h2>
+              )}
             </div>
           </div>
         </div>
@@ -179,15 +183,6 @@ export default function Home() {
                             <span className="ms-3 small-font opacity-75 times">
                               about 2 years ago
                             </span>
-                          </div>
-                          <div className="d-flex justify-content-between align-items-center">
-                            {Array.from({ length: 5 }).map((_, idx) => (
-                              <FontAwesomeIcon
-                                key={idx}
-                                icon={faStar}
-                                className="text-warning"
-                              />
-                            ))}
                           </div>
                         </div>
                         <p className="times normal-gont">
