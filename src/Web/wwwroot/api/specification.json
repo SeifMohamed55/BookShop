@@ -310,6 +310,83 @@
         }
       }
     },
+    "/api/v1/Books/book": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "operationId": "GetBookById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponseOfBookDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/Books/page": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "operationId": "GetBookPage",
+        "parameters": [
+          {
+            "name": "bookId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/v1/Categories": {
       "get": {
         "tags": [
@@ -553,6 +630,10 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
           "name": {
             "type": "string"
           },
@@ -815,6 +896,93 @@
           }
         }
       },
+      "SuccessResponseOfIEnumerableOfMyBooksDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiResponse"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "data": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/MyBooksDto"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "MyBooksDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "imagePath": {
+            "type": "string"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "averageRating": {
+            "type": "number",
+            "format": "float"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "readingPercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "readingStatus": {
+            "type": "string"
+          },
+          "isCompleted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SuccessResponseOfBookDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiResponse"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "data": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/BookDto"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
       "SuccessResponseOfServiceResultOfInteger": {
         "allOf": [
           {
@@ -1029,93 +1197,6 @@
             }
           }
         }
-      },
-      "SuccessResponseOfIEnumerableOfMyBooksDto": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ApiResponse"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "data": {
-                "type": "array",
-                "nullable": true,
-                "items": {
-                  "$ref": "#/components/schemas/MyBooksDto"
-                }
-              }
-            }
-          }
-        ]
-      },
-      "MyBooksDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "title": {
-            "type": "string"
-          },
-          "author": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "imagePath": {
-            "type": "string"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "averageRating": {
-            "type": "number",
-            "format": "float"
-          },
-          "categories": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "readingPercentage": {
-            "type": "number",
-            "format": "double"
-          },
-          "readingStatus": {
-            "type": "string"
-          },
-          "isCompleted": {
-            "type": "boolean"
-          }
-        }
-      },
-      "SuccessResponseOfBookDto": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ApiResponse"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "data": {
-                "nullable": true,
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/BookDto"
-                  }
-                ]
-              }
-            }
-          }
-        ]
       },
       "SuccessResponseOfIEnumerableOfCategoryDto": {
         "allOf": [

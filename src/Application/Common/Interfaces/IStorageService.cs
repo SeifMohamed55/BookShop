@@ -23,4 +23,5 @@ public interface IStorageService
     Task<string> SaveImageAsync(string base64Image, FileType type);
     Task<(string Path, int Pages)> SavePdfAsync(string base64Pdf);
     bool DeleteImageAsync(string filePath);
+    byte[] GetBookPage(string filePath, int page);
 }

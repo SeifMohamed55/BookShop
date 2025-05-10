@@ -8,6 +8,7 @@ using AspireApp.Domain.Entities;
 namespace AspireApp.Application.Common.Models;
 public class BookClubDto
 {
+    public int Id { get; set; }
     public required string Name { get; set; }
     public required string Description { get; set; }
     public required string ImagePath { get; set; }

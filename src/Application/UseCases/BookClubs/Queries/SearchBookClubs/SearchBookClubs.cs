@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using AspireApp.Application.BookClubs.Queries.SearchBookClubs;
 using AspireApp.Application.Common.Interfaces;
 using AspireApp.Application.Common.Models;
 using GraduationProject.Application.Services;

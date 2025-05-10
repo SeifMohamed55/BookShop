@@ -109,6 +109,28 @@ public class StorageService : IStorageService
         return $"{backendUrl}/uploadedFiles/{folder}/{fileName}";
     }
 
+    public byte[] GetBookPage(string filePath, int page)
+    {
+        try
+        {
+            var segments = filePath.Split('/');
+            if (segments.Length < 3) return Array.Empty<byte>();
+            var subfolder = segments[^2];
+            var fileName = segments[^1];
+            var fullPath = Path.Combine(_rootUploadPath, subfolder, fileName);
+            if (!File.Exists(fullPath)) return Array.Empty<byte>();
+            using var stream = new MemoryStream();
+            using var pdfDocument = PdfReader.Open(fullPath, PdfDocumentOpenMode.Import);
+            pdfDocument.Save(stream);
+            return stream.ToArray();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting book page");
+            return Array.Empty<byte>();
+        }
+    }
+
     public bool DeleteImageAsync(string dbRelativePath)
     {
         try
