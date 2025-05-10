@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container } from "reactstrap";
 import CreateBookClubModal from "../ui/CreateBookClubModal";
 import HeroSection from "../ui/HeroSection";
@@ -7,8 +7,23 @@ import Slider, { Settings } from "react-slick";
 import VerticalCard from "../ui/VerticalCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { BookClubsClient } from "../../web-api-client";
+import { BookClub } from "../../types/interfaces/BookClubData";
 
 const BookClubsPage: React.FC = () => {
+  const [bookClub, setBookClub] = useState<BookClub[]>([]);
+
+  useEffect(() => {
+    const client = new BookClubsClient();
+    client
+      .getBookClubs()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
   const [modal, setModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
