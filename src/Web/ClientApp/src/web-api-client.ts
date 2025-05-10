@@ -1928,7 +1928,7 @@ export class BookDto implements IBookDto {
     isHidden?: boolean;
     userId?: string;
     reviews?: ReviewDto[];
-    categoriesDto?: CategoryDto[];
+    categories?: CategoryDto[];
 
     constructor(data?: IBookDto) {
         if (data) {
@@ -1956,10 +1956,10 @@ export class BookDto implements IBookDto {
                 for (let item of _data["reviews"])
                     this.reviews!.push(ReviewDto.fromJS(item));
             }
-            if (Array.isArray(_data["categoriesDto"])) {
-                this.categoriesDto = [] as any;
-                for (let item of _data["categoriesDto"])
-                    this.categoriesDto!.push(CategoryDto.fromJS(item));
+            if (Array.isArray(_data["categories"])) {
+                this.categories = [] as any;
+                for (let item of _data["categories"])
+                    this.categories!.push(CategoryDto.fromJS(item));
             }
         }
     }
@@ -1988,10 +1988,10 @@ export class BookDto implements IBookDto {
             for (let item of this.reviews)
                 data["reviews"].push(item.toJSON());
         }
-        if (Array.isArray(this.categoriesDto)) {
-            data["categoriesDto"] = [];
-            for (let item of this.categoriesDto)
-                data["categoriesDto"].push(item.toJSON());
+        if (Array.isArray(this.categories)) {
+            data["categories"] = [];
+            for (let item of this.categories)
+                data["categories"].push(item.toJSON());
         }
         return data;
     }
@@ -2009,7 +2009,7 @@ export interface IBookDto {
     isHidden?: boolean;
     userId?: string;
     reviews?: ReviewDto[];
-    categoriesDto?: CategoryDto[];
+    categories?: CategoryDto[];
 }
 
 export class ReviewDto implements IReviewDto {
