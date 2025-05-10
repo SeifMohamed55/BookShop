@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import MenuList from "../ui/menuList";
 import HorizontalCard from "../ui/horizontalCard";
+import CreateBookModal from "../ui/CreateBookModal";
 import {
   CartesianGrid,
   XAxis,
@@ -14,7 +15,11 @@ import {
 } from "recharts";
 import TagsDiv from "../ui/TagsDiv";
 import { Book } from "../../types/interfaces/Book";
+
 const MyBooks = () => {
+  const [modal, setModal] = useState(false);
+  const toggleModal = () => setModal(!modal);
+
   useEffect(() => {
 
     
@@ -51,6 +56,7 @@ const MyBooks = () => {
             <button
               type="button"
               className="btn btn-dark w-auto text-capitalize times rounded-2 btn-style"
+              onClick={toggleModal}
             >
               <FontAwesomeIcon icon={faPlus} className="me-2" />
               add book
@@ -153,6 +159,7 @@ const MyBooks = () => {
           </div>
         </div>
       </div>
+      <CreateBookModal isOpen={modal} toggle={toggleModal} />
     </div>
   );
 };
