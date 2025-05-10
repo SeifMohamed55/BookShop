@@ -13,6 +13,17 @@ import { BookClub } from "../../types/interfaces/BookClubData";
 const BookClubsPage: React.FC = () => {
   const [bookClub, setBookClub] = useState<BookClub[]>([]);
 
+  useEffect(() => {
+    const client = new BookClubsClient();
+    client
+      .getBookClubs()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
   const [modal, setModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 

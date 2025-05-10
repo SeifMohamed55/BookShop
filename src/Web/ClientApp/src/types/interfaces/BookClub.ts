@@ -2,7 +2,7 @@ export interface BookClub {
   name?: string;
   description?: string;
   imagePath?: string;
-  books?: PopularBook[];
+  books?: PopularBook;
   numberOfMembers?: number;
 }
 
