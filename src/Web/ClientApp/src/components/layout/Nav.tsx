@@ -22,6 +22,7 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../contexts/userDataProvider";
 import Cookies from "js-cookie";
 import { LogoutClient } from "../../web-api-client";
+import toast from "react-hot-toast";
 
 export default function Nav() {
   const context = useContext(UserContext);
@@ -45,12 +46,21 @@ export default function Nav() {
 
   const handleLogout = () => {
     const client = new LogoutClient();
-    Cookies.remove("isSignedIn");
-    localStorage.clear();
-    setUserData(null);
-    setIsSignedIn(false);
-    setIsProfileOpen(false);
-    navigator("/login");
+    client
+      .logoutUser(undefined)
+      .then((res) => {
+        console.log(res);
+        Cookies.remove("isSignedIn");
+        localStorage.clear();
+        setUserData(null);
+        setIsSignedIn(false);
+        setIsProfileOpen(false);
+        navigator("/login");
+        toast.success(res.message || "user logged out successfully");
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   return (
@@ -175,7 +185,7 @@ export default function Nav() {
                     <div className="border-bottom w-100 profile-hover">
                       <Link
                         to="/profile"
-                        className="times fw-semibold text-capitalize pb-1 m-0 pointer text-decoration-none text-black"
+                        className="times fw-semibold text-capitalize pb-1 m-0 w-100 d-block pointer text-decoration-none text-black"
                         onClick={() => setIsProfileOpen(false)}
                       >
                         <FontAwesomeIcon icon={faUser} className="me-2" />

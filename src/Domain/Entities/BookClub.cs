@@ -9,8 +9,3 @@ public class BookClub : BaseAuditableEntity
     public ICollection<BookClubMember> UserBookClubs { get; set; } = [];
 
 }
-
-
-
-
-
