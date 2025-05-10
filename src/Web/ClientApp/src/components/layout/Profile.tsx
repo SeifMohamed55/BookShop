@@ -68,7 +68,7 @@ const Profile: React.FC = () => {
             <CardBody className="text-center">
               <div className="profile-image-container mb-4">
                 <img
-                  src={userData?.imageUrl}
+                  src={userData?.imageUrl || ""}
                   alt="Profile"
                   className="rounded-circle"
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
@@ -99,7 +99,7 @@ const Profile: React.FC = () => {
               {Array.from({ length: 4 }).map((_, idx) => (
                 <div key={idx} className="px-2">
                   <Card className="h-100 border-0 shadow-sm hover-card">
-                    <VerticalCard />
+
                   </Card>
                 </div>
               ))}

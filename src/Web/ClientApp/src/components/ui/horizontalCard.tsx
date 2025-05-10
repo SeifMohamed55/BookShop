@@ -1,6 +1,5 @@
 import { faBookmark, faStar } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import myPic from "../../images/my-pic.jpg";
 import TagsDiv from "./TagsDiv";
 import { useEffect, useState } from "react";
 import { Book } from "../../types/interfaces/Book";
@@ -39,7 +38,9 @@ const HorizontalCard = ({
         <div className="d-flex justify-content-between align-items-center w-100">
           <h3 className="fs-4 playfair fw-bold">{bookDetails.title}</h3>
           <div className="d-flex justify-content-between align-items-center gap-0">
-            {Array.from({ length: 5 }).map((star, idx) => (
+            {Array.from({
+              length: Math.round(bookDetails.averageRating || 0),
+            }).map((_, idx) => (
               <FontAwesomeIcon
                 key={idx}
                 icon={faStar}

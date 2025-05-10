@@ -1,6 +1,6 @@
 import { faBookOpen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MenuList from "../ui/menuList";
 import HorizontalCard from "../ui/horizontalCard";
 import CreateBookModal from "../ui/CreateBookModal";
@@ -15,33 +15,46 @@ import {
 } from "recharts";
 import TagsDiv from "../ui/TagsDiv";
 import { Book } from "../../types/interfaces/Book";
+import { ReadingStatsClient } from "../../web-api-client";
+import { States } from "../../types/interfaces/States";
 
 const MyBooks = () => {
   const [modal, setModal] = useState(false);
   const toggleModal = () => setModal(!modal);
   const [listValues] = useState<string[]>([
-    `📖 all books`,
-    `🚩 currently reading`,
-    `✅ completed`,
+    `all books`,
+    `currently reading`,
+    `completed`,
   ]);
   const onClick = (index: number): void => {
     setActiveIndex(index);
   };
   const [activeIndex, setActiveIndex] = useState<number>(0);
-  const data = [
-    { name: "Apr 23", pages: 25 },
-    { name: "Apr 25", pages: 20 },
-    { name: "Apr 29", pages: 35 },
-    { name: "May 1", pages: 13 },
-    { name: "May 3", pages: 10 },
-    { name: "May 6", pages: 35 },
-    { name: "May 9", pages: 30 },
-  ];
+  const [data, setData] = useState<States[] | undefined>(undefined);
   const [tagsValue] = useState<string[]>([
     "Fiction",
     "Science fiction",
     "biography",
   ]);
+  const getDaysRemainingInYear = () => {
+    const today = new Date();
+    const endOfYear = new Date(today.getFullYear(), 11, 31); // December is month 11
+    const diffInMs = endOfYear.getTime() - today.getTime();
+    const daysRemaining = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+    return `${daysRemaining} days remaining this year`;
+  };
+  useEffect(() => {
+    const client = new ReadingStatsClient();
+    client
+      .getReadingStats()
+      .then((res) => {
+        console.log(res);
+        res.data ? setData(res.data) : setData(undefined);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  });
   return (
     <div className="container-lg py-5">
       <div className="row g-4">
@@ -75,10 +88,10 @@ const MyBooks = () => {
             </h2>
             <div className="p-3 rounded-2 d-flex justify-content-between align-items-center flex-column gap-2 w-100 border">
               <h3 className="times fw-bold h5 w-100 text-nowrap">
-                Reading Goal 2023
+                Reading Goal
               </h3>
               <p className="small-font w-100 opacity-75">
-                239 days remaining this year
+                {getDaysRemainingInYear()}
               </p>
               <div className="w-100 rounded-2 pages p-2">
                 <p className="bg-white rounded-2 p-3 d-flex justify-content-between align-items-center times text-capitalize">
@@ -89,7 +102,7 @@ const MyBooks = () => {
               <div className="py-3 w-100">
                 <div className="d-flex times justify-content-between align-items-center normal-font ">
                   <p className="text-nowrap">2,430 of 7,500 pages</p>
-                  <p>32%</p>
+                  <p>{}%</p>
                 </div>
                 <div className="progress" style={{ height: 8 }}>
                   <div

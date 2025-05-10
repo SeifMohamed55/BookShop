@@ -9,7 +9,7 @@ import PopularBook from "../ui/PopularBook";
 import MenuList from "../ui/menuList";
 import { useEffect, useState } from "react";
 import HorizontalCard from "../ui/horizontalCard";
-import { BooksClient } from "../../web-api-client";
+import { BooksClient, CategoriesClient } from "../../web-api-client";
 import { PopularBooks } from "../../types/interfaces/PopularBooks";
 import { Book } from "../../types/interfaces/Book";
 import { MostPopularBook } from "../../types/interfaces/MostPopularBooks";
@@ -22,12 +22,7 @@ export default function Home() {
   const [mostPopularBook, setMostPopularBook] = useState<
     MostPopularBook | undefined
   >(undefined);
-  const [listValues] = useState<string[]>([
-    "all genres",
-    "fiction",
-    "non-fiction",
-    "fantasy",
-  ]);
+  const [listValues] = useState<string[]>([]);
 
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
@@ -79,13 +74,25 @@ export default function Home() {
       });
   }, []);
 
+  // Popular books data
   useEffect(() => {
     const client = new BooksClient();
-    // Popular books data
     client
       .getPopularBooks()
       .then((res) => {
         setPopularBooks(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    const client = new CategoriesClient();
+    client
+      .getTop3Categories()
+      .then((res) => {
+        console.log(res);
       })
       .catch((err) => {
         console.error(err);

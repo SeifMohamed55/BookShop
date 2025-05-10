@@ -89,9 +89,9 @@ const BookClubsPage: React.FC = () => {
         <h2 className="playfair fw-bold mb-4">Popular Book Clubs</h2>
         <Slider {...settings}>
           {bookClub ? (
-            bookClub.map((item, idx) => (
-              <div key={idx}>
-                <VerticalCard />
+            bookClub.map((item) => (
+              <div key={item.id}>
+                <VerticalCard bookClub={item} />
               </div>
             ))
           ) : (

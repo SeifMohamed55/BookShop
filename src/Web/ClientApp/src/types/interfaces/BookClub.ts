@@ -2,6 +2,8 @@ import { Category } from "./Category";
 import { Review } from "./Review";
 
 export interface BookClub {
+  author?: string;
+  id?: number;
   name?: string;
   description?: string;
   imagePath?: string;

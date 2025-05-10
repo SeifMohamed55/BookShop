@@ -8,7 +8,7 @@ import { BookClub } from "../../types/interfaces/BookClub";
 interface FilterBarProps {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
-  valueSetter: (value: BookClub[]) => void;
+  valueSetter: (value: BookClub[] | undefined) => void;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -18,12 +18,12 @@ const FilterBar: React.FC<FilterBarProps> = ({
 }) => {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    console.log(searchTerm);
     const client = new BookClubsClient();
     client
-      .searchBookClubs(searchTerm)
+      .searchBookClubs(searchTerm.trim())
       .then((res) => {
         console.log(res);
+        res.data?.length === 0 ? valueSetter(undefined) : valueSetter(res.data);
       })
       .catch((err) => {
         console.error(err);
