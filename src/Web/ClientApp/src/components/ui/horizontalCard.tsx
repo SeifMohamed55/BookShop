@@ -1,6 +1,5 @@
 import { faBookmark, faStar, faBook } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import myPic from "../../images/my-pic.jpg";
 import TagsDiv from "./TagsDiv";
 import { useEffect, useState } from "react";
 import { Book } from "../../types/interfaces/Book";
@@ -11,20 +10,23 @@ interface HorizontalCardProps {
 }
 
 const HorizontalCard = ({
-  bookDetails = [] as Book,
+  bookDetails,
   onReadBook
 }: HorizontalCardProps) => {
-  const [tagValues, setTagValuse] = useState<string[] | undefined>(undefined);
+  const [tagValues, setTagValues] = useState<string[]>([]);
+
   useEffect(() => {
-    if (bookDetails.categories) setTagValuse([...bookDetails.categories]);
+    if (bookDetails.categories) {
+      setTagValues(bookDetails.categories);
+    }
   }, [bookDetails]);
-  function handleClick(): void {}
+
   return (
     <div className="horizontal-card-div border p-3 d-flex align-items-start flex-md-row flex-column gap-3 rounded-2 w-100">
       <figure className="horizontal-card mx-auto overflow-hidden position-relative rounded-2">
         <img
           src={bookDetails.imagePath}
-          alt="book"
+          alt={bookDetails.title}
           className="img-fluid"
           height={250}
         />
@@ -43,7 +45,7 @@ const HorizontalCard = ({
         <div className="d-flex justify-content-between align-items-center w-100">
           <h3 className="fs-4 playfair fw-bold">{bookDetails.title}</h3>
           <div className="d-flex justify-content-between align-items-center gap-0">
-            {Array.from({ length: 5 }).map((star, idx) => (
+            {Array.from({ length: 5 }).map((_, idx) => (
               <FontAwesomeIcon
                 key={idx}
                 icon={faStar}
@@ -55,9 +57,9 @@ const HorizontalCard = ({
             </span>
           </div>
         </div>
-        <p className="opacity-75 times m-0">{bookDetails.totalPages} page</p>
-        {tagValues ? <TagsDiv values={tagValues} isDark={false} /> : ""}
-        <p className="times normal-font fw-fw-semibold">
+        <p className="opacity-75 times m-0">{bookDetails.totalPages} pages</p>
+        {tagValues.length > 0 && <TagsDiv values={tagValues} isDark={false} />}
+        <p className="times normal-font fw-semibold">
           {bookDetails.description}
         </p>
         <div className="d-flex gap-3">
@@ -70,7 +72,6 @@ const HorizontalCard = ({
             Read Book
           </button>
           <button
-            onClick={handleClick}
             type="button"
             className="btn btn-dark text-capitalize fw-semibold normal-font"
           >

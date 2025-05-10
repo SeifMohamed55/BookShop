@@ -16,35 +16,44 @@ import {
 } from "recharts";
 import TagsDiv from "../ui/TagsDiv";
 import { Book } from "../../types/interfaces/Book";
-import { BooksClient } from "../../web-api-client";
 
 const MyBooks = () => {
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
-  const [books, setBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [books] = useState<Book[]>([
+    {
+      id: 1,
+      title: "The Midnight Library",
+      author: "Matt Haig",
+      description: "Between life and death there is a library, and the shelves go on forever.",
+      imagePath: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
+      totalPages: 304,
+      averageRating: 4.5,
+      categories: ["Fiction", "Fantasy"]
+    },
+    {
+      id: 2,
+      title: "Project Hail Mary",
+      author: "Andy Weir",
+      description: "A lone astronaut must save the earth from disaster in this incredible new science-based thriller.",
+      imagePath: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
+      totalPages: 496,
+      averageRating: 4.8,
+      categories: ["Science Fiction", "Adventure"]
+    },
+    {
+      id: 3,
+      title: "The Seven Husbands of Evelyn Hugo",
+      author: "Taylor Jenkins Reid",
+      description: "A reclusive Hollywood legend reveals her life story to an unknown journalist.",
+      imagePath: "https://images.unsplash.com/photo-1544947950-fa07a98d237f",
+      totalPages: 389,
+      averageRating: 4.6,
+      categories: ["Historical Fiction", "Drama"]
+    }
+  ]);
 
   const toggleModal = () => setModal(!modal);
-
-  useEffect(() => {
-    const fetchMyBooks = async () => {
-      try {
-        const client = new BooksClient();
-        const response = await client.getMyBooks();
-        if (response.data) {
-          setBooks(response.data);
-        }
-      } catch (err) {
-        console.error('Error fetching books:', err);
-        setError('Failed to load books. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMyBooks();
-  }, []);
 
   const handleReadBook = (bookId: number) => {
     navigate(`/reader/${bookId}`);
@@ -94,17 +103,7 @@ const MyBooks = () => {
             activeIndex={activeIndex}
           />
           <div className="d-flex justify-content-between align-items-center gap-4 flex-column">
-            {loading ? (
-              <div className="text-center py-5">
-                <div className="spinner-border text-primary" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-              </div>
-            ) : error ? (
-              <div className="text-center py-5 text-danger">
-                <p>{error}</p>
-              </div>
-            ) : books.length > 0 ? (
+            {books.length > 0 ? (
               books.map((book) => (
                 <HorizontalCard 
                   key={book.id} 
