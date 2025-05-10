@@ -88,6 +88,54 @@ export class BookClubsClient extends ApiClientBase {
         }
         return Promise.resolve<SuccessResponseOfIEnumerableOfBookClubDto>(null as any);
     }
+
+    searchBookClubs(keyword: string): Promise<SuccessResponseOfIEnumerableOfBookClubDto> {
+        let url_ = this.baseUrl + "/api/v1/BookClubs/Search?";
+        if (keyword === undefined || keyword === null)
+            throw new Error("The parameter 'keyword' must be defined and cannot be null.");
+        else
+            url_ += "keyword=" + encodeURIComponent("" + keyword) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processSearchBookClubs(_response);
+        });
+    }
+
+    protected processSearchBookClubs(response: Response): Promise<SuccessResponseOfIEnumerableOfBookClubDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SuccessResponseOfIEnumerableOfBookClubDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ErrorResponse.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SuccessResponseOfIEnumerableOfBookClubDto>(null as any);
+    }
 }
 
 export class BooksClient extends ApiClientBase {

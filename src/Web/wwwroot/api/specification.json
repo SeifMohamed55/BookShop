@@ -36,6 +36,47 @@
         }
       }
     },
+    "/api/v1/BookClubs/Search": {
+      "get": {
+        "tags": [
+          "BookClubs"
+        ],
+        "operationId": "SearchBookClubs",
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponseOfIEnumerableOfBookClubDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/Books/popular": {
       "get": {
         "tags": [
