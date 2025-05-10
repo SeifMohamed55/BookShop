@@ -1,7 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace BookShop.Application.FunctionalTests;
-
+namespace AspireApp.Application.FunctionalTests;
 public interface ITestDatabase
 {
     Task InitialiseAsync();

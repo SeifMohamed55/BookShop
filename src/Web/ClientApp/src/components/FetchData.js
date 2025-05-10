@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import followIfLoginRedirect from './api-authorization/followIfLoginRedirect';
-import { WeatherForecastsClient } from '../web-api-client.ts';
+import React, { Component } from "react";
+import followIfLoginRedirect from "./api-authorization/followIfLoginRedirect";
+import { WeatherForecastsClient } from "../web-api-client.ts";
 
 export class FetchData extends Component {
   static displayName = FetchData.name;
@@ -26,23 +26,27 @@ export class FetchData extends Component {
           </tr>
         </thead>
         <tbody>
-          {forecasts.map(forecast =>
+          {forecasts.map((forecast) => (
             <tr key={forecast.date}>
               <td>{new Date(forecast.date).toLocaleDateString()}</td>
               <td>{forecast.temperatureC}</td>
               <td>{forecast.temperatureF}</td>
               <td>{forecast.summary}</td>
             </tr>
-          )}
+          ))}
         </tbody>
       </table>
     );
   }
 
   render() {
-    let contents = this.state.loading
-      ? <p><em>Loading...</em></p>
-      : FetchData.renderForecastsTable(this.state.forecasts);
+    let contents = this.state.loading ? (
+      <p>
+        <em>Loading...</em>
+      </p>
+    ) : (
+      FetchData.renderForecastsTable(this.state.forecasts)
+    );
 
     return (
       <div>
@@ -60,7 +64,7 @@ export class FetchData extends Component {
   }
 
   async populateWeatherDataOld() {
-    const response = await fetch('weatherforecast');
+    const response = await fetch("weatherforecast");
     followIfLoginRedirect(response);
     const data = await response.json();
     this.setState({ forecasts: data, loading: false });

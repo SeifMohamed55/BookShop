@@ -1,4 +1,9 @@
-using BookShop.Infrastructure.Data;
+﻿using System.Reflection.PortableExecutable;
+using AspireApp.Application.Common.Models;
+using AspireApp.Infrastructure.Data;
+using AspireApp.Web.Common.Middleware;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,12 +11,14 @@ DotNetEnv.Env.Load();
 builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
+builder.AddServiceDefaults();
 builder.AddKeyVaultIfConfigured();
 builder.AddApplicationServices();
 builder.AddInfrastructureServices();
 builder.AddWebServices();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -24,7 +31,6 @@ else
     app.UseHsts();
 }
 
-app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -34,14 +40,20 @@ app.UseSwaggerUi(settings =>
     settings.DocumentPath = "/api/specification.json";
 });
 
-app.MapRazorPages();
+
+app.UseExceptionHandler(opt => { });
+
+app.UseAuthentication();    // 2. Set the User.Identity
+
+//app.UseMiddleware<AntiforgeryValidationMiddleware>();
+
+app.UseAuthorization();     // 3. Check if the user is allowed
+
+app.UseAntiforgery();       // 4. Validate CSRF tokens (for unsafe methods)
+
+app.MapEndpoints();         // 5. Handle requests
 
 app.MapFallbackToFile("index.html");
-
-app.UseExceptionHandler(options => { });
-
-
-app.MapEndpoints();
 
 app.Run();
 

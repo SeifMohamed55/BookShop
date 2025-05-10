@@ -1,4 +1,4 @@
-namespace BookShop.Web.AcceptanceTests.StepDefinitions;
+namespace AspireApp.Web.AcceptanceTests.StepDefinitions;
 
 [Binding]
 public sealed class LoginStepDefinitions

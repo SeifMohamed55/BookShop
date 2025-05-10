@@ -1,7 +1,6 @@
-﻿using ValidationException = BookShop.Application.Common.Exceptions.ValidationException;
+﻿using ValidationException = AspireApp.Application.Common.Exceptions.ValidationException;
 
-namespace BookShop.Application.Common.Behaviours;
-
+namespace AspireApp.Application.Common.Behaviours;
 public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
      where TRequest : notnull
 {

@@ -1,9 +1,8 @@
 ﻿using System.Security.Claims;
 
-using BookShop.Application.Common.Interfaces;
+using AspireApp.Application.Common.Interfaces;
 
-namespace BookShop.Web.Services;
-
+namespace AspireApp.Web.Services;
 public class CurrentUser : IUser
 {
     private readonly IHttpContextAccessor _httpContextAccessor;

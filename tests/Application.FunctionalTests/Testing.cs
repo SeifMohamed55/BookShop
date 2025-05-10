@@ -1,13 +1,12 @@
-﻿using BookShop.Domain.Constants;
-using BookShop.Infrastructure.Data;
-using BookShop.Infrastructure.Identity;
+﻿using AspireApp.Domain.Constants;
+using AspireApp.Infrastructure.Data;
+using AspireApp.Infrastructure.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BookShop.Application.FunctionalTests;
-
+namespace AspireApp.Application.FunctionalTests;
 [SetUpFixture]
 public partial class Testing
 {
@@ -99,7 +98,7 @@ public partial class Testing
         {
             await _database.ResetAsync();
         }
-        catch (Exception) 
+        catch (Exception)
         {
         }
 

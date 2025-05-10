@@ -1,11 +1,10 @@
-﻿using BookShop.Application.TodoLists.Queries.GetTodos;
-using BookShop.Domain.Entities;
-using BookShop.Domain.ValueObjects;
-
-namespace BookShop.Application.FunctionalTests.TodoLists.Queries;
+﻿using AspireApp.Application.TodoLists.Queries.GetTodos;
+using AspireApp.Domain.Entities;
+using AspireApp.Domain.ValueObjects;
 
 using static Testing;
 
+namespace AspireApp.Application.FunctionalTests.TodoLists.Queries;
 public class GetTodosTests : BaseTestFixture
 {
     [Test]
@@ -55,7 +54,7 @@ public class GetTodosTests : BaseTestFixture
         var query = new GetTodosQuery();
 
         var action = () => SendAsync(query);
-        
+
         await action.Should().ThrowAsync<UnauthorizedAccessException>();
     }
 }

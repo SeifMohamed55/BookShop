@@ -1,11 +1,10 @@
-﻿using BookShop.Application.TodoLists.Commands.CreateTodoList;
-using BookShop.Application.TodoLists.Commands.DeleteTodoList;
-using BookShop.Domain.Entities;
-
-namespace BookShop.Application.FunctionalTests.TodoLists.Commands;
+﻿using AspireApp.Application.TodoLists.Commands.CreateTodoList;
+using AspireApp.Application.TodoLists.Commands.DeleteTodoList;
+using AspireApp.Domain.Entities;
 
 using static Testing;
 
+namespace AspireApp.Application.FunctionalTests.TodoLists.Commands;
 public class DeleteTodoListTests : BaseTestFixture
 {
     [Test]

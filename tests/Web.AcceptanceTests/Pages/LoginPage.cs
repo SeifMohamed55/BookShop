@@ -1,4 +1,4 @@
-﻿namespace BookShop.Web.AcceptanceTests.Pages;
+﻿namespace AspireApp.Web.AcceptanceTests.Pages;
 
 public class LoginPage : BasePage
 {

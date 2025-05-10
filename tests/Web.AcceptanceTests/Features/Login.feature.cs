@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace BookShop.Web.AcceptanceTests.Features
+namespace AspireApp.Web.AcceptanceTests.Features
 {
     using TechTalk.SpecFlow;
     using System;

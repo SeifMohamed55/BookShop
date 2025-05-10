@@ -107,7 +107,7 @@ module database 'core/database/sqlserver/sqlserver.bicep' = {
     tags: tags
     databaseName: !empty(dbName) ? dbName : '${abbrs.sqlServersDatabases}${resourceToken}'
     keyVaultName: keyVault.outputs.name
-    connectionStringKey: 'ConnectionStrings--BookShopDb'
+    connectionStringKey: 'ConnectionStrings--AspireAppDb'
     sqlAdminPassword: dbAdminPassword
     appUserPassword: dbAppUserPassword
   }

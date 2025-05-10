@@ -1,7 +1,9 @@
-﻿using BookShop.Application.Common.Models;
+﻿using AspireApp.Application.Common.Models;
+using AspireApp.Application.UseCases.Accounts.Commands.Login;
+using AspireApp.Application.UseCases.Accounts.Commands.Register;
+using GraduationProject.Application.Services;
 
-namespace BookShop.Application.Common.Interfaces;
-
+namespace AspireApp.Application.Common.Interfaces;
 public interface IIdentityService
 {
     Task<string?> GetUserNameAsync(string userId);
@@ -10,7 +12,18 @@ public interface IIdentityService
 
     Task<bool> AuthorizeAsync(string userId, string policyName);
 
-    Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password);
+    Task<ServiceResult<UserDto>> CreateUserAsync(RegisterCommand model, string imageUrl);
 
-    Task<Result> DeleteUserAsync(string userId);
+    Task<ServiceResult<bool>> DeleteUserAsync(string userId);
+
+    Task<ServiceResult<UserDto>> SignInAsync(LoginCommand command);
+
+    Task<ServiceResult<bool>> UpdateUserImage(string userId, string url);
+
+    Task<UserDto> GetRandomUser();
+
+    Task<ServiceResult<bool>> SignOutAsync();
+
+    Task<ServiceResult<UserDto>> GetUserDtoById(string userId);
+
 }

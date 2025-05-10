@@ -1,4 +1,4 @@
-﻿namespace BookShop.Domain.Common;
+﻿namespace AspireApp.Domain.Common;
 
 public abstract class BaseAuditableEntity : BaseEntity
 {

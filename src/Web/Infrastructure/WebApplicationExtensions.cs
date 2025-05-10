@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 
-namespace BookShop.Web.Infrastructure;
-
+namespace AspireApp.Web.Infrastructure;
 public static class WebApplicationExtensions
 {
     public static RouteGroupBuilder MapGroup(this WebApplication app, EndpointGroupBase group)
@@ -9,7 +8,7 @@ public static class WebApplicationExtensions
         var groupName = group.GetType().Name;
 
         return app
-            .MapGroup($"/api/{groupName}")
+            .MapGroup($"/api/v1/{groupName}")
             .WithGroupName(groupName)
             .WithTags(groupName);
     }

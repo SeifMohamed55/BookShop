@@ -1,14 +1,13 @@
-﻿using BookShop.Application.Common.Models;
+﻿using AspireApp.Application.Common.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace BookShop.Infrastructure.Identity;
-
+namespace AspireApp.Infrastructure.Identity;
 public static class IdentityResultExtensions
 {
-    public static Result ToApplicationResult(this IdentityResult result)
+    public static ApplicationIdentityResult ToApplicationResult(this IdentityResult result)
     {
         return result.Succeeded
-            ? Result.Success()
-            : Result.Failure(result.Errors.Select(e => e.Description));
+            ? ApplicationIdentityResult.Success()
+            : ApplicationIdentityResult.Failure(result.Errors.Select(e => e.Description));
     }
 }

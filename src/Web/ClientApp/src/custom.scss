@@ -1,0 +1,400 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --btn-padding: 14px;
+}
+// fonts
+
+.playfair {
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.inter {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.times {
+  font-family: "Times New Roman", Times, serif;
+}
+.header-font {
+  font-size: 2rem;
+}
+.large-font {
+  font-size: 1rem;
+}
+.normal-font {
+  font-size: 0.8rem;
+}
+.small-font {
+  font-size: 0.6rem;
+}
+
+//styles
+.btn-style {
+  padding: var(--btn-padding) !important;
+  font-size: 15px;
+}
+
+// navbar
+
+.nav-font {
+  text-transform: capitalize;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 15px !important;
+}
+.nav-style {
+  transition: all 200ms;
+  padding: 8px;
+  opacity: 0.75;
+  border-radius: 7px;
+  font-style: unset;
+  text-decoration: none;
+  &:hover {
+    background-color: #f5f5f5;
+    opacity: 1;
+  }
+}
+
+.nav-active {
+  opacity: 1;
+  background-color: black !important;
+  color: white !important;
+}
+
+.nav-responsive {
+  width: 100%;
+}
+
+.profile-div {
+  position: absolute;
+  top: 20%;
+  right: 20%;
+  transition: transform 200ms;
+  width: 200px;
+  height: 170px;
+  z-index: 10;
+  box-shadow: 1px 1px 1px 1px;
+  border-radius: 10px;
+  background-color: white;
+}
+.profile-scale-open {
+  transform: scale(1);
+}
+.profile-scale-closed {
+  transform: scale(0);
+}
+
+.profile-hover {
+  border-radius: 5px;
+  padding: 5px;
+  transition: background-color 200ms;
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+
+.closing-section {
+  transition: color 200ms;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  &:hover {
+    color: red;
+  }
+}
+// ui components
+.horizontal-card-div {
+  width: fit-content;
+}
+.vertical-card-div figure {
+  width: 100px;
+  height: 120px;
+}
+.horizontal-card {
+  width: 200px;
+}
+
+.vertical-card {
+  width: 280px;
+}
+
+.vertical-card-text {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+}
+.popular-book {
+  width: 150px;
+  cursor: pointer;
+}
+
+.popular-book figure,
+.horizontal-card-div figure,
+.vertical-card-div figure {
+  position: relative;
+  overflow: hidden;
+
+  img {
+    transition: transform 500ms;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .layer {
+    background-color: rgba(0, 0, 0, 0.3);
+    transition: opacity 500ms;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  &:hover {
+    .layer {
+      opacity: 1;
+    }
+
+    img {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.list-styling {
+  transition: color 500ms;
+  padding: 5px;
+  width: fit-content;
+  background-color: #f5f5f5;
+  list-style-type: none;
+  cursor: pointer;
+  opacity: 0.75;
+  white-space: nowrap;
+  border-radius: 5px;
+}
+
+.active-list {
+  background-color: white;
+  opacity: 1 !important;
+  color: black;
+  border-radius: 5px;
+}
+// home section
+
+.hero {
+  background: linear-gradient(to right, #fffbeb, #fef9c4);
+  max-height: 40vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+// comment overview
+
+.comments-overview {
+  width: 100%;
+  height: 600px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* Scrollbar width */
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  /* Scrollbar track (the background) */
+  &::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  /* Scrollbar thumb (the draggable part) */
+  &::-webkit-scrollbar-thumb {
+    background-color: black;
+    border-radius: 4px; // optional: make it rounded
+  }
+
+  /* Optional: hover effect */
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: gray;
+  }
+}
+
+.like-comment-style {
+  transition: all 200ms;
+  opacity: 0.75;
+  &:hover {
+    background-color: #f5f5f5;
+    opacity: 1;
+    color: black;
+    cursor: pointer;
+  }
+}
+
+//statistics section
+
+.statistics-div {
+  height: 500px;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  /* Scrollbar width */
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  /* Scrollbar track (the background) */
+  &::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  /* Scrollbar thumb (the draggable part) */
+  &::-webkit-scrollbar-thumb {
+    background-color: black;
+    border-radius: 4px; // optional: make it rounded
+  }
+
+  /* Optional: hover effect */
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: gray;
+  }
+}
+
+.pages {
+  background-color: #f5f5f5;
+}
+
+.hover {
+  transition: opacity 300ms;
+  &:hover {
+    opacity: 0.75;
+  }
+}
+
+// register
+
+.register {
+  max-width: 600px;
+  min-height: 800px;
+}
+
+.book-style {
+  font-size: 35px;
+}
+
+// login
+
+.login {
+  max-width: 600px;
+  min-height: 500px;
+}
+
+//book clubs
+
+.book-clubs-page .hero-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.book-clubs-page .hero-section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: url("https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=1000&q=80")
+    center center;
+  opacity: 0.05;
+  z-index: 0;
+}
+
+.book-clubs-page .hero-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Button styles */
+
+.btn-dark {
+  background-color: #1a1f2c;
+  border-color: #1a1f2c;
+  transition: all 0.3s ease;
+}
+
+.btn-dark:hover {
+  background-color: #30374a;
+  border-color: #30374a;
+}
+
+/* Badge styles */
+.badge {
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.badge:hover {
+  opacity: 0.9;
+}
+
+/* Form styles */
+.modal-header {
+  border-bottom: 2px solid #9b87f5;
+}
+
+.modal-footer {
+  border-top: none;
+}
+
+.slick-slide > div {
+  padding: 0 10px; /* 10px left and right padding between slides */
+}
+// media query
+
+@media (min-width: 576px) {
+  .nav-responsive {
+    width: fit-content;
+  }
+}
+@media (min-width: 768px) {
+  .header-font {
+    font-size: 3rem;
+  }
+
+  .large-font {
+    font-size: 1.5rem;
+  }
+
+  .normal-font {
+    font-size: 0.9375rem;
+  }
+
+  .small-font {
+    font-size: 0.8125rem;
+  }
+}
+@media (min-width: 992px) {
+}
+@media (min-width: 1200px) {
+}
+@media (min-width: 1400px) {
+}

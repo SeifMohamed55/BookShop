@@ -1,4 +1,4 @@
-﻿namespace BookShop.Web.Infrastructure;
+﻿namespace AspireApp.Web.Infrastructure;
 
 public abstract class EndpointGroupBase
 {

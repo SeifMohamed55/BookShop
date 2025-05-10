@@ -1,9 +1,8 @@
-﻿using BookShop.Application.Common.Interfaces;
+﻿using AspireApp.Application.Common.Interfaces;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
-namespace BookShop.Application.Common.Behaviours;
-
+namespace AspireApp.Application.Common.Behaviours;
 public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where TRequest : notnull
 {
     private readonly ILogger _logger;
@@ -28,7 +27,7 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
             userName = await _identityService.GetUserNameAsync(userId);
         }
 
-        _logger.LogInformation("BookShop Request: {Name} {@UserId} {@UserName} {@Request}",
+        _logger.LogInformation("AspireApp Request: {Name} {@UserId} {@UserName} {@Request}",
             requestName, userId, userName, request);
     }
 }

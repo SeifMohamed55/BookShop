@@ -1,7 +1,6 @@
 ﻿using MediatR;
 
-namespace BookShop.Domain.Common;
-
+namespace AspireApp.Domain.Common;
 public abstract class BaseEvent : INotification
 {
 }

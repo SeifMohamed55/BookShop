@@ -1,13 +1,12 @@
-﻿using BookShop.Application.Common.Exceptions;
-using BookShop.Application.Common.Security;
-using BookShop.Application.TodoLists.Commands.CreateTodoList;
-using BookShop.Application.TodoLists.Commands.PurgeTodoLists;
-using BookShop.Domain.Entities;
-
-namespace BookShop.Application.FunctionalTests.TodoLists.Commands;
+﻿using AspireApp.Application.Common.Exceptions;
+using AspireApp.Application.Common.Security;
+using AspireApp.Application.TodoLists.Commands.CreateTodoList;
+using AspireApp.Application.TodoLists.Commands.PurgeTodoLists;
+using AspireApp.Domain.Entities;
 
 using static Testing;
 
+namespace AspireApp.Application.FunctionalTests.TodoLists.Commands;
 public class PurgeTodoListsTests : BaseTestFixture
 {
     [Test]

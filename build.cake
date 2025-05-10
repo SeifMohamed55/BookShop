@@ -12,7 +12,7 @@ IProcess webProcess = null;
 Task("Build")
     .Does(() => {
         Information("Building project...");
-        DotNetBuild("./BookShop.sln", new DotNetBuildSettings {
+        DotNetBuild("./AspireApp.sln", new DotNetBuildSettings {
             Configuration = configuration
         });
         if (DirectoryExists(webClientPath)) {
@@ -77,7 +77,7 @@ Task("Test")
             testSettings.Filter = "FullyQualifiedName!~AcceptanceTests";
         }
 
-        DotNetTest("./BookShop.sln", testSettings);
+        DotNetTest("./AspireApp.sln", testSettings);
     });
 
 Teardown(context =>

@@ -1,3 +1,3 @@
 global using Ardalis.GuardClauses;
-global using BookShop.Web.Infrastructure;
+global using AspireApp.Web.Infrastructure;
 global using MediatR;

@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
-using BookShop.Application.Common.Interfaces;
-using BookShop.Infrastructure.Data;
+using AspireApp.Application.Common.Interfaces;
+using AspireApp.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -9,10 +9,9 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace BookShop.Application.FunctionalTests;
-
 using static Testing;
 
+namespace AspireApp.Application.FunctionalTests;
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
     private readonly DbConnection _connection;
@@ -26,18 +25,12 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseSetting("ConnectionStrings:AspireAppDb", _connectionString);
         builder.ConfigureTestServices(services =>
         {
             services
                 .RemoveAll<IUser>()
                 .AddTransient(provider => Mock.Of<IUser>(s => s.Id == GetUserId()));
-            services
-                .RemoveAll<DbContextOptions<ApplicationDbContext>>()
-                .AddDbContext<ApplicationDbContext>((sp, options) =>
-                {
-                    options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-                    options.UseSqlServer(_connection);
-                });
         });
     }
 }
