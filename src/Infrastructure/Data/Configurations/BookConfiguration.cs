@@ -42,25 +42,8 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
 
 
         builder.HasMany(b => b.Categories)
-            .WithMany(c => c.Books)
-            .UsingEntity<BookCategory>(
-                j => j
-                    .HasOne(bc => bc.Category)
-                    .WithMany()
-                    .HasForeignKey(bc => bc.CategoryId)
-                    .OnDelete(DeleteBehavior.Cascade),
-                j => j
-                    .HasOne(bc => bc.Book)
-                    .WithMany()
-                    .HasForeignKey(bc => bc.BookId)
-                    .OnDelete(DeleteBehavior.Cascade),
-                j =>
-                {
-                    j.ToTable("BookCategories");
-                    j.HasKey(bc => new { bc.BookId, bc.CategoryId });
-                    j.HasIndex(bc => bc.BookId);
-                    j.HasIndex(bc => bc.CategoryId);
-                });
+            .WithMany(c => c.Books);
+            
 
 
     }

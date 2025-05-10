@@ -119,6 +119,8 @@ public class ApplicationDbContextInitialiser
                 new Category { Name = "Spirituality" },
                 new Category { Name = "Comics & Graphic Novels" }
             ]);
+
+            await _context.SaveChangesAsync();
         }
      
     }

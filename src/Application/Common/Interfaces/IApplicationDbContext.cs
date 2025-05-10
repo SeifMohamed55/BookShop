@@ -12,7 +12,6 @@ public interface IApplicationDbContext
     public DbSet<Review> Reviews    { get;}
     public DbSet<UserBookProgress> UserBookProgresses   { get;}
     public DbSet<BookProgressHistory> BookProgressHistories { get;}
-    public DbSet<BookCategory> BookCategories   { get;}
     public DbSet<Category> Categories   { get;}
     public DbSet<BookClub> BookClubs    { get;}
     public DbSet<BookClubMember> BookClubMembers { get; }

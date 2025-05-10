@@ -21,7 +21,7 @@ public class BookDto
     public string UserId { get; set; } = null!;
     public ICollection<ReviewDto> Reviews { get; set; } = new List<ReviewDto>();
 
-    public ICollection<CategoryDto> CategoriesDto { get; set; } = new List<CategoryDto>();
+    public ICollection<CategoryDto> Categories { get; set; } = new List<CategoryDto>();
 
     private class Profiling : Profile
     {
