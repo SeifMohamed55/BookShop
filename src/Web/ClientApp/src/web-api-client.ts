@@ -516,6 +516,58 @@ export class BooksClient extends ApiClientBase {
         }
         return Promise.resolve<void>(null as any);
     }
+
+    /**
+     * @param x_XSRF_TOKEN (optional) CSRF protection token
+     */
+    addUserBookProgress(x_XSRF_TOKEN: string | undefined, command: AddUserBookProgressCommand): Promise<SuccessResponseOfServiceResultOfBoolean> {
+        let url_ = this.baseUrl + "/api/v1/Books/progress";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processAddUserBookProgress(_response);
+        });
+    }
+
+    protected processAddUserBookProgress(response: Response): Promise<SuccessResponseOfServiceResultOfBoolean> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 201) {
+            return response.text().then((_responseText) => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result201 = SuccessResponseOfServiceResultOfBoolean.fromJS(resultData201);
+            return result201;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ErrorResponse.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SuccessResponseOfServiceResultOfBoolean>(null as any);
+    }
 }
 
 export class CategoriesClient extends ApiClientBase {
@@ -1859,6 +1911,139 @@ export interface IAddBookCommand {
     image?: string;
     userId?: string;
     categoriesDto?: CategoryDto[];
+}
+
+export class SuccessResponseOfServiceResultOfBoolean extends ApiResponse implements ISuccessResponseOfServiceResultOfBoolean {
+    data?: ServiceResultOfBoolean | undefined;
+
+    constructor(data?: ISuccessResponseOfServiceResultOfBoolean) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.data = _data["data"] ? ServiceResultOfBoolean.fromJS(_data["data"]) : <any>undefined;
+        }
+    }
+
+    static override fromJS(data: any): SuccessResponseOfServiceResultOfBoolean {
+        data = typeof data === 'object' ? data : {};
+        let result = new SuccessResponseOfServiceResultOfBoolean();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data ? this.data.toJSON() : <any>undefined;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ISuccessResponseOfServiceResultOfBoolean extends IApiResponse {
+    data?: ServiceResultOfBoolean | undefined;
+}
+
+export class ServiceResultOfBoolean implements IServiceResultOfBoolean {
+    isSuccess?: boolean;
+    data?: boolean;
+    message?: string;
+    statusCode?: HttpStatusCode;
+    errors?: string[];
+
+    constructor(data?: IServiceResultOfBoolean) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.isSuccess = _data["isSuccess"];
+            this.data = _data["data"];
+            this.message = _data["message"];
+            this.statusCode = _data["statusCode"];
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ServiceResultOfBoolean {
+        data = typeof data === 'object' ? data : {};
+        let result = new ServiceResultOfBoolean();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isSuccess"] = this.isSuccess;
+        data["data"] = this.data;
+        data["message"] = this.message;
+        data["statusCode"] = this.statusCode;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IServiceResultOfBoolean {
+    isSuccess?: boolean;
+    data?: boolean;
+    message?: string;
+    statusCode?: HttpStatusCode;
+    errors?: string[];
+}
+
+export class AddUserBookProgressCommand implements IAddUserBookProgressCommand {
+    bookId?: number;
+    currentPage?: number;
+
+    constructor(data?: IAddUserBookProgressCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.bookId = _data["bookId"];
+            this.currentPage = _data["currentPage"];
+        }
+    }
+
+    static fromJS(data: any): AddUserBookProgressCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddUserBookProgressCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bookId"] = this.bookId;
+        data["currentPage"] = this.currentPage;
+        return data;
+    }
+}
+
+export interface IAddUserBookProgressCommand {
+    bookId?: number;
+    currentPage?: number;
 }
 
 export class SuccessResponseOfIEnumerableOfCategoryDto extends ApiResponse implements ISuccessResponseOfIEnumerableOfCategoryDto {

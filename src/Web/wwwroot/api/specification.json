@@ -387,6 +387,60 @@
         }
       }
     },
+    "/api/v1/Books/progress": {
+      "post": {
+        "tags": [
+          "Books"
+        ],
+        "operationId": "AddUserBookProgress",
+        "parameters": [
+          {
+            "name": "X-XSRF-TOKEN",
+            "in": "header",
+            "description": "CSRF protection token",
+            "schema": {
+              "type": "string"
+            },
+            "x-internal": true,
+            "x-transform-options-skip": true
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddUserBookProgressCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponseOfServiceResultOfBoolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/Categories": {
       "get": {
         "tags": [
@@ -1198,6 +1252,65 @@
             "items": {
               "$ref": "#/components/schemas/CategoryDto"
             }
+          }
+        }
+      },
+      "SuccessResponseOfServiceResultOfBoolean": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiResponse"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "data": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ServiceResultOfBoolean"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "ServiceResultOfBoolean": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isSuccess": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "statusCode": {
+            "$ref": "#/components/schemas/HttpStatusCode"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AddUserBookProgressCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bookId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentPage": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
