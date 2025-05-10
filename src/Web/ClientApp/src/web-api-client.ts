@@ -476,7 +476,7 @@ export class BooksClient extends ApiClientBase {
         return Promise.resolve<SuccessResponseOfBookDto>(null as any);
     }
 
-    getBookPage(bookId: number, page: number): Promise<void> {
+    getBookPage(bookId: number, page: number): Promise<SuccessResponseOfByteOf> {
         let url_ = this.baseUrl + "/api/v1/Books/page?";
         if (bookId === undefined || bookId === null)
             throw new Error("The parameter 'bookId' must be defined and cannot be null.");
@@ -491,6 +491,7 @@ export class BooksClient extends ApiClientBase {
         let options_: RequestInit = {
             method: "GET",
             headers: {
+                "Accept": "application/json"
             }
         };
 
@@ -501,26 +502,36 @@ export class BooksClient extends ApiClientBase {
         });
     }
 
-    protected processGetBookPage(response: Response): Promise<void> {
+    protected processGetBookPage(response: Response): Promise<SuccessResponseOfByteOf> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SuccessResponseOfByteOf.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ErrorResponse.fromJS(resultData404);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<SuccessResponseOfByteOf>(null as any);
     }
 
     /**
      * @param x_XSRF_TOKEN (optional) CSRF protection token
      */
-    addUserBookProgress(x_XSRF_TOKEN: string | undefined, command: AddUserBookProgressCommand): Promise<SuccessResponseOfServiceResultOfBoolean> {
+    addToLibrary(x_XSRF_TOKEN: string | undefined, command: AddUserBookProgressCommand): Promise<SuccessResponseOfServiceResultOfBoolean> {
         let url_ = this.baseUrl + "/api/v1/Books/progress";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -539,11 +550,11 @@ export class BooksClient extends ApiClientBase {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.processAddUserBookProgress(_response);
+            return this.processAddToLibrary(_response);
         });
     }
 
-    protected processAddUserBookProgress(response: Response): Promise<SuccessResponseOfServiceResultOfBoolean> {
+    protected processAddToLibrary(response: Response): Promise<SuccessResponseOfServiceResultOfBoolean> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -1680,6 +1691,39 @@ export class SuccessResponseOfBookDto extends ApiResponse implements ISuccessRes
 
 export interface ISuccessResponseOfBookDto extends IApiResponse {
     data?: BookDto | undefined;
+}
+
+export class SuccessResponseOfByteOf extends ApiResponse implements ISuccessResponseOfByteOf {
+    data?: string | undefined;
+
+    constructor(data?: ISuccessResponseOfByteOf) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.data = _data["data"];
+        }
+    }
+
+    static override fromJS(data: any): SuccessResponseOfByteOf {
+        data = typeof data === 'object' ? data : {};
+        let result = new SuccessResponseOfByteOf();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ISuccessResponseOfByteOf extends IApiResponse {
+    data?: string | undefined;
 }
 
 export class SuccessResponseOfServiceResultOfInteger extends ApiResponse implements ISuccessResponseOfServiceResultOfInteger {

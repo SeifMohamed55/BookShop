@@ -20,24 +20,43 @@ public class GetBookByIdQueryHandler : IRequestHandler<GetBookByIdQuery, Service
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IIdentityService _identityService;
 
-    public GetBookByIdQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetBookByIdQueryHandler(IApplicationDbContext context, IMapper mapper, IIdentityService identityService)
     {
         _context = context;
         _mapper = mapper;
+        _identityService = identityService;
     }
 
     public async Task<ServiceResult<BookDto>> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
     {
-       var bookDto = await _context.Books
-            .ProjectTo<BookDto>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(b => b.Id == request.id, cancellationToken);
-
-        if (bookDto == null)
+        try
         {
-            return ServiceResult<BookDto>.Failure("Book not found.", HttpStatusCode.NotFound);
+            var bookDto = await _context.Books
+                .ProjectTo<BookDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(b => b.Id == request.id, cancellationToken);
+
+            if (bookDto == null)
+            {
+                return ServiceResult<BookDto>.Failure("Book not found.", HttpStatusCode.NotFound);
+            }
+
+            var userDto = await _identityService.GetUserDtoById(bookDto.UserId);
+
+            if (!userDto.TryGetData(out var data))
+            {
+                return ServiceResult<BookDto>.Failure("User not found.", HttpStatusCode.NotFound);
+            }
+
+            bookDto.Author = data.FullName;
+
+            return ServiceResult<BookDto>.Success(bookDto, "Book fetched successfully.");
         }
-        
-        return ServiceResult<BookDto>.Success(bookDto, "Book fetched successfully.");
+        catch
+        {
+            return ServiceResult<BookDto>.Failure("An error occurred while fetching the book.", HttpStatusCode.InternalServerError);
+        }
+
     }
 }

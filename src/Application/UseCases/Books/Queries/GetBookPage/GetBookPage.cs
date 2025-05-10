@@ -55,8 +55,6 @@ public class GetBookPageQueryHandler : IRequestHandler<GetBookPageQuery, Service
                 }
             }
         }
-
-
         return ServiceResult<byte[]>.Success(bookPage, "Successfully retrieved book page.");
     }
 }
