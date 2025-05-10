@@ -20,12 +20,15 @@ public class GetBookPageQueryHandler : IRequestHandler<GetBookPageQuery, Service
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
     private readonly IStorageService _storageService;
+    private readonly IUser _user;
 
-    public GetBookPageQueryHandler(IApplicationDbContext context, IMapper mapper, IStorageService storageService)
+    public GetBookPageQueryHandler
+        (IApplicationDbContext context, IMapper mapper, IStorageService storageService, IUser user)
     {
         _context = context;
         _mapper = mapper;
         _storageService = storageService;
+        _user = user;
     }
 
     public async Task<ServiceResult<byte[]>> Handle(GetBookPageQuery request, CancellationToken cancellationToken)
@@ -34,8 +37,26 @@ public class GetBookPageQueryHandler : IRequestHandler<GetBookPageQuery, Service
         if(book == null)
             return ServiceResult<byte[]>.Failure("Book not found", HttpStatusCode.NotFound);
 
-        return ServiceResult<byte[]>.Success(
-            _storageService.GetBookPage(book.BookFilePath, request.page),
-            "Successfully retrieved book page.");
+        var bookPage = _storageService.GetBookPage(book.BookFilePath, request.page);
+        if (bookPage.Length == 0)
+            return ServiceResult<byte[]>.Failure("Book page not found", HttpStatusCode.NotFound);
+        if(_user.Id != null)
+        {
+            var bookProgress = await _context.UserBookProgresses
+                .FirstOrDefaultAsync(x => x.BookId == request.bookId && x.UserId == _user.Id);
+
+            if (bookProgress != null)
+            {
+                if(bookProgress.CurrentPage + 1 ==  request.page)
+                {
+                    bookProgress.CurrentPage = request.page;
+                    await _context.SaveChangesAsync(cancellationToken);
+
+                }
+            }
+        }
+
+
+        return ServiceResult<byte[]>.Success(bookPage, "Successfully retrieved book page.");
     }
 }
