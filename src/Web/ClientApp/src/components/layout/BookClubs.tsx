@@ -8,7 +8,7 @@ import VerticalCard from "../ui/VerticalCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { BookClubsClient } from "../../web-api-client";
-import { BookClub } from "../../types/interfaces/BookClubData";
+import { BookClub } from "../../types/interfaces/BookClub";
 
 const BookClubsPage: React.FC = () => {
   const [bookClub, setBookClub] = useState<BookClub[] | undefined>(undefined);
@@ -88,11 +88,17 @@ const BookClubsPage: React.FC = () => {
       <Container className="my-5">
         <h2 className="playfair fw-bold mb-4">Popular Book Clubs</h2>
         <Slider {...settings}>
-          {Array.from({ length: 6 }).map((item, idx) => (
-            <div key={idx}>
-              <VerticalCard />
-            </div>
-          ))}
+          {bookClub ? (
+            bookClub.map((item, idx) => (
+              <div key={idx}>
+                <VerticalCard />
+              </div>
+            ))
+          ) : (
+            <h2 className="playfair text-danger text-center text-capitalize">
+              no book clubs available at the moment
+            </h2>
+          )}
         </Slider>
       </Container>
     </div>

@@ -1,4 +1,5 @@
-import { UserData } from "./UserData";
+import { Category } from "./Category";
+import { Review } from "./Review";
 
 export interface MostPopularBook {
   id?: number;
@@ -13,16 +14,5 @@ export interface MostPopularBook {
   categories?: Category[];
 }
 
-interface Review {
-  id?: number;
-  user?: UserData;
-  comment?: string;
-  likes?: number;
-  rating?: number;
-  lastModified?: Date;
-}
 
-interface Category {
-  id?: number;
-  name?: string;
-}
+

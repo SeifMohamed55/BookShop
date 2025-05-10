@@ -1,8 +1,11 @@
+import { Category } from "./Category";
+import { Review } from "./Review";
+
 export interface BookClub {
   name?: string;
   description?: string;
   imagePath?: string;
-  books?: PopularBook;
+  mostPopularBook?: PopularBook | undefined;
   numberOfMembers?: number;
 }
 
@@ -13,4 +16,8 @@ interface PopularBook {
   imagePath?: string;
   totalPages?: number;
   averageRating?: number;
+  description?: string;
+  bookFilePath?: string;
+  reviews?: Review[];
+  categories?: Category[];
 }

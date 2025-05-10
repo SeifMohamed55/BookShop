@@ -9,7 +9,7 @@ const PopularBook = ({ bookVal }: { bookVal: PopularBooks }) => {
         <img
           src={bookVal.imagePath}
           alt={bookVal ? bookVal.title : "popular book"}
-          className=" img-fluid"
+          className="img-fluid"
           width={200}
         />
         <div className="layer text-white pb-4 ps-3">

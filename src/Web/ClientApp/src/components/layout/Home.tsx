@@ -186,14 +186,14 @@ export default function Home() {
           </h5>
 
           <div className="py-3 comments-overview ">
-            <div className="d-flex justify-content-between align-items-center flex-column gap-2">
+            <div className="d-flex justify-content-between align-items-center flex-column gap-2 ">
               {mostPopularBook?.reviews.map((review) => (
                 <div
                   key={review.id}
-                  className="d-flex border justify-content-between align-items-center rounded-2 flex-column"
+                  className="d-flex border justify-content-between w-100 align-items-center rounded-2 flex-column"
                 >
                   <div className=" p-3 w-100 d-flex justify-content-between gap-2 flex-column flex-sm-row">
-                    <figure className="mx-auto">
+                    <figure>
                       <img
                         src={review.user?.imageUrl}
                         alt={review.user?.fullName || "user"}
@@ -202,7 +202,7 @@ export default function Home() {
                         className="rounded-circle"
                       />
                     </figure>
-                    <div className="d-flex justify-content-between gap-2 flex-column">
+                    <div className="d-flex justify-content-between gap-2 flex-column w-100">
                       <div className="w-100 d-flex justify-content-between align-items-center flex-column flex-sm-row">
                         <div className="d-flex align-items-center justify-content-between w-100">
                           <h2 className="times normal-font text-nowrap m-0 ">

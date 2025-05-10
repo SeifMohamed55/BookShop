@@ -3,7 +3,7 @@ import { InputGroup, Input, Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { BookClubsClient } from "../../web-api-client";
-import { BookClub } from "../../types/interfaces/BookClubData";
+import { BookClub } from "../../types/interfaces/BookClub";
 
 interface FilterBarProps {
   searchTerm: string;
@@ -24,7 +24,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
       .searchBookClubs(searchTerm)
       .then((res) => {
         console.log(res);
-        res.data?.length === 0 ? valueSetter(undefined) : valueSetter(res.data);
       })
       .catch((err) => {
         console.error(err);
