@@ -20,7 +20,7 @@ public static class DependencyInjection
     public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
     {
         var connectionString = builder.Configuration.GetConnectionString("BookShopDb_OnlineSQLServer");
-        Guard.Against.Null(connectionString, message: "Connection string 'AspireAppDb' not found.");
+        Guard.Against.Null(connectionString, message: "Connection string 'BookShopDb_OnlineSQLServer' not found.");
 
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();

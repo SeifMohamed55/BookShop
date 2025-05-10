@@ -1,5 +1,7 @@
-import { faBookmark, faStar } from "@fortawesome/free-regular-svg-icons";
+import { faStar } from "@fortawesome/free-regular-svg-icons";
+import { faBookOpen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router-dom";
 import TagsDiv from "./TagsDiv";
 import { useEffect, useState } from "react";
 import { Book } from "../../types/interfaces/Book";
@@ -9,11 +11,17 @@ const HorizontalCard = ({
 }: {
   bookDetails: Book;
 }) => {
+  const navigate = useNavigate();
   const [tagValues, setTagValuse] = useState<string[] | undefined>(undefined);
+  
   useEffect(() => {
     if (bookDetails.categories) setTagValuse([...bookDetails.categories]);
   }, [bookDetails]);
-  function handleClick(): void {}
+
+  const handleRead = () => {
+    navigate(`/read/${bookDetails.id}`);
+  };
+
   return (
     <div className="horizontal-card-div border p-3 d-flex align-items-start flex-md-row flex-column gap-3 rounded-2 w-100">
       <figure className="horizontal-card mx-auto overflow-hidden position-relative rounded-2">
@@ -58,12 +66,12 @@ const HorizontalCard = ({
           {bookDetails.description}
         </p>
         <button
-          onClick={handleClick}
+          onClick={handleRead}
           type="button"
-          className="btn btn-dark text-capitalize fw-semibold normal-font"
+          className="btn btn-primary text-capitalize fw-semibold normal-font w-100"
         >
-          <FontAwesomeIcon icon={faBookmark} className="me-3" />
-          Add to library
+          <FontAwesomeIcon icon={faBookOpen} className="me-2" />
+          Read
         </button>
       </article>
     </div>

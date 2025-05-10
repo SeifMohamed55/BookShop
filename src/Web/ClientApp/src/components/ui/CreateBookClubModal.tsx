@@ -12,21 +12,18 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import Select from 'react-select';
 
 interface FormData {
   clubName: string;
-  category: string;
+  categories: { value: string; label: string }[];
   description: string;
-  currentBook: string;
-  currentAuthor: string;
 }
 
 interface FormErrors {
   clubName: string;
-  category: string;
+  categories: string;
   description: string;
-  currentBook: string;
-  currentAuthor: string;
 }
 
 interface CreateBookClubModalProps {
@@ -40,22 +37,34 @@ const CreateBookClubModal: React.FC<CreateBookClubModalProps> = ({
 }) => {
   const [formData, setFormData] = useState<FormData>({
     clubName: "",
-    category: "",
+    categories: [],
     description: "",
-    currentBook: "",
-    currentAuthor: "",
   });
 
   const [formErrors, setFormErrors] = useState<FormErrors>({
     clubName: "",
-    category: "",
+    categories: "",
     description: "",
-    currentBook: "",
-    currentAuthor: "",
   });
 
+  // Static category options
+  const categoryOptions = [
+    { value: "Fiction", label: "Fiction" },
+    { value: "Non-Fiction", label: "Non-Fiction" },
+    { value: "Mystery", label: "Mystery" },
+    { value: "Science Fiction", label: "Science Fiction" },
+    { value: "Fantasy", label: "Fantasy" },
+    { value: "Romance", label: "Romance" },
+    { value: "Thriller", label: "Thriller" },
+    { value: "Biography", label: "Biography" },
+    { value: "History", label: "History" },
+    { value: "Self-Help", label: "Self-Help" },
+    { value: "Poetry", label: "Poetry" },
+    { value: "Classics", label: "Classics" }
+  ];
+
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData({
@@ -72,6 +81,21 @@ const CreateBookClubModal: React.FC<CreateBookClubModalProps> = ({
     }
   };
 
+  const handleCategoryChange = (selectedOptions: any) => {
+    setFormData({
+      ...formData,
+      categories: selectedOptions || []
+    });
+    
+    // Clear error when categories are selected
+    if (formErrors.categories) {
+      setFormErrors({
+        ...formErrors,
+        categories: ""
+      });
+    }
+  };
+
   const validateForm = () => {
     let valid = true;
     const newErrors = { ...formErrors };
@@ -81,23 +105,13 @@ const CreateBookClubModal: React.FC<CreateBookClubModalProps> = ({
       valid = false;
     }
 
-    if (!formData.category) {
-      newErrors.category = "Please select a category";
+    if (formData.categories.length === 0) {
+      newErrors.categories = "Please select at least one category";
       valid = false;
     }
 
     if (!formData.description.trim()) {
       newErrors.description = "Description is required";
-      valid = false;
-    }
-
-    if (!formData.currentBook.trim()) {
-      newErrors.currentBook = "Current book is required";
-      valid = false;
-    }
-
-    if (!formData.currentAuthor.trim()) {
-      newErrors.currentAuthor = "Author name is required";
       valid = false;
     }
 
@@ -114,10 +128,8 @@ const CreateBookClubModal: React.FC<CreateBookClubModalProps> = ({
       // Reset form
       setFormData({
         clubName: "",
-        category: "",
+        categories: [],
         description: "",
-        currentBook: "",
-        currentAuthor: "",
       });
     }
   };
@@ -130,7 +142,7 @@ const CreateBookClubModal: React.FC<CreateBookClubModalProps> = ({
       <Form onSubmit={handleSubmit}>
         <ModalBody>
           <Row>
-            <Col md={6}>
+            <Col md={12}>
               <FormGroup>
                 <Label for="clubName">Club Name*</Label>
                 <Input
@@ -146,28 +158,23 @@ const CreateBookClubModal: React.FC<CreateBookClubModalProps> = ({
                 )}
               </FormGroup>
             </Col>
-            <Col md={6}>
+          </Row>
+          <Row>
+            <Col md={12}>
               <FormGroup>
-                <Label for="category">Category*</Label>
-                <Input
-                  type="select"
-                  name="category"
-                  id="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  invalid={!!formErrors.category}
-                >
-                  <option value="">Select Category</option>
-                  <option value="Fiction">Fiction</option>
-                  <option value="Non-Fiction">Non-Fiction</option>
-                  <option value="Mystery">Mystery</option>
-                  <option value="Science Fiction">Science Fiction</option>
-                  <option value="Fantasy">Fantasy</option>
-                  <option value="Romance">Romance</option>
-                  <option value="Thriller">Thriller</option>
-                </Input>
-                {formErrors.category && (
-                  <div className="text-danger small">{formErrors.category}</div>
+                <Label for="categories">Categories*</Label>
+                <Select
+                  isMulti
+                  name="categories"
+                  options={categoryOptions}
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  value={formData.categories}
+                  onChange={handleCategoryChange}
+                  placeholder="Select categories..."
+                />
+                {formErrors.categories && (
+                  <div className="text-danger small">{formErrors.categories}</div>
                 )}
               </FormGroup>
             </Col>
@@ -187,45 +194,6 @@ const CreateBookClubModal: React.FC<CreateBookClubModalProps> = ({
               <div className="text-danger small">{formErrors.description}</div>
             )}
           </FormGroup>
-          <Row className="mt-4">
-            <h5 className="playfair fw-bold mb-3">First Book</h5>
-            <Col md={6}>
-              <FormGroup>
-                <Label for="currentBook">Book Title*</Label>
-                <Input
-                  type="text"
-                  name="currentBook"
-                  id="currentBook"
-                  value={formData.currentBook}
-                  onChange={handleInputChange}
-                  invalid={!!formErrors.currentBook}
-                />
-                {formErrors.currentBook && (
-                  <div className="text-danger small">
-                    {formErrors.currentBook}
-                  </div>
-                )}
-              </FormGroup>
-            </Col>
-            <Col md={6}>
-              <FormGroup>
-                <Label for="currentAuthor">Author*</Label>
-                <Input
-                  type="text"
-                  name="currentAuthor"
-                  id="currentAuthor"
-                  value={formData.currentAuthor}
-                  onChange={handleInputChange}
-                  invalid={!!formErrors.currentAuthor}
-                />
-                {formErrors.currentAuthor && (
-                  <div className="text-danger small">
-                    {formErrors.currentAuthor}
-                  </div>
-                )}
-              </FormGroup>
-            </Col>
-          </Row>
         </ModalBody>
         <ModalFooter>
           <Button type="button" color="light" onClick={toggle}>
