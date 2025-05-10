@@ -89,11 +89,9 @@ export class BookClubsClient extends ApiClientBase {
         return Promise.resolve<SuccessResponseOfIEnumerableOfBookClubDto>(null as any);
     }
 
-    searchBookClubs(keyword: string): Promise<SuccessResponseOfIEnumerableOfBookClubDto> {
+    searchBookClubs(keyword: string | null | undefined): Promise<SuccessResponseOfIEnumerableOfBookClubDto> {
         let url_ = this.baseUrl + "/api/v1/BookClubs/Search?";
-        if (keyword === undefined || keyword === null)
-            throw new Error("The parameter 'keyword' must be defined and cannot be null.");
-        else
+        if (keyword !== undefined && keyword !== null)
             url_ += "keyword=" + encodeURIComponent("" + keyword) + "&";
         url_ = url_.replace(/[?&]$/, "");
 

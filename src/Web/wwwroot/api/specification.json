@@ -46,9 +46,9 @@
           {
             "name": "keyword",
             "in": "query",
-            "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "x-position": 1
           }

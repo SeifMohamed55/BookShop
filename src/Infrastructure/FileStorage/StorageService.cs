@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using PdfSharp.Pdf.IO;
 using AspireApp.Application.Common.Models;
+using PdfSharp.Pdf;
 
 namespace AspireApp.Infrastructure.FileStorage;
 
@@ -114,21 +115,35 @@ public class StorageService : IStorageService
         try
         {
             var segments = filePath.Split('/');
-            if (segments.Length < 3) return Array.Empty<byte>();
+            if (segments.Length < 3) 
+                return Array.Empty<byte>();
+
             var subfolder = segments[^2];
             var fileName = segments[^1];
             var fullPath = Path.Combine(_rootUploadPath, subfolder, fileName);
-            if (!File.Exists(fullPath)) return Array.Empty<byte>();
-            using var stream = new MemoryStream();
-            using var pdfDocument = PdfReader.Open(fullPath, PdfDocumentOpenMode.Import);
-            pdfDocument.Save(stream);
-            return stream.ToArray();
+
+            if (!File.Exists(fullPath))
+                return Array.Empty<byte>();
+
+            using var stream = new MemoryStream(File.ReadAllBytes(fullPath));
+            using var inputDocument = PdfReader.Open(stream, PdfDocumentOpenMode.Import);
+
+            if (page < 1 || page > inputDocument.PageCount)
+                return Array.Empty<byte>();
+
+            using var outputDocument = new PdfDocument();
+            outputDocument.AddPage(inputDocument.Pages[page - 1]);
+
+            using var outputStream = new MemoryStream();
+            outputDocument.Save(outputStream, false); // 'false' to leave stream open after save
+            return outputStream.ToArray();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting book page");
             return Array.Empty<byte>();
         }
+
     }
 
     public bool DeleteImageAsync(string dbRelativePath)
