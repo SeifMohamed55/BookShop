@@ -14,7 +14,6 @@ public record AddBookCommand : IRequest<ServiceResult<BookDto>>
     public required string UserId{ get; set; }
 
     public ICollection<CategoryDto> CategoriesDto { get; set; } = new List<CategoryDto>();
-
 }
 
 public class AddBookCommandValidator : AbstractValidator<AddBookCommand>
