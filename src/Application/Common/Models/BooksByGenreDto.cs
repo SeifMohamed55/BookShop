@@ -17,9 +17,7 @@ public class BooksByGenreDto
     public float AverageRating { get; set; }
     public ICollection<String> Categories { get; set; } = [];
 
-
-
-    private class Profiling : Profile
+    public  class Profiling : Profile
     {
         public Profiling()
         {

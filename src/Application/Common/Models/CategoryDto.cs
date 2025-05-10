@@ -12,7 +12,7 @@ public class CategoryDto
     public int Id { get; set; }
     public string Name { get; set; } = null!;
 
-    private class Profiling : Profile
+    public class Profiling : Profile
     {
         public Profiling()
         {

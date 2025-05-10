@@ -189,6 +189,86 @@
         }
       }
     },
+    "/api/v1/Books/my": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "operationId": "GetMyBooks",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponseOfIEnumerableOfMyBooksDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/Books/most-popular": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "operationId": "GetMostPopularBook",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponseOfBookDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/Login": {
       "post": {
         "tags": [
@@ -1160,6 +1240,190 @@
           }
         }
       },
+      "SuccessResponseOfIEnumerableOfMyBooksDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiResponse"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "data": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/MyBooksDto"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "MyBooksDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "imagePath": {
+            "type": "string"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "averageRating": {
+            "type": "number",
+            "format": "float"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "readingPercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "readingStatus": {
+            "type": "string"
+          },
+          "isCompleted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SuccessResponseOfBookDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiResponse"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "data": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/BookDto"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "BookDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "imagePath": {
+            "type": "string"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "averageRating": {
+            "type": "number",
+            "format": "float"
+          },
+          "description": {
+            "type": "string"
+          },
+          "bookFilePath": {
+            "type": "string"
+          },
+          "isHidden": {
+            "type": "boolean"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "reviews": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewDto"
+            }
+          },
+          "categoriesDto": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryDto"
+            }
+          }
+        }
+      },
+      "ReviewDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "likes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rating": {
+            "type": "integer",
+            "format": "byte"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UserDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          }
+        }
+      },
       "SuccessResponseOfUserDto": {
         "allOf": [
           {
@@ -1180,24 +1444,6 @@
             }
           }
         ]
-      },
-      "UserDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "fullName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "imageUrl": {
-            "type": "string"
-          }
-        }
       },
       "LoginCommand": {
         "type": "object",

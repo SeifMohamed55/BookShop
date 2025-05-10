@@ -13,7 +13,7 @@ public record AddBookCommand : IRequest<ServiceResult<BookDto>>
     public required string Image { get; set; }
     public required string UserId{ get; set; }
 
-    public ICollection<CategoryDto> CategoriesDto { get; set; } = [];
+    public ICollection<CategoryDto> CategoriesDto { get; set; } = new List<CategoryDto>();
 
 }
 
