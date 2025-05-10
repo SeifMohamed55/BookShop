@@ -1,6 +1,6 @@
 import { faBookOpen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import MenuList from "../ui/menuList";
 import HorizontalCard from "../ui/horizontalCard";
 import CreateBookModal from "../ui/CreateBookModal";
@@ -15,10 +15,12 @@ import {
 } from "recharts";
 import TagsDiv from "../ui/TagsDiv";
 import { Book } from "../../types/interfaces/Book";
-import { ReadingStatsClient } from "../../web-api-client";
+import { ReadingStatsClient, BooksClient } from "../../web-api-client";
 import { States } from "../../types/interfaces/States";
+import { UserContext } from "../../contexts/userDataProvider";
 
 const MyBooks = () => {
+  
   const [modal, setModal] = useState(false);
   const toggleModal = () => setModal(!modal);
   const [listValues] = useState<string[]>([
@@ -26,9 +28,17 @@ const MyBooks = () => {
     `currently reading`,
     `completed`,
   ]);
+  const [myBooks, setMyBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const context = useContext(UserContext);
+
   const onClick = (index: number): void => {
     setActiveIndex(index);
+    fetchMyBooks(index);
   };
+
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [data, setData] = useState<States[] | undefined>(undefined);
   const [tagsValue] = useState<string[]>([
@@ -36,6 +46,45 @@ const MyBooks = () => {
     "Science fiction",
     "biography",
   ]);
+
+  const fetchMyBooks = async (statusIndex: number) => {
+    try {
+      setLoading(true);
+      const client = new BooksClient();
+      let isCompleted: boolean | undefined = undefined;
+      
+      switch (statusIndex) {
+        case 0: // all books
+          isCompleted = undefined;
+          break;
+        case 1: // currently reading
+          isCompleted = false;
+          break;
+        case 2: // completed
+          isCompleted = true;
+          break;
+      }
+
+      const response = await client.getMyBooks(context?.userData?.id || "", isCompleted);
+      if (response.data) {
+        setMyBooks(response.data);
+      } else {
+        setMyBooks([]);
+      }
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching books:', err);
+      setError('Failed to load books. Please try again.');
+      setMyBooks([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMyBooks(activeIndex);
+  }, []);
+
   const getDaysRemainingInYear = () => {
     const today = new Date();
     const endOfYear = new Date(today.getFullYear(), 11, 31); // December is month 11
@@ -43,6 +92,7 @@ const MyBooks = () => {
     const daysRemaining = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
     return `${daysRemaining} days remaining this year`;
   };
+
   useEffect(() => {
     const client = new ReadingStatsClient();
     client
@@ -55,6 +105,7 @@ const MyBooks = () => {
         console.error(err);
       });
   });
+
   return (
     <div className="container-lg py-5">
       <div className="row g-4">
@@ -76,9 +127,32 @@ const MyBooks = () => {
             activeIndex={activeIndex}
           />
           <div className="d-flex justify-content-between align-items-center gap-4 flex-column">
-            {Array.from({ length: 3 }).map((_, idx) => (
-              <HorizontalCard key={idx} bookDetails={[] as Book} />
-            ))}
+            {loading ? (
+              <div className="text-center w-100 py-5">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+                <p className="mt-2">Loading your books...</p>
+              </div>
+            ) : error ? (
+              <div className="text-center w-100 py-5 text-danger">
+                <p>{error}</p>
+                <button 
+                  className="btn btn-primary"
+                  onClick={() => fetchMyBooks(activeIndex)}
+                >
+                  Retry
+                </button>
+              </div>
+            ) : myBooks.length === 0 ? (
+              <div className="text-center w-100 py-5">
+                <p className="playfair">No books found in this category.</p>
+              </div>
+            ) : (
+              myBooks.map((book) => (
+                <HorizontalCard key={book.id} bookDetails={book} />
+              ))
+            )}
           </div>
         </div>
         <div className="col-md-4 col-12">
