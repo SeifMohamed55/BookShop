@@ -1,6 +1,7 @@
 import { faBookOpen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MenuList from "../ui/menuList";
 import HorizontalCard from "../ui/horizontalCard";
 import CreateBookModal from "../ui/CreateBookModal";
@@ -15,15 +16,40 @@ import {
 } from "recharts";
 import TagsDiv from "../ui/TagsDiv";
 import { Book } from "../../types/interfaces/Book";
+import { BooksClient } from "../../web-api-client";
 
 const MyBooks = () => {
+  const navigate = useNavigate();
   const [modal, setModal] = useState(false);
+  const [books, setBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const toggleModal = () => setModal(!modal);
 
   useEffect(() => {
+    const fetchMyBooks = async () => {
+      try {
+        const client = new BooksClient();
+        const response = await client.getMyBooks();
+        if (response.data) {
+          setBooks(response.data);
+        }
+      } catch (err) {
+        console.error('Error fetching books:', err);
+        setError('Failed to load books. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    
+    fetchMyBooks();
   }, []);
+
+  const handleReadBook = (bookId: number) => {
+    navigate(`/reader/${bookId}`);
+  };
+
   const [listValues] = useState<string[]>([
     `📖 all books`,
     `🚩 currently reading`,
@@ -68,9 +94,29 @@ const MyBooks = () => {
             activeIndex={activeIndex}
           />
           <div className="d-flex justify-content-between align-items-center gap-4 flex-column">
-            {Array.from({ length: 3 }).map((_, idx) => (
-              <HorizontalCard key={idx} bookDetails={[] as Book} />
-            ))}
+            {loading ? (
+              <div className="text-center py-5">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            ) : error ? (
+              <div className="text-center py-5 text-danger">
+                <p>{error}</p>
+              </div>
+            ) : books.length > 0 ? (
+              books.map((book) => (
+                <HorizontalCard 
+                  key={book.id} 
+                  bookDetails={book} 
+                  onReadBook={() => handleReadBook(book.id)}
+                />
+              ))
+            ) : (
+              <div className="text-center py-5">
+                <p>No books found in your library.</p>
+              </div>
+            )}
           </div>
         </div>
         <div className="col-md-4 col-12">

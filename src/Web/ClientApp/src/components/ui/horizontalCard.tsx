@@ -1,15 +1,19 @@
-import { faBookmark, faStar } from "@fortawesome/free-regular-svg-icons";
+import { faBookmark, faStar, faBook } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import myPic from "../../images/my-pic.jpg";
 import TagsDiv from "./TagsDiv";
 import { useEffect, useState } from "react";
 import { Book } from "../../types/interfaces/Book";
 
+interface HorizontalCardProps {
+  bookDetails: Book;
+  onReadBook?: () => void;
+}
+
 const HorizontalCard = ({
   bookDetails = [] as Book,
-}: {
-  bookDetails: Book;
-}) => {
+  onReadBook
+}: HorizontalCardProps) => {
   const [tagValues, setTagValuse] = useState<string[] | undefined>(undefined);
   useEffect(() => {
     if (bookDetails.categories) setTagValuse([...bookDetails.categories]);
@@ -35,7 +39,7 @@ const HorizontalCard = ({
           </div>
         </div>
       </figure>
-      <article className="d-flex justify-content-between flex-column gap-1 w-100">
+      <article className="d-flex flex-column gap-3 w-100">
         <div className="d-flex justify-content-between align-items-center w-100">
           <h3 className="fs-4 playfair fw-bold">{bookDetails.title}</h3>
           <div className="d-flex justify-content-between align-items-center gap-0">
@@ -56,14 +60,24 @@ const HorizontalCard = ({
         <p className="times normal-font fw-fw-semibold">
           {bookDetails.description}
         </p>
-        <button
-          onClick={handleClick}
-          type="button"
-          className="btn btn-dark text-capitalize fw-semibold normal-font"
-        >
-          <FontAwesomeIcon icon={faBookmark} className="me-3" />
-          Add to library
-        </button>
+        <div className="d-flex gap-3">
+          <button
+            onClick={onReadBook}
+            type="button"
+            className="btn btn-primary text-capitalize fw-semibold normal-font"
+          >
+            <FontAwesomeIcon icon={faBook} className="me-2" />
+            Read Book
+          </button>
+          <button
+            onClick={handleClick}
+            type="button"
+            className="btn btn-dark text-capitalize fw-semibold normal-font"
+          >
+            <FontAwesomeIcon icon={faBookmark} className="me-2" />
+            Add to library
+          </button>
+        </div>
       </article>
     </div>
   );
