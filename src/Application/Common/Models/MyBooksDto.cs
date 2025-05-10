@@ -16,8 +16,7 @@ public class MyBooksDto
     public float AverageRating { get; set; }
     public ICollection<string> Categories { get; set; } = [];
     public double ReadingPercentage { get; set; }
-    public string ReadingStatus { get; set; } = null!;
-    public bool IsCompleted { get; set; } // ✅ New property
+    public bool IsCompleted { get; set; } 
 
 
     private class Profiling : Profile
@@ -33,8 +32,6 @@ public class MyBooksDto
                 .ForMember(dest => dest.TotalPages, opt => opt.MapFrom(src => src.Book.TotalPages))
                 .ForMember(dest => dest.AverageRating, opt => opt.MapFrom(src => src.Book.AverageRating))
                 .ForMember(dest => dest.Categories, opt => opt.MapFrom(src => src.Book.Categories.Select(c => c.Name)))
-                .ForMember(dest => dest.ReadingStatus,
-                    opt => opt.MapFrom(src => src.IsCompleted ? "✅ Completed" : "🚩 Currently Reading"))
                 .ForMember(dest => dest.ReadingPercentage,
                     opt => opt.MapFrom(src =>
                         src.Book.TotalPages == 0 ? 0 : Math.Round((double)src.CurrentPage / src.Book.TotalPages * 100, 2)))

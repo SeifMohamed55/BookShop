@@ -38,6 +38,18 @@ public class GetPopularBookClubsQueryHandler :
                 .Take(10)
                 .ToListAsync(cancellationToken);
 
+            foreach (var bookClub in popularBookClubs)
+            {
+                var author = await _identityService.GetUserNameAsync(bookClub.BookClubMember.UserId);
+                if(author == null)
+                    return ServiceResult<IEnumerable<BookClubDto>>.Failure(
+                        "An error occurred while retrieving popular book clubs.",
+                        HttpStatusCode.InternalServerError);
+
+                bookClub.Author = author;
+            }
+
+
             return ServiceResult<IEnumerable<BookClubDto>>.Success(
                 popularBookClubs,
                 "Successfully retrieved popular book clubs.");

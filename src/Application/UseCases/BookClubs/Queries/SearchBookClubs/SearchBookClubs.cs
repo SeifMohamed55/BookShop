@@ -23,11 +23,13 @@ public class SearchBookClubsQueryHandler : IRequestHandler<SearchBookClubsQuery,
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IIdentityService _identityService;
 
-    public SearchBookClubsQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public SearchBookClubsQueryHandler(IApplicationDbContext context, IMapper mapper, IIdentityService identityService)
     {
         _context = context;
         _mapper = mapper;
+        _identityService = identityService;
     }
 
     public async Task<ServiceResult< IEnumerable<BookClubDto>>> Handle(SearchBookClubsQuery request, CancellationToken cancellationToken)
@@ -49,6 +51,17 @@ public class SearchBookClubsQueryHandler : IRequestHandler<SearchBookClubsQuery,
 
             var bookClubs = await query.ProjectTo<BookClubDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
+
+            foreach (var bookClub in bookClubs)
+            {
+                var author = await _identityService.GetUserNameAsync(bookClub.BookClubMember.UserId);
+                if (author == null)
+                    return ServiceResult<IEnumerable<BookClubDto>>.Failure(
+                        "An error occurred while retrieving popular book clubs.",
+                        HttpStatusCode.InternalServerError);
+
+                bookClub.Author = author;
+            }
 
             return ServiceResult<IEnumerable<BookClubDto>>.Success(bookClubs, "Book clubs fetched successfully.");
         }
