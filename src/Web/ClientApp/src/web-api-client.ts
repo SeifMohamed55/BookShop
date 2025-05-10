@@ -667,488 +667,6 @@ export class RegisterClient extends ApiClientBase {
     }
 }
 
-export class TodoItemsClient extends ApiClientBase {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        super();
-        this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    getTodoItemsWithPagination(listId: number, pageNumber: number, pageSize: number): Promise<PaginatedListOfTodoItemBriefDto> {
-        let url_ = this.baseUrl + "/api/v1/TodoItems?";
-        if (listId === undefined || listId === null)
-            throw new Error("The parameter 'listId' must be defined and cannot be null.");
-        else
-            url_ += "ListId=" + encodeURIComponent("" + listId) + "&";
-        if (pageNumber === undefined || pageNumber === null)
-            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
-        else
-            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === undefined || pageSize === null)
-            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
-        else
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetTodoItemsWithPagination(_response);
-        });
-    }
-
-    protected processGetTodoItemsWithPagination(response: Response): Promise<PaginatedListOfTodoItemBriefDto> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaginatedListOfTodoItemBriefDto.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<PaginatedListOfTodoItemBriefDto>(null as any);
-    }
-
-    /**
-     * @param x_XSRF_TOKEN (optional) CSRF protection token
-     */
-    createTodoItem(x_XSRF_TOKEN: string | undefined, command: CreateTodoItemCommand): Promise<number> {
-        let url_ = this.baseUrl + "/api/v1/TodoItems";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processCreateTodoItem(_response);
-        });
-    }
-
-    protected processCreateTodoItem(response: Response): Promise<number> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 201) {
-            return response.text().then((_responseText) => {
-            let result201: any = null;
-            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result201 = resultData201 !== undefined ? resultData201 : <any>null;
-    
-            return result201;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<number>(null as any);
-    }
-
-    /**
-     * @param x_XSRF_TOKEN (optional) CSRF protection token
-     */
-    updateTodoItem(id: number, x_XSRF_TOKEN: string | undefined, command: UpdateTodoItemCommand): Promise<void> {
-        let url_ = this.baseUrl + "/api/v1/TodoItems/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processUpdateTodoItem(_response);
-        });
-    }
-
-    protected processUpdateTodoItem(response: Response): Promise<void> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 204) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param x_XSRF_TOKEN (optional) CSRF protection token
-     */
-    deleteTodoItem(id: number, x_XSRF_TOKEN: string | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/v1/TodoItems/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processDeleteTodoItem(_response);
-        });
-    }
-
-    protected processDeleteTodoItem(response: Response): Promise<void> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 204) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param x_XSRF_TOKEN (optional) CSRF protection token
-     */
-    updateTodoItemDetail(id: number, x_XSRF_TOKEN: string | undefined, command: UpdateTodoItemDetailCommand): Promise<void> {
-        let url_ = this.baseUrl + "/api/v1/TodoItems/UpdateDetail/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processUpdateTodoItemDetail(_response);
-        });
-    }
-
-    protected processUpdateTodoItemDetail(response: Response): Promise<void> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 204) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-}
-
-export class TodoListsClient extends ApiClientBase {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        super();
-        this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    getTodoLists(): Promise<TodosVm> {
-        let url_ = this.baseUrl + "/api/v1/TodoLists";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetTodoLists(_response);
-        });
-    }
-
-    protected processGetTodoLists(response: Response): Promise<TodosVm> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TodosVm.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<TodosVm>(null as any);
-    }
-
-    /**
-     * @param x_XSRF_TOKEN (optional) CSRF protection token
-     */
-    createTodoList(x_XSRF_TOKEN: string | undefined, command: CreateTodoListCommand): Promise<number> {
-        let url_ = this.baseUrl + "/api/v1/TodoLists";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processCreateTodoList(_response);
-        });
-    }
-
-    protected processCreateTodoList(response: Response): Promise<number> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 201) {
-            return response.text().then((_responseText) => {
-            let result201: any = null;
-            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result201 = resultData201 !== undefined ? resultData201 : <any>null;
-    
-            return result201;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<number>(null as any);
-    }
-
-    /**
-     * @param x_XSRF_TOKEN (optional) CSRF protection token
-     */
-    updateTodoList(id: number, x_XSRF_TOKEN: string | undefined, command: UpdateTodoListCommand): Promise<void> {
-        let url_ = this.baseUrl + "/api/v1/TodoLists/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processUpdateTodoList(_response);
-        });
-    }
-
-    protected processUpdateTodoList(response: Response): Promise<void> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 204) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param x_XSRF_TOKEN (optional) CSRF protection token
-     */
-    deleteTodoList(id: number, x_XSRF_TOKEN: string | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/v1/TodoLists/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-                "X-XSRF-TOKEN": x_XSRF_TOKEN !== undefined && x_XSRF_TOKEN !== null ? "" + x_XSRF_TOKEN : "",
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processDeleteTodoList(_response);
-        });
-    }
-
-    protected processDeleteTodoList(response: Response): Promise<void> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 204) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-}
-
-export class WeatherForecastsClient extends ApiClientBase {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        super();
-        this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    getWeatherForecasts(): Promise<SuccessResponseOfIEnumerableOfWeatherForecast> {
-        let url_ = this.baseUrl + "/api/v1/WeatherForecasts";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetWeatherForecasts(_response);
-        });
-    }
-
-    protected processGetWeatherForecasts(response: Response): Promise<SuccessResponseOfIEnumerableOfWeatherForecast> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SuccessResponseOfIEnumerableOfWeatherForecast.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = ErrorResponse.fromJS(resultData400);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<SuccessResponseOfIEnumerableOfWeatherForecast>(null as any);
-    }
-}
-
 export abstract class ApiResponse implements IApiResponse {
     success?: boolean;
     message?: string;
@@ -1232,7 +750,7 @@ export class BookClubDto implements IBookClubDto {
     name?: string;
     description?: string;
     imagePath?: string;
-    books?: PopularBookDto[];
+    mostPopularBook?: BookDto | undefined;
     numberOfMembers?: number;
 
     constructor(data?: IBookClubDto) {
@@ -1249,11 +767,7 @@ export class BookClubDto implements IBookClubDto {
             this.name = _data["name"];
             this.description = _data["description"];
             this.imagePath = _data["imagePath"];
-            if (Array.isArray(_data["books"])) {
-                this.books = [] as any;
-                for (let item of _data["books"])
-                    this.books!.push(PopularBookDto.fromJS(item));
-            }
+            this.mostPopularBook = _data["mostPopularBook"] ? BookDto.fromJS(_data["mostPopularBook"]) : <any>undefined;
             this.numberOfMembers = _data["numberOfMembers"];
         }
     }
@@ -1270,11 +784,7 @@ export class BookClubDto implements IBookClubDto {
         data["name"] = this.name;
         data["description"] = this.description;
         data["imagePath"] = this.imagePath;
-        if (Array.isArray(this.books)) {
-            data["books"] = [];
-            for (let item of this.books)
-                data["books"].push(item.toJSON());
-        }
+        data["mostPopularBook"] = this.mostPopularBook ? this.mostPopularBook.toJSON() : <any>undefined;
         data["numberOfMembers"] = this.numberOfMembers;
         return data;
     }
@@ -1284,19 +794,23 @@ export interface IBookClubDto {
     name?: string;
     description?: string;
     imagePath?: string;
-    books?: PopularBookDto[];
+    mostPopularBook?: BookDto | undefined;
     numberOfMembers?: number;
 }
 
-export class PopularBookDto implements IPopularBookDto {
+export class BookDto implements IBookDto {
     id?: number;
     title?: string;
     author?: string;
     imagePath?: string;
     totalPages?: number;
     averageRating?: number;
+    description?: string;
+    bookFilePath?: string;
+    reviews?: ReviewDto[];
+    categories?: CategoryDto[];
 
-    constructor(data?: IPopularBookDto) {
+    constructor(data?: IBookDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1313,12 +827,24 @@ export class PopularBookDto implements IPopularBookDto {
             this.imagePath = _data["imagePath"];
             this.totalPages = _data["totalPages"];
             this.averageRating = _data["averageRating"];
+            this.description = _data["description"];
+            this.bookFilePath = _data["bookFilePath"];
+            if (Array.isArray(_data["reviews"])) {
+                this.reviews = [] as any;
+                for (let item of _data["reviews"])
+                    this.reviews!.push(ReviewDto.fromJS(item));
+            }
+            if (Array.isArray(_data["categories"])) {
+                this.categories = [] as any;
+                for (let item of _data["categories"])
+                    this.categories!.push(CategoryDto.fromJS(item));
+            }
         }
     }
 
-    static fromJS(data: any): PopularBookDto {
+    static fromJS(data: any): BookDto {
         data = typeof data === 'object' ? data : {};
-        let result = new PopularBookDto();
+        let result = new BookDto();
         result.init(data);
         return result;
     }
@@ -1331,17 +857,177 @@ export class PopularBookDto implements IPopularBookDto {
         data["imagePath"] = this.imagePath;
         data["totalPages"] = this.totalPages;
         data["averageRating"] = this.averageRating;
+        data["description"] = this.description;
+        data["bookFilePath"] = this.bookFilePath;
+        if (Array.isArray(this.reviews)) {
+            data["reviews"] = [];
+            for (let item of this.reviews)
+                data["reviews"].push(item.toJSON());
+        }
+        if (Array.isArray(this.categories)) {
+            data["categories"] = [];
+            for (let item of this.categories)
+                data["categories"].push(item.toJSON());
+        }
         return data;
     }
 }
 
-export interface IPopularBookDto {
+export interface IBookDto {
     id?: number;
     title?: string;
     author?: string;
     imagePath?: string;
     totalPages?: number;
     averageRating?: number;
+    description?: string;
+    bookFilePath?: string;
+    reviews?: ReviewDto[];
+    categories?: CategoryDto[];
+}
+
+export class ReviewDto implements IReviewDto {
+    id?: number;
+    user?: UserDto;
+    comment?: string;
+    likes?: number;
+    rating?: number;
+    lastModified?: Date;
+
+    constructor(data?: IReviewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.user = _data["user"] ? UserDto.fromJS(_data["user"]) : <any>undefined;
+            this.comment = _data["comment"];
+            this.likes = _data["likes"];
+            this.rating = _data["rating"];
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ReviewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReviewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["comment"] = this.comment;
+        data["likes"] = this.likes;
+        data["rating"] = this.rating;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IReviewDto {
+    id?: number;
+    user?: UserDto;
+    comment?: string;
+    likes?: number;
+    rating?: number;
+    lastModified?: Date;
+}
+
+export class UserDto implements IUserDto {
+    id?: string;
+    fullName?: string;
+    email?: string;
+    imageUrl?: string;
+
+    constructor(data?: IUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.email = _data["email"];
+            this.imageUrl = _data["imageUrl"];
+        }
+    }
+
+    static fromJS(data: any): UserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["email"] = this.email;
+        data["imageUrl"] = this.imageUrl;
+        return data;
+    }
+}
+
+export interface IUserDto {
+    id?: string;
+    fullName?: string;
+    email?: string;
+    imageUrl?: string;
+}
+
+export class CategoryDto implements ICategoryDto {
+    id?: number;
+    name?: string;
+
+    constructor(data?: ICategoryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): CategoryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CategoryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface ICategoryDto {
+    id?: number;
+    name?: string;
 }
 
 export class ErrorResponse extends ApiResponse implements IErrorResponse {
@@ -1424,6 +1110,62 @@ export class SuccessResponseOfIEnumerableOfPopularBookDto extends ApiResponse im
 
 export interface ISuccessResponseOfIEnumerableOfPopularBookDto extends IApiResponse {
     data?: PopularBookDto[] | undefined;
+}
+
+export class PopularBookDto implements IPopularBookDto {
+    id?: number;
+    title?: string;
+    author?: string;
+    imagePath?: string;
+    totalPages?: number;
+    averageRating?: number;
+
+    constructor(data?: IPopularBookDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.title = _data["title"];
+            this.author = _data["author"];
+            this.imagePath = _data["imagePath"];
+            this.totalPages = _data["totalPages"];
+            this.averageRating = _data["averageRating"];
+        }
+    }
+
+    static fromJS(data: any): PopularBookDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PopularBookDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["title"] = this.title;
+        data["author"] = this.author;
+        data["imagePath"] = this.imagePath;
+        data["totalPages"] = this.totalPages;
+        data["averageRating"] = this.averageRating;
+        return data;
+    }
+}
+
+export interface IPopularBookDto {
+    id?: number;
+    title?: string;
+    author?: string;
+    imagePath?: string;
+    totalPages?: number;
+    averageRating?: number;
 }
 
 export class SuccessResponseOfIEnumerableOfBooksByGenreDto extends ApiResponse implements ISuccessResponseOfIEnumerableOfBooksByGenreDto {
@@ -1766,46 +1508,6 @@ export interface IAddBookCommand {
     categoriesDto?: CategoryDto[];
 }
 
-export class CategoryDto implements ICategoryDto {
-    id?: number;
-    name?: string;
-
-    constructor(data?: ICategoryDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-        }
-    }
-
-    static fromJS(data: any): CategoryDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CategoryDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        return data;
-    }
-}
-
-export interface ICategoryDto {
-    id?: number;
-    name?: string;
-}
-
 export class SuccessResponseOfIEnumerableOfMyBooksDto extends ApiResponse implements ISuccessResponseOfIEnumerableOfMyBooksDto {
     data?: MyBooksDto[] | undefined;
 
@@ -1962,198 +1664,6 @@ export class SuccessResponseOfBookDto extends ApiResponse implements ISuccessRes
 
 export interface ISuccessResponseOfBookDto extends IApiResponse {
     data?: BookDto | undefined;
-}
-
-export class BookDto implements IBookDto {
-    id?: number;
-    title?: string;
-    author?: string;
-    imagePath?: string;
-    totalPages?: number;
-    averageRating?: number;
-    description?: string;
-    bookFilePath?: string;
-    reviews?: ReviewDto[];
-    categories?: CategoryDto[];
-
-    constructor(data?: IBookDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.title = _data["title"];
-            this.author = _data["author"];
-            this.imagePath = _data["imagePath"];
-            this.totalPages = _data["totalPages"];
-            this.averageRating = _data["averageRating"];
-            this.description = _data["description"];
-            this.bookFilePath = _data["bookFilePath"];
-            if (Array.isArray(_data["reviews"])) {
-                this.reviews = [] as any;
-                for (let item of _data["reviews"])
-                    this.reviews!.push(ReviewDto.fromJS(item));
-            }
-            if (Array.isArray(_data["categories"])) {
-                this.categories = [] as any;
-                for (let item of _data["categories"])
-                    this.categories!.push(CategoryDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): BookDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new BookDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["title"] = this.title;
-        data["author"] = this.author;
-        data["imagePath"] = this.imagePath;
-        data["totalPages"] = this.totalPages;
-        data["averageRating"] = this.averageRating;
-        data["description"] = this.description;
-        data["bookFilePath"] = this.bookFilePath;
-        if (Array.isArray(this.reviews)) {
-            data["reviews"] = [];
-            for (let item of this.reviews)
-                data["reviews"].push(item.toJSON());
-        }
-        if (Array.isArray(this.categories)) {
-            data["categories"] = [];
-            for (let item of this.categories)
-                data["categories"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IBookDto {
-    id?: number;
-    title?: string;
-    author?: string;
-    imagePath?: string;
-    totalPages?: number;
-    averageRating?: number;
-    description?: string;
-    bookFilePath?: string;
-    reviews?: ReviewDto[];
-    categories?: CategoryDto[];
-}
-
-export class ReviewDto implements IReviewDto {
-    id?: number;
-    user?: UserDto;
-    comment?: string;
-    likes?: number;
-    rating?: number;
-    lastModified?: Date;
-
-    constructor(data?: IReviewDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.user = _data["user"] ? UserDto.fromJS(_data["user"]) : <any>undefined;
-            this.comment = _data["comment"];
-            this.likes = _data["likes"];
-            this.rating = _data["rating"];
-            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): ReviewDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ReviewDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
-        data["comment"] = this.comment;
-        data["likes"] = this.likes;
-        data["rating"] = this.rating;
-        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IReviewDto {
-    id?: number;
-    user?: UserDto;
-    comment?: string;
-    likes?: number;
-    rating?: number;
-    lastModified?: Date;
-}
-
-export class UserDto implements IUserDto {
-    id?: string;
-    fullName?: string;
-    email?: string;
-    imageUrl?: string;
-
-    constructor(data?: IUserDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.fullName = _data["fullName"];
-            this.email = _data["email"];
-            this.imageUrl = _data["imageUrl"];
-        }
-    }
-
-    static fromJS(data: any): UserDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["fullName"] = this.fullName;
-        data["email"] = this.email;
-        data["imageUrl"] = this.imageUrl;
-        return data;
-    }
-}
-
-export interface IUserDto {
-    id?: string;
-    fullName?: string;
-    email?: string;
-    imageUrl?: string;
 }
 
 export class SuccessResponseOfUserDto extends ApiResponse implements ISuccessResponseOfUserDto {
@@ -2469,638 +1979,6 @@ export interface IRegisterCommand {
     password?: string;
     confirmPassword?: string;
     image?: string | undefined;
-}
-
-export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItemBriefDto {
-    items?: TodoItemBriefDto[];
-    pageNumber?: number;
-    totalPages?: number;
-    totalCount?: number;
-    pageSize?: number;
-    currentlyViewing?: string;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
-
-    constructor(data?: IPaginatedListOfTodoItemBriefDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(TodoItemBriefDto.fromJS(item));
-            }
-            this.pageNumber = _data["pageNumber"];
-            this.totalPages = _data["totalPages"];
-            this.totalCount = _data["totalCount"];
-            this.pageSize = _data["pageSize"];
-            this.currentlyViewing = _data["currentlyViewing"];
-            this.hasPreviousPage = _data["hasPreviousPage"];
-            this.hasNextPage = _data["hasNextPage"];
-        }
-    }
-
-    static fromJS(data: any): PaginatedListOfTodoItemBriefDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaginatedListOfTodoItemBriefDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        data["pageNumber"] = this.pageNumber;
-        data["totalPages"] = this.totalPages;
-        data["totalCount"] = this.totalCount;
-        data["pageSize"] = this.pageSize;
-        data["currentlyViewing"] = this.currentlyViewing;
-        data["hasPreviousPage"] = this.hasPreviousPage;
-        data["hasNextPage"] = this.hasNextPage;
-        return data;
-    }
-}
-
-export interface IPaginatedListOfTodoItemBriefDto {
-    items?: TodoItemBriefDto[];
-    pageNumber?: number;
-    totalPages?: number;
-    totalCount?: number;
-    pageSize?: number;
-    currentlyViewing?: string;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
-}
-
-export class TodoItemBriefDto implements ITodoItemBriefDto {
-    id?: number;
-    listId?: number;
-    title?: string | undefined;
-    done?: boolean;
-
-    constructor(data?: ITodoItemBriefDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.listId = _data["listId"];
-            this.title = _data["title"];
-            this.done = _data["done"];
-        }
-    }
-
-    static fromJS(data: any): TodoItemBriefDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TodoItemBriefDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["listId"] = this.listId;
-        data["title"] = this.title;
-        data["done"] = this.done;
-        return data;
-    }
-}
-
-export interface ITodoItemBriefDto {
-    id?: number;
-    listId?: number;
-    title?: string | undefined;
-    done?: boolean;
-}
-
-export class CreateTodoItemCommand implements ICreateTodoItemCommand {
-    listId?: number;
-    title?: string | undefined;
-
-    constructor(data?: ICreateTodoItemCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.listId = _data["listId"];
-            this.title = _data["title"];
-        }
-    }
-
-    static fromJS(data: any): CreateTodoItemCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateTodoItemCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["listId"] = this.listId;
-        data["title"] = this.title;
-        return data;
-    }
-}
-
-export interface ICreateTodoItemCommand {
-    listId?: number;
-    title?: string | undefined;
-}
-
-export class UpdateTodoItemCommand implements IUpdateTodoItemCommand {
-    id?: number;
-    title?: string | undefined;
-    done?: boolean;
-
-    constructor(data?: IUpdateTodoItemCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.title = _data["title"];
-            this.done = _data["done"];
-        }
-    }
-
-    static fromJS(data: any): UpdateTodoItemCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateTodoItemCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["title"] = this.title;
-        data["done"] = this.done;
-        return data;
-    }
-}
-
-export interface IUpdateTodoItemCommand {
-    id?: number;
-    title?: string | undefined;
-    done?: boolean;
-}
-
-export class UpdateTodoItemDetailCommand implements IUpdateTodoItemDetailCommand {
-    id?: number;
-    listId?: number;
-    priority?: PriorityLevel;
-    note?: string | undefined;
-
-    constructor(data?: IUpdateTodoItemDetailCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.listId = _data["listId"];
-            this.priority = _data["priority"];
-            this.note = _data["note"];
-        }
-    }
-
-    static fromJS(data: any): UpdateTodoItemDetailCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateTodoItemDetailCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["listId"] = this.listId;
-        data["priority"] = this.priority;
-        data["note"] = this.note;
-        return data;
-    }
-}
-
-export interface IUpdateTodoItemDetailCommand {
-    id?: number;
-    listId?: number;
-    priority?: PriorityLevel;
-    note?: string | undefined;
-}
-
-export enum PriorityLevel {
-    None = 0,
-    Low = 1,
-    Medium = 2,
-    High = 3,
-}
-
-export class TodosVm implements ITodosVm {
-    priorityLevels?: LookupDto[];
-    lists?: TodoListDto[];
-
-    constructor(data?: ITodosVm) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["priorityLevels"])) {
-                this.priorityLevels = [] as any;
-                for (let item of _data["priorityLevels"])
-                    this.priorityLevels!.push(LookupDto.fromJS(item));
-            }
-            if (Array.isArray(_data["lists"])) {
-                this.lists = [] as any;
-                for (let item of _data["lists"])
-                    this.lists!.push(TodoListDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): TodosVm {
-        data = typeof data === 'object' ? data : {};
-        let result = new TodosVm();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.priorityLevels)) {
-            data["priorityLevels"] = [];
-            for (let item of this.priorityLevels)
-                data["priorityLevels"].push(item.toJSON());
-        }
-        if (Array.isArray(this.lists)) {
-            data["lists"] = [];
-            for (let item of this.lists)
-                data["lists"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface ITodosVm {
-    priorityLevels?: LookupDto[];
-    lists?: TodoListDto[];
-}
-
-export class LookupDto implements ILookupDto {
-    id?: number;
-    title?: string | undefined;
-
-    constructor(data?: ILookupDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.title = _data["title"];
-        }
-    }
-
-    static fromJS(data: any): LookupDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new LookupDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["title"] = this.title;
-        return data;
-    }
-}
-
-export interface ILookupDto {
-    id?: number;
-    title?: string | undefined;
-}
-
-export class TodoListDto implements ITodoListDto {
-    id?: number;
-    title?: string | undefined;
-    colour?: string | undefined;
-    items?: TodoItemDto[];
-
-    constructor(data?: ITodoListDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.title = _data["title"];
-            this.colour = _data["colour"];
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(TodoItemDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): TodoListDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TodoListDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["title"] = this.title;
-        data["colour"] = this.colour;
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface ITodoListDto {
-    id?: number;
-    title?: string | undefined;
-    colour?: string | undefined;
-    items?: TodoItemDto[];
-}
-
-export class TodoItemDto implements ITodoItemDto {
-    id?: number;
-    listId?: number;
-    title?: string | undefined;
-    done?: boolean;
-    priority?: number;
-    note?: string | undefined;
-
-    constructor(data?: ITodoItemDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.listId = _data["listId"];
-            this.title = _data["title"];
-            this.done = _data["done"];
-            this.priority = _data["priority"];
-            this.note = _data["note"];
-        }
-    }
-
-    static fromJS(data: any): TodoItemDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TodoItemDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["listId"] = this.listId;
-        data["title"] = this.title;
-        data["done"] = this.done;
-        data["priority"] = this.priority;
-        data["note"] = this.note;
-        return data;
-    }
-}
-
-export interface ITodoItemDto {
-    id?: number;
-    listId?: number;
-    title?: string | undefined;
-    done?: boolean;
-    priority?: number;
-    note?: string | undefined;
-}
-
-export class CreateTodoListCommand implements ICreateTodoListCommand {
-    title?: string | undefined;
-
-    constructor(data?: ICreateTodoListCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.title = _data["title"];
-        }
-    }
-
-    static fromJS(data: any): CreateTodoListCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateTodoListCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["title"] = this.title;
-        return data;
-    }
-}
-
-export interface ICreateTodoListCommand {
-    title?: string | undefined;
-}
-
-export class UpdateTodoListCommand implements IUpdateTodoListCommand {
-    id?: number;
-    title?: string | undefined;
-
-    constructor(data?: IUpdateTodoListCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.title = _data["title"];
-        }
-    }
-
-    static fromJS(data: any): UpdateTodoListCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateTodoListCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["title"] = this.title;
-        return data;
-    }
-}
-
-export interface IUpdateTodoListCommand {
-    id?: number;
-    title?: string | undefined;
-}
-
-export class SuccessResponseOfIEnumerableOfWeatherForecast extends ApiResponse implements ISuccessResponseOfIEnumerableOfWeatherForecast {
-    data?: WeatherForecast[] | undefined;
-
-    constructor(data?: ISuccessResponseOfIEnumerableOfWeatherForecast) {
-        super(data);
-    }
-
-    override init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            if (Array.isArray(_data["data"])) {
-                this.data = [] as any;
-                for (let item of _data["data"])
-                    this.data!.push(WeatherForecast.fromJS(item));
-            }
-        }
-    }
-
-    static override fromJS(data: any): SuccessResponseOfIEnumerableOfWeatherForecast {
-        data = typeof data === 'object' ? data : {};
-        let result = new SuccessResponseOfIEnumerableOfWeatherForecast();
-        result.init(data);
-        return result;
-    }
-
-    override toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.data)) {
-            data["data"] = [];
-            for (let item of this.data)
-                data["data"].push(item.toJSON());
-        }
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface ISuccessResponseOfIEnumerableOfWeatherForecast extends IApiResponse {
-    data?: WeatherForecast[] | undefined;
-}
-
-export class WeatherForecast implements IWeatherForecast {
-    date?: Date;
-    temperatureC?: number;
-    temperatureF?: number;
-    summary?: string | undefined;
-
-    constructor(data?: IWeatherForecast) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
-            this.temperatureC = _data["temperatureC"];
-            this.temperatureF = _data["temperatureF"];
-            this.summary = _data["summary"];
-        }
-    }
-
-    static fromJS(data: any): WeatherForecast {
-        data = typeof data === 'object' ? data : {};
-        let result = new WeatherForecast();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
-        data["temperatureC"] = this.temperatureC;
-        data["temperatureF"] = this.temperatureF;
-        data["summary"] = this.summary;
-        return data;
-    }
-}
-
-export interface IWeatherForecast {
-    date?: Date;
-    temperatureC?: number;
-    temperatureF?: number;
-    summary?: string | undefined;
 }
 
 export class SwaggerException extends Error {
