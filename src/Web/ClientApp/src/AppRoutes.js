@@ -6,6 +6,7 @@ import { Navigate } from "react-router-dom";
 import Register from "./components/layout/register";
 import Login from "./components/layout/login";
 import Profile from "./components/layout/Profile";
+import BookReader from './components/layout/BookReader';
 
 const AppRoutes = [
   {
@@ -43,6 +44,10 @@ const AppRoutes = [
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/reader/:id",
+    element: <BookReader />,
   },
   {
     path: "*",

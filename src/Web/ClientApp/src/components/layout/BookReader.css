@@ -1,0 +1,88 @@
+.book-reader {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.book-reader.dark-mode {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.reader-toolbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.dark-mode .reader-toolbar {
+  background-color: #2d2d2d;
+  border-bottom-color: #404040;
+}
+
+.reader-content {
+  background-color: #ffffff;
+  min-height: 70vh;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .reader-content {
+  background-color: #2d2d2d;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.book-text {
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.chapter-title {
+  color: #333;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 1rem;
+}
+
+.dark-mode .chapter-title {
+  color: #ffffff;
+  border-bottom-color: #404040;
+}
+
+.pagination-controls {
+  border-top: 1px solid #dee2e6;
+  padding-top: 1rem;
+}
+
+.dark-mode .pagination-controls {
+  border-top-color: #404040;
+}
+
+.page-info {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.dark-mode .page-info {
+  color: #adb5bd;
+}
+
+/* Button styles */
+.btn-light {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+}
+
+.dark-mode .btn-light {
+  background-color: #404040;
+  border-color: #505050;
+  color: #ffffff;
+}
+
+.dark-mode .btn-light:hover {
+  background-color: #505050;
+}
+
+/* Spinner styles */
+.dark-mode .spinner-border {
+  color: #ffffff;
+} 

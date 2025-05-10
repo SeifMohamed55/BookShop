@@ -9,7 +9,7 @@ import {
   Button,
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBook, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBook, faUser, faBookmark } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -100,6 +100,16 @@ const Profile: React.FC = () => {
                 <div key={idx} className="px-2">
                   <Card className="h-100 border-0 shadow-sm hover-card">
                     <VerticalCard />
+                    <div className="d-flex justify-content-between align-items-center mt-3">
+                      <Button color="primary" size="sm" onClick={() => navigate(`/reader/${book.id}`)}>
+                        <FontAwesomeIcon icon={faBook} className="me-2" />
+                        Read Book
+                      </Button>
+                      <Button color="light" size="sm">
+                        <FontAwesomeIcon icon={faBookmark} className="me-2" />
+                        Bookmark
+                      </Button>
+                    </div>
                   </Card>
                 </div>
               ))}
