@@ -1,4 +1,4 @@
-﻿dotnet ef migrations add "RemovingRedundantStructure" --project src\Infrastructure --startup-project src\Web --output-dir Data\Migrations
+﻿dotnet ef migrations add "AddingGoalsToBookHistories" --project src\Infrastructure --startup-project src\Web --output-dir Data\Migrations
 
 dotnet ef database update --project src\Infrastructure --startup-project src\Web
 
