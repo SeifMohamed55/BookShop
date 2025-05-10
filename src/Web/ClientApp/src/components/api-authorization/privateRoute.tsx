@@ -17,10 +17,12 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
   }
 
   const { userData } = context;
-
-  toast.error("you must be logged in to access this page", {
-    className: "text-center text-capitalize small-font",
-  });
+  if (!userData) {
+    toast.error("You must be logged in to access this page", {
+      className: "text-center text-capitalize small-font",
+    });
+    return <Navigate to={redirectPath} replace />;
+  }
 
   return userData ? <Outlet /> : <Navigate to={redirectPath} replace />;
 };

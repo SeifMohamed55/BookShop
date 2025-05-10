@@ -13,6 +13,7 @@ import {
   Area,
 } from "recharts";
 import TagsDiv from "../ui/TagsDiv";
+import { Book } from "../../types/interfaces/Book";
 const MyBooks = () => {
   const [listValues] = useState<string[]>([
     `📖 all books`,
@@ -58,7 +59,7 @@ const MyBooks = () => {
           />
           <div className="d-flex justify-content-between align-items-center gap-4 flex-column">
             {Array.from({ length: 3 }).map((_, idx) => (
-              <HorizontalCard key={idx} />
+              <HorizontalCard key={idx} bookDetails={[] as Book} />
             ))}
           </div>
         </div>

@@ -2,20 +2,24 @@ import { faBookmark, faStar } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import myPic from "../../images/my-pic.jpg";
 import TagsDiv from "./TagsDiv";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Book } from "../../types/interfaces/Book";
 
-const HorizontalCard = () => {
-  const [tagValues] = useState<string[]>([
-    "fiction",
-    "fantasy",
-    "contemporary",
-  ]);
+const HorizontalCard = ({
+  bookDetails = [] as Book,
+}: {
+  bookDetails: Book;
+}) => {
+  const [tagValues, setTagValuse] = useState<string[] | undefined>(undefined);
+  useEffect(() => {
+    if (bookDetails.categories) setTagValuse([...bookDetails.categories]);
+  }, [bookDetails]);
   function handleClick(): void {}
   return (
     <div className="horizontal-card-div border p-3 d-flex align-items-start flex-md-row flex-column gap-3 rounded-2 w-100">
       <figure className="horizontal-card mx-auto overflow-hidden position-relative rounded-2">
         <img
-          src={myPic}
+          src={bookDetails.imagePath}
           alt="book"
           className="img-fluid"
           height={250}
@@ -23,15 +27,17 @@ const HorizontalCard = () => {
         <div className="layer text-white pb-4 ps-3">
           <div className="position-absolute bottom-0">
             <h6 className="small-font fw-bold text-nowrap playfair">
-              Atomic Habits
+              {bookDetails.title}
             </h6>
-            <p className="times small-font opacity-75">by james Clear</p>
+            <p className="times small-font opacity-75">
+              by {bookDetails.author}
+            </p>
           </div>
         </div>
       </figure>
-      <article className="d-flex justify-content-between flex-column gap-1">
+      <article className="d-flex justify-content-between flex-column gap-1 w-100">
         <div className="d-flex justify-content-between align-items-center w-100">
-          <h3 className="fs-4 playfair fw-bold">{"The Midnight Library"}</h3>
+          <h3 className="fs-4 playfair fw-bold">{bookDetails.title}</h3>
           <div className="d-flex justify-content-between align-items-center gap-0">
             {Array.from({ length: 5 }).map((star, idx) => (
               <FontAwesomeIcon
@@ -40,15 +46,15 @@ const HorizontalCard = () => {
                 className="text-warning"
               />
             ))}
-            <span className="px-2 fw-semibold times small">{4.6}</span>
+            <span className="px-2 fw-semibold times small">
+              {bookDetails.averageRating}
+            </span>
           </div>
         </div>
-        <p className="opacity-75 times m-0">{"Matt Haig"}</p>
-        <TagsDiv values={tagValues} isDark={false} />
+        <p className="opacity-75 times m-0">{bookDetails.totalPages} page</p>
+        {tagValues ? <TagsDiv values={tagValues} isDark={false} /> : ""}
         <p className="times normal-font fw-fw-semibold">
-          {
-            "An unforgettable memoir about a young girl who, kept out of school, leaves her survivalist family and goes on to earn a PhD from Cambridge University."
-          }
+          {bookDetails.description}
         </p>
         <button
           onClick={handleClick}

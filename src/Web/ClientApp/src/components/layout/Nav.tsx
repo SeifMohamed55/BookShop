@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   Collapse,
   Navbar,
@@ -21,9 +21,11 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../contexts/userDataProvider";
 import Cookies from "js-cookie";
+import { LogoutClient } from "../../web-api-client";
 
 export default function Nav() {
   const context = useContext(UserContext);
+  const navigator = useNavigate();
 
   if (!context) {
     throw new Error("UserContext must be used within a UserDataProvider");
@@ -42,11 +44,13 @@ export default function Nav() {
   }, [isProfileOpen]);
 
   const handleLogout = () => {
+    const client = new LogoutClient();
     Cookies.remove("isSignedIn");
     localStorage.clear();
     setUserData(null);
     setIsSignedIn(false);
     setIsProfileOpen(false);
+    navigator("/login");
   };
 
   return (
@@ -132,7 +136,7 @@ export default function Nav() {
             )}
 
             {userData && (
-              <NavItem className="ms-sm-auto mx-auto mt-sm-0">
+              <NavItem className="ms-sm-auto mx-auto mt-sm-0 position-relative">
                 <figure className="mb-0">
                   <img
                     src={userData?.imageUrl}
@@ -143,50 +147,58 @@ export default function Nav() {
                     onClick={toggleProfile}
                   />
                 </figure>
+
+                {/* Profile Popup Positioned Relative to Image */}
+                <div
+                  className={`profile-div position-absolute ${
+                    isProfileOpen
+                      ? "profile-scale-open"
+                      : "profile-scale-closed"
+                  }`}
+                >
+                  <div className="closing-section text-end pe-2 pt-1">
+                    <FontAwesomeIcon
+                      icon={faCircleXmark}
+                      onClick={() => setIsProfileOpen(false)}
+                      className="pointer"
+                    />
+                  </div>
+                  <div className="d-flex justify-content-between flex-column gap-2 p-3 w-100 h-100">
+                    <div className="border-bottom w-100">
+                      <p className="playfair fw-semibold m-0">
+                        {userData?.fullName}
+                      </p>
+                      <p className="times small-font opacity-75 m-0 py-1">
+                        {userData?.email}
+                      </p>
+                    </div>
+                    <div className="border-bottom w-100 profile-hover">
+                      <Link
+                        to="/profile"
+                        className="times fw-semibold text-capitalize pb-1 m-0 pointer text-decoration-none text-black"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <FontAwesomeIcon icon={faUser} className="me-2" />
+                        Profile
+                      </Link>
+                    </div>
+                    <p
+                      onClick={handleLogout}
+                      className="times fw-semibold text-capitalize m-0 pointer profile-hover"
+                    >
+                      <FontAwesomeIcon
+                        icon={faRightToBracket}
+                        className="me-2"
+                      />
+                      Log out
+                    </p>
+                  </div>
+                </div>
               </NavItem>
             )}
           </div>
         </Collapse>
       </Navbar>
-
-      {/* Profile Modal */}
-      <div
-        className={`profile-div ${
-          isProfileOpen ? "profile-scale-open" : "profile-scale-closed"
-        }`}
-      >
-        <div className="closing-section">
-          <FontAwesomeIcon
-            icon={faCircleXmark}
-            onClick={() => setIsProfileOpen(false)}
-          />
-        </div>
-        <div className="d-flex justify-content-between flex-column gap-2 p-3 w-100 h-100">
-          <div className="border-bottom w-100">
-            <p className="playfair fw-semibold m-0">{userData?.fullName}</p>
-            <p className="times small-font opacity-75 m-0 py-1">
-              {userData?.email}
-            </p>
-          </div>
-          <div className="border-bottom w-100 profile-hover">
-            <Link
-              to="/profile"
-              className="times fw-semibold text-capitalize pb-1 m-0 pointer text-decoration-none text-black"
-              onClick={() => setIsProfileOpen(false)}
-            >
-              <FontAwesomeIcon icon={faUser} className="me-2" />
-              Profile
-            </Link>
-          </div>
-          <p
-            onClick={handleLogout}
-            className="times fw-semibold text-capitalize m-0 pointer profile-hover"
-          >
-            <FontAwesomeIcon icon={faRightToBracket} className="me-2" />
-            Log out
-          </p>
-        </div>
-      </div>
     </header>
   );
 }

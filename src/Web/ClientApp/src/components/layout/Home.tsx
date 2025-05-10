@@ -7,12 +7,20 @@ import { faArrowTrendUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PopularBook from "../ui/PopularBook";
 import MenuList from "../ui/menuList";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import HorizontalCard from "../ui/horizontalCard";
-import VerticalCard from "../ui/VerticalCard";
 import myPic from "../../images/my-pic.jpg";
+import { BooksClient } from "../../web-api-client";
+import { PopularBooks } from "../../types/interfaces/PopularBooks";
+import VerticalCard from "../ui/VerticalCard";
+import { Book } from "../../types/interfaces/Book";
 
 export default function Home() {
+  const [popularBooks, setPopularBooks] = useState<PopularBooks[] | undefined>(
+    undefined
+  );
+  const [allBooks, setAllBooks] = useState<Book[] | undefined>(undefined);
+
   const [listValues] = useState<string[]>([
     "all genres",
     "fiction",
@@ -25,6 +33,48 @@ export default function Home() {
   function handleLists(index: number): void {
     setActiveIndex(index);
   }
+
+  useEffect(() => {
+    const client = new BooksClient();
+
+    // Popular books data
+    client
+      .getPopularBooks()
+      .then((res) => {
+        setPopularBooks(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    if (activeIndex === 0) {
+      // all books data
+      client
+        .getAllBooks()
+        .then((res) => {
+          console.log(res);
+          res.data?.length === 0
+            ? setAllBooks(undefined)
+            : setAllBooks(res.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } else {
+      //get book by genre
+      client
+        .getBooksByGenre(listValues[activeIndex])
+        .then((res) => {
+          console.log(res);
+          res.data?.length === 0
+            ? setAllBooks(undefined)
+            : setAllBooks(res.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [activeIndex]);
 
   return (
     <main>
@@ -48,11 +98,17 @@ export default function Home() {
           <span className="playfair fw-bold">Popular Books</span>
         </h2>
         <div className="row g-5">
-          {Array.from({ length: 5 }).map((_, idx) => (
-            <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12">
-              <PopularBook />
-            </div>
-          ))}
+          {popularBooks ? (
+            popularBooks.map((book, idx) => (
+              <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12">
+                <PopularBook bookVal={book} />
+              </div>
+            ))
+          ) : (
+            <h2 className="text-center playfair">
+              no available books at the moment !
+            </h2>
+          )}
         </div>
       </section>
 
@@ -69,9 +125,11 @@ export default function Home() {
               activeIndex={activeIndex}
             />
             <div className="d-flex justify-content-between align-items-center gap-5 flex-column">
-              {Array.from({ length: 6 }).map((card, idx) => (
-                <HorizontalCard key={idx} />
-              ))}
+              {allBooks
+                ? allBooks.map((book) => (
+                    <HorizontalCard bookDetails={book} key={book.id} />
+                  ))
+                : "no available books at the moment !"}
             </div>
           </div>
         </div>
@@ -80,13 +138,13 @@ export default function Home() {
         <aside className="col-xl-4 col-12">
           <h3 className="text-capitalize fw-bold h5 playfair py-2">
             <FontAwesomeIcon icon={faStar} className="me-2 fw-light" />
-            book clubs
+            trendy book
           </h3>
 
           <div className="d-flex justify-content-between align-items-center flex-column flex-xl-column flex-md-row gap-5">
-            {Array.from({ length: 2 }).map((_, idx) => (
-              <VerticalCard key={idx} />
-            ))}
+            <div className="col-lg-3 col-md-4 col-sm-6 col-12 w-100">
+              <VerticalCard />
+            </div>
           </div>
 
           <h5 className="playfair fw-bold py-4">
@@ -94,7 +152,7 @@ export default function Home() {
               icon={faClock}
               className="me-2 fw-light bg-transparent"
             />
-            Recent Reviews
+            Recent Reviews on the trendy book
           </h5>
 
           <div className="py-3 comments-overview ">

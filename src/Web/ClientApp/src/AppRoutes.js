@@ -1,9 +1,11 @@
 import PrivateRoute from "./components/api-authorization/privateRoute";
 import BookClubsPage from "./components/layout/BookClubs";
 import Home from "./components/layout/Home";
-import Login from "./components/layout/login";
 import MyBooks from "./components/layout/MyBooks";
+import { Navigate } from "react-router-dom";
 import Register from "./components/layout/register";
+import Login from "./components/layout/login";
+import Profile from "./components/layout/Profile";
 
 const AppRoutes = [
   {
@@ -17,10 +19,20 @@ const AppRoutes = [
   {
     path: "/my-books",
     element: <PrivateRoute />,
-    Children: [
+    children: [
       {
         index: true,
         element: <MyBooks />,
+      },
+    ],
+  },
+  {
+    path: "/profile",
+    element: <PrivateRoute />,
+    children: [
+      {
+        index: true,
+        element: <Profile />,
       },
     ],
   },
@@ -31,6 +43,10 @@ const AppRoutes = [
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "*",
+    element: <Navigate to="/" />,
   },
 ];
 

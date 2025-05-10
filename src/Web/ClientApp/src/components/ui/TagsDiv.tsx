@@ -3,7 +3,7 @@ interface Props {
   isDark: boolean;
 }
 
-const TagsDiv = ({ values, isDark }: Props) => {
+const TagsDiv = ({ values = [], isDark }: Props) => {
   return (
     <div className="d-flex align-items-center gap-2">
       {values.map((tag, idx) => (

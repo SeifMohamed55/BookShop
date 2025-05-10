@@ -2,28 +2,20 @@ import { Formik } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Yup from "yup";
 import { faBookOpen } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LoginClient, LoginCommand } from "../../web-api-client";
 import toast from "react-hot-toast";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { UserContext } from "../../contexts/userDataProvider";
 import Cookies from "js-cookie";
 const Login = () => {
   const context = useContext(UserContext);
-
+  const navigate = useNavigate();
   if (!context) {
     throw new Error("UserContext must be used within a UserDataProvider");
   }
 
   const { userData, setUserData } = context;
-  useEffect(() => {
-    if (userData) {
-      localStorage.setItem("fullName", userData.fullName as string);
-      localStorage.setItem("email", userData.email as string);
-      localStorage.setItem("id", userData.id as string);
-      localStorage.setItem("imageUrl", userData.imageUrl as string);
-    }
-  }, [userData]);
   return (
     <div className="mx-auto border p-5 login rounded-2 flex justify-content-between align-items-center flex-column gap-3 my-5">
       <FontAwesomeIcon icon={faBookOpen} className="mx-auto w-100 book-style" />
@@ -56,8 +48,13 @@ const Login = () => {
             .then((res) => {
               console.log(res);
               setUserData({ ...res.data });
-              Cookies.set("isSignedIn", "true"); // ✅ Add this line
+              localStorage.setItem("fullName", res.data?.fullName || "");
+              localStorage.setItem("email", res.data?.email || "");
+              localStorage.setItem("id", res.data?.id || "");
+              localStorage.setItem("imageUrl", res.data?.imageUrl || "");
+              Cookies.set("isSignedIn", "true");
               toast.success(res.message || "User Logged in Successfully");
+              navigate("/");
             })
             .catch((err) => {
               if (err) {

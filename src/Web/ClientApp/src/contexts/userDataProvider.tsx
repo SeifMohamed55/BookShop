@@ -18,20 +18,21 @@ export default function UserDataProvider({
 }: {
   children: ReactNode;
 }) {
-  const [userData, setUserData] = useState<UserData | null>(null);
-
-  useEffect(() => {
+  const [userData, setUserData] = useState<UserData | null>(() => {
     const token = Cookies.get("isSignedIn");
+    if (!token) return null;
 
-    if (token) {
-      setUserData({
-        email: localStorage.getItem("email") || "",
-        fullName: localStorage.getItem("fullName") || "",
-        id: localStorage.getItem("id") || "",
-        imageUrl: localStorage.getItem("imageUrl") || "",
-      });
+    const email = localStorage.getItem("email");
+    const fullName = localStorage.getItem("fullName");
+    const id = localStorage.getItem("id");
+    const imageUrl = localStorage.getItem("imageUrl");
+
+    if (email && fullName && id && imageUrl) {
+      return { email, fullName, id, imageUrl };
     }
-  }, []);
+
+    return null;
+  });
 
   return (
     <UserContext.Provider value={{ userData, setUserData }}>
