@@ -11,7 +11,6 @@ import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 const BookClubsPage: React.FC = () => {
   const [modal, setModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState("Popular");
 
   var settings: Settings = {
     dots: true,
@@ -57,12 +56,7 @@ const BookClubsPage: React.FC = () => {
 
       {/* Search and Filter Section */}
       <Container className="my-5">
-        <FilterBar
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          filter={filter}
-          setFilter={setFilter}
-        />
+        <FilterBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
         {/* Book Clubs Section */}
       </Container>
