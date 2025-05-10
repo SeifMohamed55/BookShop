@@ -334,14 +334,14 @@ export class BooksClient extends ApiClientBase {
         return Promise.resolve<SuccessResponseOfServiceResultOfInteger>(null as any);
     }
 
-    getMyBooks(userId: string, status: string | null | undefined): Promise<SuccessResponseOfIEnumerableOfMyBooksDto> {
+    getMyBooks(userId: string, isCompleted: boolean | null | undefined): Promise<SuccessResponseOfIEnumerableOfMyBooksDto> {
         let url_ = this.baseUrl + "/api/v1/Books/my?";
         if (userId === undefined || userId === null)
             throw new Error("The parameter 'userId' must be defined and cannot be null.");
         else
             url_ += "userId=" + encodeURIComponent("" + userId) + "&";
-        if (status !== undefined && status !== null)
-            url_ += "status=" + encodeURIComponent("" + status) + "&";
+        if (isCompleted !== undefined && isCompleted !== null)
+            url_ += "isCompleted=" + encodeURIComponent("" + isCompleted) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1579,7 +1579,6 @@ export class MyBooksDto implements IMyBooksDto {
     averageRating?: number;
     categories?: string[];
     readingPercentage?: number;
-    readingStatus?: string;
     isCompleted?: boolean;
 
     constructor(data?: IMyBooksDto) {
@@ -1606,7 +1605,6 @@ export class MyBooksDto implements IMyBooksDto {
                     this.categories!.push(item);
             }
             this.readingPercentage = _data["readingPercentage"];
-            this.readingStatus = _data["readingStatus"];
             this.isCompleted = _data["isCompleted"];
         }
     }
@@ -1633,7 +1631,6 @@ export class MyBooksDto implements IMyBooksDto {
                 data["categories"].push(item);
         }
         data["readingPercentage"] = this.readingPercentage;
-        data["readingStatus"] = this.readingStatus;
         data["isCompleted"] = this.isCompleted;
         return data;
     }
@@ -1649,7 +1646,6 @@ export interface IMyBooksDto {
     averageRating?: number;
     categories?: string[];
     readingPercentage?: number;
-    readingStatus?: string;
     isCompleted?: boolean;
 }
 

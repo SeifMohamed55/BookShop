@@ -79,11 +79,12 @@ public class Books : EndpointGroupBase
 
     [ProducesResponseType(typeof(SuccessResponse<IEnumerable<MyBooksDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> GetMyBooks(ISender sender, [FromQuery] string userId, [FromQuery] string? status)
+    public async Task<IResult> GetMyBooks(ISender sender, [FromQuery] string userId, [FromQuery] bool? isCompleted)
     {
-        var result = await sender.Send(new GetMyBooksQuery(userId, status));
+        var result = await sender.Send(new GetMyBooksQuery(userId, isCompleted));
         return result.ToResult();
     }
+
     [ProducesResponseType(typeof(SuccessResponse<BookDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IResult> GetMostPopularBook(ISender sender)

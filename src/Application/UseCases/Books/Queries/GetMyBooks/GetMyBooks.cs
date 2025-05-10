@@ -3,12 +3,13 @@ using AspireApp.Application.Common.Interfaces;
 using AspireApp.Application.Common.Models;
 using AspireApp.Domain.Entities;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using GraduationProject.Application.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace AspireApp.Application.Books.Queries.GetMyBooks;
 
-public record GetMyBooksQuery(string UserId, string? Status)
+public record GetMyBooksQuery(string UserId, bool? Status)
     : IRequest<ServiceResult<IEnumerable<MyBooksDto>>>;
 
 public class GetMyBooksQueryValidator : AbstractValidator<GetMyBooksQuery>
@@ -61,32 +62,14 @@ public class GetMyBooksQueryHandler :
                     .ThenInclude(b => b.Categories)
                 .Where(p => p.UserId == currentUserId);
 
-            if (!string.IsNullOrEmpty(request.Status))
+            if (request.Status.HasValue)
             {
-                if (request.Status.Equals("Completed", StringComparison.OrdinalIgnoreCase))
-                    query = query.Where(p => p.IsCompleted);
-                else if (request.Status.Equals("Reading", StringComparison.OrdinalIgnoreCase))
-                    query = query.Where(p => !p.IsCompleted);
+                    query = query.Where(p => p.IsCompleted==request.Status);
             }
+         
+            var books = await query.ProjectTo<MyBooksDto>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
-            var books = await query.ToListAsync(cancellationToken);
-
-            var myBooksDto = books.Select(p => new MyBooksDto
-            {
-                Id = p.Book.Id,
-                Title = p.Book.Title,
-                Author = p.Book.Author,
-                Description = p.Book.Description,
-                ImagePath = p.Book.ImagePath,
-                TotalPages = p.Book.TotalPages,
-                AverageRating = p.Book.AverageRating,
-                Categories = p.Book.Categories.Select(c => c.Name).ToList(),
-                ReadingPercentage = p.Book.TotalPages == 0 ? 0 : Math.Round((double)p.CurrentPage / p.Book.TotalPages * 100, 2),
-                ReadingStatus = p.IsCompleted ? "✅ Completed" : "🚩 Currently Reading",
-                IsCompleted = p.IsCompleted
-            }).ToList();
-
-            return ServiceResult<IEnumerable<MyBooksDto>>.Success(myBooksDto, "My books retrieved successfully.");
+            return ServiceResult<IEnumerable<MyBooksDto>>.Success(books, "My books retrieved successfully.");
         }
         catch
         {

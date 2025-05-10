@@ -247,10 +247,10 @@
             "x-position": 1
           },
           {
-            "name": "status",
+            "name": "isCompleted",
             "in": "query",
             "schema": {
-              "type": "string",
+              "type": "boolean",
               "nullable": true
             },
             "x-position": 2
@@ -1010,9 +1010,6 @@
           "readingPercentage": {
             "type": "number",
             "format": "double"
-          },
-          "readingStatus": {
-            "type": "string"
           },
           "isCompleted": {
             "type": "boolean"
