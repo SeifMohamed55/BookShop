@@ -26,10 +26,22 @@ RUN dotnet restore "BookShop.Docker.sln" --property:TargetFramework=net9.0
 # Copy the rest of the code
 COPY . .
 
-# Build and publish
-WORKDIR /src
-RUN dotnet build "BookShop.Docker.sln" -c Release -o /app/build --property:TargetFramework=net9.0
-RUN dotnet publish "src/Web/Web.csproj" -c Release -o /app/publish --property:TargetFramework=net9.0
+# Build and publish each project separately
+WORKDIR /src/src/Domain
+RUN dotnet build -c Release --property:TargetFramework=net9.0
+
+WORKDIR /src/src/Application
+RUN dotnet build -c Release --property:TargetFramework=net9.0
+
+WORKDIR /src/src/Infrastructure
+RUN dotnet build -c Release --property:TargetFramework=net9.0
+
+WORKDIR /src/src/ServiceDefaults
+RUN dotnet build -c Release --property:TargetFramework=net9.0
+
+WORKDIR /src/src/Web
+RUN dotnet build -c Release --property:TargetFramework=net9.0
+RUN dotnet publish -c Release -o /app/publish --property:TargetFramework=net9.0
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
