@@ -386,7 +386,49 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SuccessResponseOfByteOf"
+                  "$ref": "#/components/schemas/SuccessResponseOfBookPageDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/Books/reviews": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "operationId": "GetBookReviews",
+        "parameters": [
+          {
+            "name": "bookId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponseOfIEnumerableOfReviewDto"
                 }
               }
             }
@@ -1054,7 +1096,7 @@
           }
         ]
       },
-      "SuccessResponseOfByteOf": {
+      "SuccessResponseOfBookPageDto": {
         "allOf": [
           {
             "$ref": "#/components/schemas/ApiResponse"
@@ -1064,9 +1106,50 @@
             "additionalProperties": false,
             "properties": {
               "data": {
-                "type": "string",
-                "format": "byte",
-                "nullable": true
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/BookPageDto"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "BookPageDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentPage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "string",
+            "format": "byte"
+          }
+        }
+      },
+      "SuccessResponseOfIEnumerableOfReviewDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiResponse"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "data": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/ReviewDto"
+                }
               }
             }
           }

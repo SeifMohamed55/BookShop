@@ -1,3 +1,3 @@
 cd ./src/Application/UseCases
 
-dotnet new ca-usecase --name GetBookPage --feature-name Books --usecase-type query 
+dotnet new ca-usecase --name GetBookReviews --feature-name Books --usecase-type query 

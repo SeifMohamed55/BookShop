@@ -476,7 +476,7 @@ export class BooksClient extends ApiClientBase {
         return Promise.resolve<SuccessResponseOfBookDto>(null as any);
     }
 
-    getBookPage(bookId: number, page: number): Promise<SuccessResponseOfByteOf> {
+    getBookPage(bookId: number, page: number): Promise<SuccessResponseOfBookPageDto> {
         let url_ = this.baseUrl + "/api/v1/Books/page?";
         if (bookId === undefined || bookId === null)
             throw new Error("The parameter 'bookId' must be defined and cannot be null.");
@@ -502,7 +502,7 @@ export class BooksClient extends ApiClientBase {
         });
     }
 
-    protected processGetBookPage(response: Response): Promise<SuccessResponseOfByteOf> {
+    protected processGetBookPage(response: Response): Promise<SuccessResponseOfBookPageDto> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -510,7 +510,7 @@ export class BooksClient extends ApiClientBase {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SuccessResponseOfByteOf.fromJS(resultData200);
+            result200 = SuccessResponseOfBookPageDto.fromJS(resultData200);
             return result200;
             });
         } else if (status === 404) {
@@ -525,7 +525,55 @@ export class BooksClient extends ApiClientBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SuccessResponseOfByteOf>(null as any);
+        return Promise.resolve<SuccessResponseOfBookPageDto>(null as any);
+    }
+
+    getBookReviews(bookId: number): Promise<SuccessResponseOfIEnumerableOfReviewDto> {
+        let url_ = this.baseUrl + "/api/v1/Books/reviews?";
+        if (bookId === undefined || bookId === null)
+            throw new Error("The parameter 'bookId' must be defined and cannot be null.");
+        else
+            url_ += "bookId=" + encodeURIComponent("" + bookId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetBookReviews(_response);
+        });
+    }
+
+    protected processGetBookReviews(response: Response): Promise<SuccessResponseOfIEnumerableOfReviewDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SuccessResponseOfIEnumerableOfReviewDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ErrorResponse.fromJS(resultData404);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SuccessResponseOfIEnumerableOfReviewDto>(null as any);
     }
 
     /**
@@ -1693,37 +1741,122 @@ export interface ISuccessResponseOfBookDto extends IApiResponse {
     data?: BookDto | undefined;
 }
 
-export class SuccessResponseOfByteOf extends ApiResponse implements ISuccessResponseOfByteOf {
-    data?: string | undefined;
+export class SuccessResponseOfBookPageDto extends ApiResponse implements ISuccessResponseOfBookPageDto {
+    data?: BookPageDto | undefined;
 
-    constructor(data?: ISuccessResponseOfByteOf) {
+    constructor(data?: ISuccessResponseOfBookPageDto) {
         super(data);
     }
 
     override init(_data?: any) {
         super.init(_data);
         if (_data) {
-            this.data = _data["data"];
+            this.data = _data["data"] ? BookPageDto.fromJS(_data["data"]) : <any>undefined;
         }
     }
 
-    static override fromJS(data: any): SuccessResponseOfByteOf {
+    static override fromJS(data: any): SuccessResponseOfBookPageDto {
         data = typeof data === 'object' ? data : {};
-        let result = new SuccessResponseOfByteOf();
+        let result = new SuccessResponseOfBookPageDto();
         result.init(data);
         return result;
     }
 
     override toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["data"] = this.data;
+        data["data"] = this.data ? this.data.toJSON() : <any>undefined;
         super.toJSON(data);
         return data;
     }
 }
 
-export interface ISuccessResponseOfByteOf extends IApiResponse {
-    data?: string | undefined;
+export interface ISuccessResponseOfBookPageDto extends IApiResponse {
+    data?: BookPageDto | undefined;
+}
+
+export class BookPageDto implements IBookPageDto {
+    totalPages?: number;
+    currentPage?: number;
+    content?: string;
+
+    constructor(data?: IBookPageDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalPages = _data["totalPages"];
+            this.currentPage = _data["currentPage"];
+            this.content = _data["content"];
+        }
+    }
+
+    static fromJS(data: any): BookPageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BookPageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalPages"] = this.totalPages;
+        data["currentPage"] = this.currentPage;
+        data["content"] = this.content;
+        return data;
+    }
+}
+
+export interface IBookPageDto {
+    totalPages?: number;
+    currentPage?: number;
+    content?: string;
+}
+
+export class SuccessResponseOfIEnumerableOfReviewDto extends ApiResponse implements ISuccessResponseOfIEnumerableOfReviewDto {
+    data?: ReviewDto[] | undefined;
+
+    constructor(data?: ISuccessResponseOfIEnumerableOfReviewDto) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(ReviewDto.fromJS(item));
+            }
+        }
+    }
+
+    static override fromJS(data: any): SuccessResponseOfIEnumerableOfReviewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SuccessResponseOfIEnumerableOfReviewDto();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ISuccessResponseOfIEnumerableOfReviewDto extends IApiResponse {
+    data?: ReviewDto[] | undefined;
 }
 
 export class SuccessResponseOfServiceResultOfInteger extends ApiResponse implements ISuccessResponseOfServiceResultOfInteger {

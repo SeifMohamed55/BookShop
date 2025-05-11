@@ -51,6 +51,13 @@ public class GetBookByIdQueryHandler : IRequestHandler<GetBookByIdQuery, Service
 
             bookDto.Author = data.FullName;
 
+            var reviews = await _context.Reviews
+                .Where(r => r.BookId == request.id)
+                .OrderByDescending(r => r.Rating)
+                    .ThenByDescending(r => r.Likes)
+                .ProjectTo<ReviewDto>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+
             return ServiceResult<BookDto>.Success(bookDto, "Book fetched successfully.");
         }
         catch

@@ -19,11 +19,13 @@ public class GetMostPopularBookQueryHandler : IRequestHandler<GetMostPopularBook
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IIdentityService _identityService;
 
-    public GetMostPopularBookQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetMostPopularBookQueryHandler(IApplicationDbContext context, IMapper mapper, IIdentityService service)
     {
         _context = context;
         _mapper = mapper;
+        _identityService = service;
     }
 
     public async Task<ServiceResult<BookDto>> Handle(GetMostPopularBookQuery request, CancellationToken cancellationToken)
@@ -38,6 +40,13 @@ public class GetMostPopularBookQueryHandler : IRequestHandler<GetMostPopularBook
         if (mostPopularBook == null)
         {
             return ServiceResult<BookDto>.Failure("No books found");
+        }
+
+        foreach (var item in mostPopularBook.Reviews)
+        {
+            var user = await _identityService.GetUserDtoById(item.UserId);
+            if (user.TryGetData(out var data))
+                item.User = data;
         }
 
         return ServiceResult<BookDto>.Success(mostPopularBook, "Most popular book retrieved successfully");

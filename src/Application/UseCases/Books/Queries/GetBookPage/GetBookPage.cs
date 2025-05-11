@@ -1,10 +1,12 @@
 ﻿using System.Net;
 using AspireApp.Application.Common.Interfaces;
+using AspireApp.Application.Common.Models;
+using AspireApp.Domain.Entities;
 using GraduationProject.Application.Services;
 
 namespace AspireApp.Application.Books.Queries.GetBookPage;
 
-public record GetBookPageQuery(int bookId, int page) : IRequest<ServiceResult<byte[]>>
+public record GetBookPageQuery(int bookId, int page) : IRequest<ServiceResult<BookPageDto>>
 {
 }
 
@@ -15,31 +17,34 @@ public class GetBookPageQueryValidator : AbstractValidator<GetBookPageQuery>
     }
 }
 
-public class GetBookPageQueryHandler : IRequestHandler<GetBookPageQuery, ServiceResult<byte[]>>
+public class GetBookPageQueryHandler : IRequestHandler<GetBookPageQuery, ServiceResult<BookPageDto>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
     private readonly IStorageService _storageService;
     private readonly IUser _user;
+    private readonly IIdentityService _identityService;
 
     public GetBookPageQueryHandler
-        (IApplicationDbContext context, IMapper mapper, IStorageService storageService, IUser user)
+        (IApplicationDbContext context, IMapper mapper, IStorageService storageService, IUser user, IIdentityService service)
     {
         _context = context;
         _mapper = mapper;
         _storageService = storageService;
         _user = user;
+        _identityService = service;
+
     }
 
-    public async Task<ServiceResult<byte[]>> Handle(GetBookPageQuery request, CancellationToken cancellationToken)
+    public async Task<ServiceResult<BookPageDto>> Handle(GetBookPageQuery request, CancellationToken cancellationToken)
     {
         var book = await _context.Books.FirstOrDefaultAsync(x => x.Id == request.bookId);
         if(book == null)
-            return ServiceResult<byte[]>.Failure("Book not found", HttpStatusCode.NotFound);
+            return ServiceResult<BookPageDto>.Failure("Book not found", HttpStatusCode.NotFound);
 
         var bookPage = _storageService.GetBookPage(book.BookFilePath, request.page);
         if (bookPage.Length == 0)
-            return ServiceResult<byte[]>.Failure("Book page not found", HttpStatusCode.NotFound);
+            return ServiceResult<BookPageDto>.Failure("Book page not found", HttpStatusCode.NotFound);
         if(_user.Id != null)
         {
             var bookProgress = await _context.UserBookProgresses
@@ -55,6 +60,13 @@ public class GetBookPageQueryHandler : IRequestHandler<GetBookPageQuery, Service
                 }
             }
         }
-        return ServiceResult<byte[]>.Success(bookPage, "Successfully retrieved book page.");
+
+        var bookPageDto = new BookPageDto
+        {
+            TotalPages = book.TotalPages,
+            CurrentPage = request.page,
+            Content = bookPage,
+        };
+        return ServiceResult<BookPageDto>.Success(bookPageDto, "Successfully retrieved book page.");
     }
 }

@@ -11,6 +11,7 @@ using AspireApp.Application.Books.Queries.GetMostPopularBook;
 using AspireApp.Application.Books.Queries.GetBookById;
 using AspireApp.Application.Books.Queries.GetBookPage;
 using AspireApp.Application.UserBookProgresses.Commands.AddUserBookProgress;
+using AspireApp.Application.Books.Queries.GetBookReviews;
 namespace AspireApp.Web.Endpoints;
 
 public class Books : EndpointGroupBase
@@ -25,11 +26,21 @@ public class Books : EndpointGroupBase
             .MapGet(GetMostPopularBook, "/most-popular")
             .MapGet(GetBookById, "/book")
             .MapGet(GetBookPage, "/page")
+            .MapGet(GetBookReviews, "/reviews")
             .MapPost(AddBook)
             .MapPost(AddToLibrary, "/progress");
     }
 
-    [ProducesResponseType(typeof(SuccessResponse<byte[]>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(SuccessResponse<IEnumerable<ReviewDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<IResult> GetBookReviews(ISender sender, [FromQuery] int bookId)
+    {
+        var res = await sender.Send(new GetBookReviewsQuery(bookId));
+        return res.ToResult();
+    }
+
+
+    [ProducesResponseType(typeof(SuccessResponse<BookPageDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IResult> GetBookPage(ISender sender, [FromQuery] int bookId, [FromQuery] int page)
     {

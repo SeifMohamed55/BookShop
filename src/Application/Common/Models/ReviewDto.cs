@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace AspireApp.Application.Common.Models;
@@ -12,6 +13,9 @@ public class ReviewDto
     public string Comment { get; set; } = null!;
     public int Likes { get; set; }
     public byte Rating { get; set; }
+
+    [JsonIgnore]
+    public string UserId { get; set; } = null!;
     public DateTimeOffset LastModified { get; set; }
     private class Profiling :Profile
     {
