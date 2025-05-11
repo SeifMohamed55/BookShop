@@ -106,6 +106,11 @@ const MyBooks = () => {
       });
   });
 
+  const handleBookAdded = () => {
+    // Refresh the book list
+    fetchMyBooks(activeIndex);
+  };
+
   return (
     <div className="container-lg py-5">
       <div className="row g-4">
@@ -241,7 +246,11 @@ const MyBooks = () => {
           </div>
         </div>
       </div>
-      <CreateBookModal isOpen={modal} toggle={toggleModal} />
+      <CreateBookModal 
+        isOpen={modal} 
+        toggle={toggleModal} 
+        onBookAdded={handleBookAdded}
+      />
     </div>
   );
 };
