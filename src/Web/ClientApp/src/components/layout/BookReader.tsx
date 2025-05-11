@@ -16,7 +16,6 @@ import {
 import { BooksClient } from "../../web-api-client";
 import "../styling/BookReader.css";
 
-// Mock API response type
 interface BookPage {
   content: string;
   pageNumber: number;
@@ -27,6 +26,7 @@ interface BookPage {
 const BookReader: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
   const [fontSize, setFontSize] = useState(16);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [bookmark, setBookmark] = useState(0);
@@ -42,62 +42,53 @@ const BookReader: React.FC = () => {
       const client = new BooksClient();
       const response = await client.getBookPage(parseInt(bookId), page);
 
-      // The response is a byte array containing the page content
-      const textContent = new TextDecoder().decode(
-        response as unknown as Uint8Array
-      );
+      const base64 = response.data?.content;
+      if (!base64) throw new Error("No content received from server.");
 
-      // Get book details to get total pages
       const bookDetails = await client.getBookById(parseInt(bookId));
+      const totalPages = bookDetails.data?.totalPages ?? 1;
 
       setBookData({
-        content: textContent,
+        content: base64,
         pageNumber: page,
-        totalPages: bookDetails.data?.totalPages || 10,
+        totalPages: totalPages,
         chapterTitle: `Page ${page}`,
       });
+
       setError(null);
     } catch (err) {
+      console.error("Error loading book:", err);
       setError("Failed to load book content. Please try again.");
-      console.error("Error fetching book page:", err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (id) {
-      fetchBookPage(id, currentPage);
-    }
+    if (id) fetchBookPage(id, currentPage);
   }, [id, currentPage]);
 
   const handleFontSizeChange = (increase: boolean) => {
     setFontSize((prev) =>
-      increase ? Math.min(prev + 2, 24) : Math.max(prev - 2, 12)
+      increase ? Math.min(prev + 2, 28) : Math.max(prev - 2, 12)
     );
-  };
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
   };
 
   const handleBookmark = () => {
     setBookmark(window.scrollY);
   };
 
-  const handlePageChange = (direction: "next" | "prev") => {
+  const handlePageChange = (dir: "next" | "prev") => {
     if (!bookData) return;
-
-    if (direction === "next" && currentPage < bookData.totalPages) {
+    if (dir === "next" && currentPage < bookData.totalPages) {
       setCurrentPage((prev) => prev + 1);
-    } else if (direction === "prev" && currentPage > 1) {
+    } else if (dir === "prev" && currentPage > 1) {
       setCurrentPage((prev) => prev - 1);
     }
   };
 
-  const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen);
-  };
+  const toggleDarkMode = () => setIsDarkMode((prev) => !prev);
+  const toggleFullscreen = () => setIsFullscreen((prev) => !prev);
 
   return (
     <div
@@ -151,7 +142,7 @@ const BookReader: React.FC = () => {
               <p className="mt-3">Loading page...</p>
             </div>
           ) : error ? (
-            <div className="text-center py-5 text-danger">
+            <div className="text-center text-danger">
               <p>{error}</p>
               <Button
                 color="primary"
@@ -163,50 +154,39 @@ const BookReader: React.FC = () => {
           ) : (
             bookData && (
               <>
-                <div
-                  className="book-content"
-                  style={{
-                    fontSize: `${fontSize}px`,
-                    lineHeight: "1.6",
-                    padding: "20px",
-                    backgroundColor: isDarkMode ? "#1a1a1a" : "#ffffff",
-                    color: isDarkMode ? "#ffffff" : "#000000",
-                    borderRadius: "8px",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                    minHeight: "80vh",
-                    overflowY: "auto",
-                  }}
-                >
-                  <h2 className="chapter-title mb-4">
-                    {bookData.chapterTitle}
-                  </h2>
-                  <div className="content-text">
-                    {bookData.content.split("\n").map((paragraph, index) => (
-                      <p key={index} className="mb-3">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
+                <div className="book-content text-center">
+                  <h2 className="mb-4">{bookData.chapterTitle}</h2>
+                  <iframe
+                    title={`Book page ${bookData.pageNumber}`}
+                    src={`data:application/pdf;base64,${bookData.content}`}
+                    width="100%"
+                    height="800px"
+                    style={{
+                      border: "none",
+                      borderRadius: "8px",
+                      backgroundColor: isDarkMode ? "#2c2c2c" : "#fff",
+                    }}
+                  ></iframe>
                 </div>
 
                 <div className="pagination-controls mt-4 d-flex justify-content-between align-items-center">
                   <Button
                     color="light"
-                    onClick={() => handlePageChange("prev")}
                     disabled={currentPage === 1}
+                    onClick={() => handlePageChange("prev")}
                   >
                     <FontAwesomeIcon icon={faChevronLeft} className="me-2" />
                     Previous Page
                   </Button>
 
-                  <span className="page-info">
+                  <span>
                     Page {currentPage} of {bookData.totalPages}
                   </span>
 
                   <Button
                     color="light"
-                    onClick={() => handlePageChange("next")}
                     disabled={currentPage === bookData.totalPages}
+                    onClick={() => handlePageChange("next")}
                   >
                     Next Page
                     <FontAwesomeIcon icon={faChevronRight} className="ms-2" />
