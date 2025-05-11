@@ -2,6 +2,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
+# Install Node.js and npm
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get update && \
+    apt-get install -y nodejs && \
+    npm install -g npm@latest
+
 # Copy the solution and project files
 COPY ["BookShop.sln", "./"]
 COPY ["Directory.Build.props", "./"]
@@ -39,6 +45,7 @@ RUN dotnet build -c Release --property:TargetFramework=net9.0
 WORKDIR /src/src/ServiceDefaults
 RUN dotnet build -c Release --property:TargetFramework=net9.0
 
+# Build and publish Web project with SPA
 WORKDIR /src/src/Web
 RUN dotnet build -c Release --property:TargetFramework=net9.0
 RUN dotnet publish -c Release -o /app/publish --property:TargetFramework=net9.0
