@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Button,
   Form,
@@ -13,10 +13,12 @@ import {
   Col,
 } from 'reactstrap';
 import Select from 'react-select';
+import { BooksClient } from '../../web-api-client';
+import { UserContext } from '../../contexts/userDataProvider';
 
 interface FormData {
   title: string;
-  categories: { value: string; label: string }[];
+  categories: { id: number; value: string }[];
   description: string;
   image: File | null;
   pdfFile: File | null;
@@ -33,9 +35,10 @@ interface FormErrors {
 interface CreateBookModalProps {
   isOpen: boolean;
   toggle: () => void;
+  onBookAdded?: () => void; // Callback to refresh the book list
 }
 
-const CreateBookModal: React.FC<CreateBookModalProps> = ({ isOpen, toggle }) => {
+const CreateBookModal: React.FC<CreateBookModalProps> = ({ isOpen, toggle, onBookAdded }) => {
   const [formData, setFormData] = useState<FormData>({
     title: '',
     categories: [],
@@ -52,39 +55,18 @@ const CreateBookModal: React.FC<CreateBookModalProps> = ({ isOpen, toggle }) => 
     pdfFile: ''
   });
 
-  const [categoryOptions, setCategoryOptions] = useState<{ value: string; label: string }[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const context = useContext(UserContext);
+
+  const [categoryOptions, setCategoryOptions] = useState<{ id: number; value: string; label: string }[]>([]);
 
   useEffect(() => {
-    // Fetch categories from API
-    const fetchCategories = async () => {
-      try {
-        // Replace this with your actual API endpoint
-        const response = await fetch('YOUR_API_ENDPOINT/categories');
-        const data = await response.json();
-        
-        // Transform the data into the format expected by react-select
-        const options = data.map((category: string) => ({
-          value: category,
-          label: category
-        }));
-        
-        setCategoryOptions(options);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-        // Fallback to default categories if API fails
-        setCategoryOptions([
-          { value: 'Fiction', label: 'Fiction' },
-          { value: 'Non-Fiction', label: 'Non-Fiction' },
-          { value: 'Mystery', label: 'Mystery' },
-          { value: 'Science Fiction', label: 'Science Fiction' },
-          { value: 'Fantasy', label: 'Fantasy' },
-          { value: 'Romance', label: 'Romance' },
-          { value: 'Thriller', label: 'Thriller' }
-        ]);
-      }
-    };
-
-    fetchCategories();
+    setCategoryOptions([
+      { id: 1, value: 'Fiction', label: 'Fiction' },
+      { id: 2, value: 'Science fiction', label: 'Science fiction' },
+      { id: 3, value: 'biography', label: 'biography' },
+    ]);  
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -94,7 +76,6 @@ const CreateBookModal: React.FC<CreateBookModalProps> = ({ isOpen, toggle }) => 
       [name]: value
     });
     
-    // Clear error when typing
     if (formErrors[name as keyof typeof formErrors]) {
       setFormErrors({
         ...formErrors,
@@ -109,7 +90,6 @@ const CreateBookModal: React.FC<CreateBookModalProps> = ({ isOpen, toggle }) => 
       categories: selectedOptions || []
     });
     
-    // Clear error when categories are selected
     if (formErrors.categories) {
       setFormErrors({
         ...formErrors,
@@ -126,7 +106,6 @@ const CreateBookModal: React.FC<CreateBookModalProps> = ({ isOpen, toggle }) => 
         [name]: files[0]
       });
       
-      // Clear error when file is selected
       if (formErrors[name as keyof typeof formErrors]) {
         setFormErrors({
           ...formErrors,
@@ -169,21 +148,70 @@ const CreateBookModal: React.FC<CreateBookModalProps> = ({ isOpen, toggle }) => 
     return valid;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      // Add book logic would go here
-      console.log('Form submitted successfully', formData);
-      toggle();
-      // Reset form
-      setFormData({
-        title: '',
-        categories: [],
-        description: '',
-        image: null,
-        pdfFile: null
+    if (!validateForm() || !context?.userData?.id) return;
+
+    try {
+      setIsSubmitting(true);
+      setSubmitError(null);
+
+      // Convert files to base64
+      const imageBase64 = await fileToBase64(formData.image!);
+      const pdfBase64 = await fileToBase64(formData.pdfFile!);
+
+      const client = new BooksClient();
+      const response = await client.addBook(context.userData.id, {
+        title: formData.title,
+        description: formData.description,
+        image: imageBase64,
+        file: pdfBase64,
+        userId: context.userData.id,
+        categoriesDto: [{ id: 1, name: 'Fiction' }]
       });
+
+      if (response.data) {
+        // Reset form
+        setFormData({
+          title: '',
+          categories: [],
+          description: '',
+          image: null,
+          pdfFile: null
+        });
+        
+        // Close modal
+        toggle();
+        
+        // Refresh book list if callback provided
+        if (onBookAdded) {
+          onBookAdded();
+        }
+      }
+    } catch (err) {
+      console.error('Error adding book:', err);
+      setSubmitError('Failed to add book. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+
+  // Helper function to convert File to base64
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          // Remove the data URL prefix (e.g., "data:image/jpeg;base64,")
+          const base64 = reader.result.split(',')[1];
+          resolve(base64);
+        } else {
+          reject(new Error('Failed to convert file to base64'));
+        }
+      };
+      reader.onerror = error => reject(error);
+    });
   };
 
   return (
@@ -191,6 +219,11 @@ const CreateBookModal: React.FC<CreateBookModalProps> = ({ isOpen, toggle }) => 
       <ModalHeader toggle={toggle} className="playfair fw-bold">Add a New Book</ModalHeader>
       <Form onSubmit={handleSubmit}>
         <ModalBody>
+          {submitError && (
+            <div className="alert alert-danger" role="alert">
+              {submitError}
+            </div>
+          )}
           <Row>
             <Col md={12}>
               <FormGroup>
@@ -270,8 +303,10 @@ const CreateBookModal: React.FC<CreateBookModalProps> = ({ isOpen, toggle }) => 
           </Row>
         </ModalBody>
         <ModalFooter>
-          <Button type="button" color="light" onClick={toggle}>Cancel</Button>
-          <Button type="submit" color="dark">Add Book</Button>
+          <Button type="button" color="light" onClick={toggle} disabled={isSubmitting}>Cancel</Button>
+          <Button type="submit" color="dark" disabled={isSubmitting}>
+            {isSubmitting ? 'Adding Book...' : 'Add Book'}
+          </Button>
         </ModalFooter>
       </Form>
     </Modal>
