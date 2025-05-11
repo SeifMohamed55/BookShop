@@ -26,10 +26,12 @@ public class Books : EndpointGroupBase
             .MapGet(GetBookById, "/book")
             .MapGet(GetBookPage, "/page")
             .MapPost(AddBook)
-            .MapPost(AddUserBookProgress, "/progress"); 
+            .MapPost(AddToLibrary, "/progress");
     }
 
-    public async Task<IResult> GetBookPage(ISender sender, [FromQuery]  int bookId, [FromQuery] int page)
+    [ProducesResponseType(typeof(SuccessResponse<byte[]>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<IResult> GetBookPage(ISender sender, [FromQuery] int bookId, [FromQuery] int page)
     {
         var res = await sender.Send(new GetBookPageQuery(bookId, page));
         return res.ToResult();
@@ -96,7 +98,7 @@ public class Books : EndpointGroupBase
 
     [ProducesResponseType(typeof(SuccessResponse<ServiceResult<bool>>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> AddUserBookProgress(ISender sender, AddUserBookProgressCommand command)
+    public async Task<IResult> AddToLibrary(ISender sender, AddUserBookProgressCommand command)
     {
         var res = await sender.Send(command);
         return res.ToResult();

@@ -382,7 +382,24 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponseOfByteOf"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -392,7 +409,7 @@
         "tags": [
           "Books"
         ],
-        "operationId": "AddUserBookProgress",
+        "operationId": "AddToLibrary",
         "parameters": [
           {
             "name": "X-XSRF-TOKEN",
@@ -1032,6 +1049,24 @@
                     "$ref": "#/components/schemas/BookDto"
                   }
                 ]
+              }
+            }
+          }
+        ]
+      },
+      "SuccessResponseOfByteOf": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiResponse"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "data": {
+                "type": "string",
+                "format": "byte",
+                "nullable": true
               }
             }
           }
