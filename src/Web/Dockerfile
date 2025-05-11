@@ -8,6 +8,19 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g npm@latest
 
+# Install .NET SDK and runtime
+RUN apt-get update && \
+    apt-get install -y wget && \
+    wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
+    dpkg -i packages-microsoft-prod.deb && \
+    rm packages-microsoft-prod.deb && \
+    apt-get update && \
+    apt-get install -y dotnet-sdk-9.0 && \
+    apt-get install -y aspnetcore-runtime-9.0
+
+# Verify .NET installation
+RUN dotnet --info
+
 # Copy the solution and project files
 COPY ["BookShop.sln", "./"]
 COPY ["Directory.Build.props", "./"]
@@ -53,6 +66,15 @@ RUN dotnet publish -c Release -o /app/publish --property:TargetFramework=net9.0
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
+
+# Install .NET runtime in the final image
+RUN apt-get update && \
+    apt-get install -y wget && \
+    wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
+    dpkg -i packages-microsoft-prod.deb && \
+    rm packages-microsoft-prod.deb && \
+    apt-get update && \
+    apt-get install -y aspnetcore-runtime-9.0
 
 # Copy the published output
 COPY --from=build /app/publish .
