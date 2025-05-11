@@ -1,6 +1,7 @@
 ﻿using AspireApp.Application.Common.Interfaces;
 using AspireApp.Domain.Entities;
 using FluentValidation;
+using GraduationProject.Application.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AspireApp.Application.FavouriteGenres.Queries.GetFavouriteGenres
 {
-    public record GetFavouriteGenresQuery : IRequest<List<CategoryDto>>;
+    public record GetFavouriteGenresQuery : IRequest<ServiceResult<List<CategoryDto>>>;
 
     public class GetFavouriteGenresQueryValidator : AbstractValidator<GetFavouriteGenresQuery>
     {
@@ -26,7 +27,7 @@ namespace AspireApp.Application.FavouriteGenres.Queries.GetFavouriteGenres
         }
     }
 
-    public class GetFavouriteGenresQueryHandler : IRequestHandler<GetFavouriteGenresQuery, List<CategoryDto>>
+    public class GetFavouriteGenresQueryHandler : IRequestHandler<GetFavouriteGenresQuery, ServiceResult<List<CategoryDto>>>
     {
         private readonly IApplicationDbContext _context;
         private readonly IUser _currentUser;
@@ -37,8 +38,13 @@ namespace AspireApp.Application.FavouriteGenres.Queries.GetFavouriteGenres
             _currentUser = currentUser;
         }
 
-        public async Task<List<CategoryDto>> Handle(GetFavouriteGenresQuery request, CancellationToken cancellationToken)
+        public async Task<ServiceResult<List<CategoryDto>>> Handle(GetFavouriteGenresQuery request, CancellationToken cancellationToken)
         {
+            if(_currentUser.Id == null)
+            {
+                return ServiceResult<List<CategoryDto>>.Failure("User not authenticated.");
+            }
+
             var userBooks = await _context.UserBookProgresses
                 .Where(ubp => ubp.UserId == _currentUser.Id)
                 .Include(ubp => ubp.Book)
@@ -62,7 +68,7 @@ namespace AspireApp.Application.FavouriteGenres.Queries.GetFavouriteGenres
                 })
                 .ToList();
 
-            return topCategories;
+            return ServiceResult<List<CategoryDto>>.Success(topCategories, "Success.");
         }
     }
 }

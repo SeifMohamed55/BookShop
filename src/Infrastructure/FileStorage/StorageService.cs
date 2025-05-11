@@ -15,8 +15,7 @@ public class StorageService : IStorageService
     public StorageService(ILogger<StorageService> logger, IWebHostEnvironment env)
     {
         _logger = logger;
-        _rootUploadPath = Path.Combine(env.WebRootPath, "uploadedFiles");
-
+        _rootUploadPath = Path.Combine(env.WebRootPath, "uploadedFiles");        
         EnsureDirectoriesExist();
     }
 
@@ -79,8 +78,15 @@ public class StorageService : IStorageService
         }
         catch (Exception ex)
         {
+            var subfolder = type switch
+            {
+                FileType.UserImage => "users",
+                FileType.BookImage => "books",
+                _ => ""
+            };
+
             _logger.LogError(ex, "Error saving image");
-            return IStorageService.DefaultUserImageRelativePath;
+            return BuildRelativeUrl("default.jpg", subfolder);
         }
     }
 

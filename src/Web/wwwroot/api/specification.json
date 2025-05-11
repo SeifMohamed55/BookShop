@@ -560,6 +560,36 @@
         }
       }
     },
+    "/api/v1/FavoriteGenres": {
+      "get": {
+        "tags": [
+          "FavoriteGenres"
+        ],
+        "operationId": "GetFavoriteGenres",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponseOfIEnumerableOfCategoryDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/Login": {
       "post": {
         "tags": [
