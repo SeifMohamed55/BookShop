@@ -53,7 +53,12 @@ RUN dotnet publish -c Release -o /app/publish --property:TargetFramework=net9.0
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
+
+# Copy the published output
 COPY --from=build /app/publish .
+
+# Verify the files are copied
+RUN ls -la /app
 
 # Set environment variables
 ENV ASPNETCORE_URLS=http://+:80
