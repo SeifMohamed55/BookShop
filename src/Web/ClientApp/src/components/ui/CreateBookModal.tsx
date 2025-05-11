@@ -140,7 +140,7 @@ const CreateBookModal: React.FC<CreateBookModalProps> = ({
       reader.readAsDataURL(file);
       reader.onload = () => {
         if (typeof reader.result === "string") {
-          resolve(reader.result.split(",")[1]);
+          resolve(reader.result); // Keep full data URL
         } else {
           reject("Invalid file result");
         }
@@ -177,19 +177,23 @@ const CreateBookModal: React.FC<CreateBookModalProps> = ({
       });
 
       const client = new BooksClient();
-      const response = await client.addBook(undefined, bookCommand);
-
-      if (response.data) {
-        setFormData({
-          title: "",
-          categories: [],
-          description: "",
-          image: null,
-          pdfFile: null,
+      client
+        .addBook(undefined, bookCommand)
+        .then((res) => {
+          console.log(res);
+          setFormData({
+            title: "",
+            categories: [],
+            description: "",
+            image: null,
+            pdfFile: null,
+          });
+          toggle();
+          onBookAdded?.();
+        })
+        .catch((err) => {
+          console.error(err);
         });
-        toggle();
-        onBookAdded?.();
-      }
     } catch (error) {
       console.error(error);
       setSubmitError("Failed to add book. Please try again.");
