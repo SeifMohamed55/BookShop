@@ -1,16 +1,15 @@
 ﻿using System.Data.Common;
-using BookShop.Infrastructure.Data;
+using AspireApp.Infrastructure.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Respawn;
 using Testcontainers.MsSql;
 
-namespace BookShop.Application.FunctionalTests;
-
+namespace AspireApp.Application.FunctionalTests;
 public class SqlTestcontainersTestDatabase : ITestDatabase
 {
-    private const string DefaultDatabase = "BookShopTestDb";
+    private const string DefaultDatabase = "AspireAppTestDb";
     private readonly MsSqlContainer _container;
     private DbConnection _connection = null!;
     private string _connectionString = null!;

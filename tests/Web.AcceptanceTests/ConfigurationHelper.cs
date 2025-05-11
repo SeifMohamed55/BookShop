@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace BookShop.Web.AcceptanceTests;
-
+namespace AspireApp.Web.AcceptanceTests;
 public static class ConfigurationHelper
 {
     private readonly static IConfiguration _configuration;

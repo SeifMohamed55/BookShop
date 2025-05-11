@@ -1,7 +1,6 @@
-﻿using BookShop.Application.Common.Models;
+﻿using AspireApp.Application.Common.Models;
 
-namespace BookShop.Application.Common.Mappings;
-
+namespace AspireApp.Application.Common.Mappings;
 public static class MappingExtensions
 {
     public static Task<PaginatedList<TDestination>> PaginatedListAsync<TDestination>(this IQueryable<TDestination> queryable, int pageNumber, int pageSize) where TDestination : class

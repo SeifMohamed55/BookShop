@@ -1,7 +1,6 @@
 ﻿using FluentValidation.Results;
 
-namespace BookShop.Application.Common.Exceptions;
-
+namespace AspireApp.Application.Common.Exceptions;
 public class ValidationException : Exception
 {
     public ValidationException()

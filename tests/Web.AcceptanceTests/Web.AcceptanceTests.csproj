@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <RootNamespace>BookShop.Web.AcceptanceTests</RootNamespace>
-        <AssemblyName>BookShop.Web.AcceptanceTests</AssemblyName>
+        <RootNamespace>AspireApp.Web.AcceptanceTests</RootNamespace>
+        <AssemblyName>AspireApp.Web.AcceptanceTests</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>

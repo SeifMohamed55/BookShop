@@ -1,23 +1,28 @@
 ﻿using System.Reflection;
-using BookShop.Application.Common.Interfaces;
-using BookShop.Domain.Entities;
-using BookShop.Infrastructure.Identity;
+using AspireApp.Application.Common.Interfaces;
+using AspireApp.Domain.Entities;
+using AspireApp.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookShop.Infrastructure.Data;
-
+namespace AspireApp.Infrastructure.Data;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-    public DbSet<TodoList> TodoLists => Set<TodoList>();
+    public DbSet<Book> Books => Set<Book>();
+    public DbSet<Review> Reviews => Set<Review>();
+    public DbSet<UserBookProgress> UserBookProgresses => Set<UserBookProgress>();
+    public DbSet<BookProgressHistory> BookProgressHistories => Set<BookProgressHistory>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<BookClub> BookClubs => Set<BookClub>();
+    public DbSet<BookClubMember> BookClubMembers => Set<BookClubMember>();
 
-    public DbSet<TodoItem> TodoItems => Set<TodoItem>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
+
 }

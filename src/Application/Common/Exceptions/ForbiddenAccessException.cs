@@ -1,4 +1,4 @@
-﻿namespace BookShop.Application.Common.Exceptions;
+﻿namespace AspireApp.Application.Common.Exceptions;
 
 public class ForbiddenAccessException : Exception
 {

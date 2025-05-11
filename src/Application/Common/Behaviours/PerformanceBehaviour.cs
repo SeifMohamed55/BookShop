@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics;
-using BookShop.Application.Common.Interfaces;
+using AspireApp.Application.Common.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace BookShop.Application.Common.Behaviours;
-
+namespace AspireApp.Application.Common.Behaviours;
 public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private readonly Stopwatch _timer;
@@ -44,7 +43,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
                 userName = await _identityService.GetUserNameAsync(userId);
             }
 
-            _logger.LogWarning("BookShop Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",
+            _logger.LogWarning("AspireApp Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",
                 requestName, elapsedMilliseconds, userId, userName, request);
         }
 

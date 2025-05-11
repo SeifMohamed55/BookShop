@@ -1,14 +1,15 @@
-﻿using BookShop.Domain.Constants;
-using BookShop.Domain.Entities;
-using BookShop.Infrastructure.Identity;
+﻿using AspireApp.Application.Common.Interfaces;
+using AspireApp.Domain.Constants;
+using AspireApp.Domain.Entities;
+using AspireApp.Infrastructure.FileStorage;
+using AspireApp.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace BookShop.Infrastructure.Data;
-
+namespace AspireApp.Infrastructure.Data;
 public static class InitialiserExtensions
 {
     public static async Task InitialiseDatabaseAsync(this WebApplication app)
@@ -42,6 +43,7 @@ public class ApplicationDbContextInitialiser
     {
         try
         {
+            await Task.CompletedTask;
             await _context.Database.MigrateAsync();
         }
         catch (Exception ex)
@@ -75,34 +77,108 @@ public class ApplicationDbContextInitialiser
         }
 
         // Default users
-        var administrator = new ApplicationUser { UserName = "administrator@localhost", Email = "administrator@localhost" };
+        var administrator = new ApplicationUser 
+        {
+            UserName = "administrator@localhost",
+            Email = "administrator@localhost" ,
+            FullName = "Adminstrator",
+            ImageUrl = IStorageService.DefaultUserImageRelativePath
+        };
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {
             await _userManager.CreateAsync(administrator, "Administrator1!");
             if (!string.IsNullOrWhiteSpace(administratorRole.Name))
             {
-                await _userManager.AddToRolesAsync(administrator, new [] { administratorRole.Name });
+                await _userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
             }
         }
 
-        // Default data
-        // Seed, if necessary
-        if (!_context.TodoLists.Any())
+        if (!_context.Categories.Any())
         {
-            _context.TodoLists.Add(new TodoList
+            await _context.Categories.AddRangeAsync([
+                new Category { Name = "Fiction" },
+                new Category { Name = "Non-Fiction" },
+                new Category { Name = "Science Fiction" },
+                new Category { Name = "Fantasy" },
+                new Category { Name = "Mystery" },
+                new Category { Name = "Biography" },
+                new Category { Name = "Self-Help" },
+                new Category { Name = "History" },
+                new Category { Name = "Poetry" },
+                new Category { Name = "Romance" },
+                new Category { Name = "Thriller" },
+                new Category { Name = "Health & Wellness" },
+                new Category { Name = "Business" },
+                new Category { Name = "Education" },
+                new Category { Name = "Children's Books" },
+                new Category { Name = "Young Adult" },
+                new Category { Name = "Philosophy" },
+                new Category { Name = "Travel" },
+                new Category { Name = "Cooking" },
+                new Category { Name = "Spirituality" },
+                new Category { Name = "Comics & Graphic Novels" }
+            ]);
+
+            await _context.SaveChangesAsync();
+        }
+
+        if(!_context.BookClubs.Any())
+        {
+            var user = await _context.Users.OrderBy(x=> x.Id).FirstAsync();
+            var user2 = await _context.Users.OrderBy(x => x.Id).LastAsync();
+            var bookClub = new BookClub
             {
-                Title = "Todo List",
-                Items =
+                Name = "Book Lovers Club",
+                Description = "A club for book lovers to discuss their favorite books.",
+                ImagePath = "",
+                UserBookClubs = new List<BookClubMember>
                 {
-                    new TodoItem { Title = "Make a todo list 📃" },
-                    new TodoItem { Title = "Check off the first item ✅" },
-                    new TodoItem { Title = "Realise you've already done two things on the list! 🤯"},
-                    new TodoItem { Title = "Reward yourself with a nice, long nap 🏆" },
+                    new BookClubMember
+                    {
+                        UserId = user.Id,
+                        Role = Domain.Enums.MemberRole.Admin,
+                        JoinedDate = DateTime.UtcNow,
+                    },
+                    new BookClubMember
+                    {
+                        UserId = user2.Id,
+                        Role = Domain.Enums.MemberRole.Member,
+                        JoinedDate = DateTime.UtcNow,
+                    }
+                }
+            };
+            _context.BookClubs.Add(bookClub);
+            await _context.SaveChangesAsync();
+        }
+
+        /*if (!_context.Reviews.Any())
+        {
+            var book = await _context.Books.FirstAsync();
+            var user = await _context.Users.FirstAsync();
+
+            _context.Reviews.AddRange(new List<Review>
+            {
+                new Review
+                {
+                    UserId = user.Id,
+                    Rating = 5,
+                    Comment = "An amazing book! Highly recommend it.",
+                    Book = book,
+                    Likes = 10
+                },
+                new Review
+                {
+                    UserId = user.Id,
+                    Rating = 4,
+                    Comment = "Good book has better.",
+                    Book = book,
+                    Likes = 0
                 }
             });
 
             await _context.SaveChangesAsync();
-        }
+        }*/
+
     }
 }

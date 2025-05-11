@@ -1,4 +1,4 @@
-﻿namespace BookShop.Domain.Enums;
+﻿namespace AspireApp.Domain.Enums;
 
 public enum PriorityLevel
 {

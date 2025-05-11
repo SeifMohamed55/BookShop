@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace BookShop.Application.Common.Behaviours;
-
+namespace AspireApp.Application.Common.Behaviours;
 public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private readonly ILogger<TRequest> _logger;
@@ -21,7 +20,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
         {
             var requestName = typeof(TRequest).Name;
 
-            _logger.LogError(ex, "BookShop Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+            _logger.LogError(ex, "AspireApp Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
 
             throw;
         }

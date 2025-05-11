@@ -1,14 +1,13 @@
-﻿using BookShop.Application.TodoItems.Commands.CreateTodoItem;
-using BookShop.Application.TodoItems.Commands.UpdateTodoItem;
-using BookShop.Application.TodoItems.Commands.UpdateTodoItemDetail;
-using BookShop.Application.TodoLists.Commands.CreateTodoList;
-using BookShop.Domain.Entities;
-using BookShop.Domain.Enums;
-
-namespace BookShop.Application.FunctionalTests.TodoItems.Commands;
+﻿using AspireApp.Application.TodoItems.Commands.CreateTodoItem;
+using AspireApp.Application.TodoItems.Commands.UpdateTodoItem;
+using AspireApp.Application.TodoItems.Commands.UpdateTodoItemDetail;
+using AspireApp.Application.TodoLists.Commands.CreateTodoList;
+using AspireApp.Domain.Entities;
+using AspireApp.Domain.Enums;
 
 using static Testing;
 
+namespace AspireApp.Application.FunctionalTests.TodoItems.Commands;
 public class UpdateTodoItemDetailTests : BaseTestFixture
 {
     [Test]

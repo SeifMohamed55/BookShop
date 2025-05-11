@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <RootNamespace>BookShop.Infrastructure.IntegrationTests</RootNamespace>
-        <AssemblyName>BookShop.Infrastructure.IntegrationTests</AssemblyName>
+        <RootNamespace>AspireApp.Infrastructure.IntegrationTests</RootNamespace>
+        <AssemblyName>AspireApp.Infrastructure.IntegrationTests</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>

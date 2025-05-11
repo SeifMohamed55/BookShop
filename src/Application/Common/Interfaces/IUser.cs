@@ -1,4 +1,4 @@
-﻿namespace BookShop.Application.Common.Interfaces;
+﻿namespace AspireApp.Application.Common.Interfaces;
 
 public interface IUser
 {
