@@ -1,23 +1,28 @@
 # Build stage
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copy csproj and restore dependencies
+# Copy the solution and project files
+COPY ["BookShop.sln", "./"]
 COPY ["src/Web/Web.csproj", "src/Web/"]
 COPY ["src/Application/Application.csproj", "src/Application/"]
 COPY ["src/Domain/Domain.csproj", "src/Domain/"]
 COPY ["src/Infrastructure/Infrastructure.csproj", "src/Infrastructure/"]
-RUN dotnet restore "src/Web/Web.csproj"
+COPY ["src/ServiceDefaults/ServiceDefaults.csproj", "src/ServiceDefaults/"]
+
+# Restore dependencies
+RUN dotnet restore "BookShop.sln"
 
 # Copy the rest of the code
 COPY . .
 
 # Build and publish
-RUN dotnet build "src/Web/Web.csproj" -c Release -o /app/build
+WORKDIR /src
+RUN dotnet build "BookShop.sln" -c Release -o /app/build
 RUN dotnet publish "src/Web/Web.csproj" -c Release -o /app/publish
 
 # Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
