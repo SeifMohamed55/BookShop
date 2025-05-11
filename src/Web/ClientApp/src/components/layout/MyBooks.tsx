@@ -39,7 +39,18 @@ const MyBooks = () => {
   };
 
   const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [data, setData] = useState<States[] | undefined>(undefined);
+  const data = [
+    { name: "March 1", pages: 21 },
+    { name: "March 2", pages: 18 },
+    { name: "March 3", pages: 13 },
+    { name: "March 4", pages: 25 },
+    { name: "March 5", pages: 20 },
+    { name: "March 6", pages: 17 },
+    { name: "March 7", pages: 23 },
+    { name: "March 8", pages: 19 },
+    { name: "March 9", pages: 27 },
+    { name: "March 10", pages: 15 },
+  ];
   const [tagsValue] = useState<string[]>([
     "Fiction",
     "Science fiction",
@@ -95,18 +106,18 @@ const MyBooks = () => {
     return `${daysRemaining} days remaining this year`;
   };
 
-  useEffect(() => {
-    const client = new ReadingStatsClient();
-    client
-      .getReadingStats()
-      .then((res) => {
-        console.log(res);
-        res.data ? setData(res.data) : setData(undefined);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  },[]);
+  // useEffect(() => {
+  //   const client = new ReadingStatsClient();
+  //   client
+  //     .getReadingStats()
+  //     .then((res) => {
+  //       console.log(res);
+  //       res.data ? setData(res.data) : setData(undefined);
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //     });
+  // },[]);
 
   const handleBookAdded = () => {
     // Refresh the book list
@@ -183,7 +194,7 @@ const MyBooks = () => {
               <div className="py-3 w-100">
                 <div className="d-flex times justify-content-between align-items-center normal-font ">
                   <p className="text-nowrap">2,430 of 7,500 pages</p>
-                  <p>{}%</p>
+                  <p>{"32"}%</p>
                 </div>
                 <div className="progress" style={{ height: 8 }}>
                   <div
