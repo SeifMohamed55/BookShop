@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: src/Web/Dockerfile
     ports:
-      - "8080:80"
+      - "44447:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Server=db;Database=BookShop;User=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True
