@@ -10,15 +10,23 @@ COPY ["src/Domain/Domain.csproj", "src/Domain/"]
 COPY ["src/Infrastructure/Infrastructure.csproj", "src/Infrastructure/"]
 COPY ["src/ServiceDefaults/ServiceDefaults.csproj", "src/ServiceDefaults/"]
 
-# Restore dependencies
-RUN dotnet restore "BookShop.sln"
+# Create a temporary solution file without test projects
+RUN dotnet new sln -n BookShop.Docker && \
+    dotnet sln BookShop.Docker.sln add src/Web/Web.csproj && \
+    dotnet sln BookShop.Docker.sln add src/Application/Application.csproj && \
+    dotnet sln BookShop.Docker.sln add src/Domain/Domain.csproj && \
+    dotnet sln BookShop.Docker.sln add src/Infrastructure/Infrastructure.csproj && \
+    dotnet sln BookShop.Docker.sln add src/ServiceDefaults/ServiceDefaults.csproj
+
+# Restore dependencies using the Docker-specific solution
+RUN dotnet restore "BookShop.Docker.sln"
 
 # Copy the rest of the code
 COPY . .
 
 # Build and publish
 WORKDIR /src
-RUN dotnet build "BookShop.sln" -c Release -o /app/build
+RUN dotnet build "BookShop.Docker.sln" -c Release -o /app/build
 RUN dotnet publish "src/Web/Web.csproj" -c Release -o /app/publish
 
 # Runtime stage
