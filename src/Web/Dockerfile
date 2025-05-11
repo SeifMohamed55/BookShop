@@ -4,6 +4,8 @@ WORKDIR /src
 
 # Copy the solution and project files
 COPY ["BookShop.sln", "./"]
+COPY ["Directory.Build.props", "./"]
+COPY ["Directory.Packages.props", "./"]
 COPY ["src/Web/Web.csproj", "src/Web/"]
 COPY ["src/Application/Application.csproj", "src/Application/"]
 COPY ["src/Domain/Domain.csproj", "src/Domain/"]
@@ -19,15 +21,15 @@ RUN dotnet new sln -n BookShop.Docker && \
     dotnet sln BookShop.Docker.sln add src/ServiceDefaults/ServiceDefaults.csproj
 
 # Restore dependencies using the Docker-specific solution
-RUN dotnet restore "BookShop.Docker.sln"
+RUN dotnet restore "BookShop.Docker.sln" --property:TargetFramework=net9.0
 
 # Copy the rest of the code
 COPY . .
 
 # Build and publish
 WORKDIR /src
-RUN dotnet build "BookShop.Docker.sln" -c Release -o /app/build
-RUN dotnet publish "src/Web/Web.csproj" -c Release -o /app/publish
+RUN dotnet build "BookShop.Docker.sln" -c Release -o /app/build --property:TargetFramework=net9.0
+RUN dotnet publish "src/Web/Web.csproj" -c Release -o /app/publish --property:TargetFramework=net9.0
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
