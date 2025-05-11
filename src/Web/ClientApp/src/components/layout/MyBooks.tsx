@@ -20,7 +20,6 @@ import { States } from "../../types/interfaces/States";
 import { UserContext } from "../../contexts/userDataProvider";
 
 const MyBooks = () => {
-  
   const [modal, setModal] = useState(false);
   const toggleModal = () => setModal(!modal);
   const [listValues] = useState<string[]>([
@@ -52,7 +51,7 @@ const MyBooks = () => {
       setLoading(true);
       const client = new BooksClient();
       let isCompleted: boolean | undefined = undefined;
-      
+
       switch (statusIndex) {
         case 0: // all books
           isCompleted = undefined;
@@ -65,7 +64,10 @@ const MyBooks = () => {
           break;
       }
 
-      const response = await client.getMyBooks(context?.userData?.id || "", isCompleted);
+      const response = await client.getMyBooks(
+        context?.userData?.id || "",
+        isCompleted
+      );
       if (response.data) {
         setMyBooks(response.data);
       } else {
@@ -73,8 +75,8 @@ const MyBooks = () => {
       }
       setError(null);
     } catch (err) {
-      console.error('Error fetching books:', err);
-      setError('Failed to load books. Please try again.');
+      console.error("Error fetching books:", err);
+      setError("Failed to load books. Please try again.");
       setMyBooks([]);
     } finally {
       setLoading(false);
@@ -83,7 +85,7 @@ const MyBooks = () => {
 
   useEffect(() => {
     fetchMyBooks(activeIndex);
-  }, []);
+  }, [activeIndex]);
 
   const getDaysRemainingInYear = () => {
     const today = new Date();
@@ -104,7 +106,7 @@ const MyBooks = () => {
       .catch((err) => {
         console.error(err);
       });
-  });
+  },[]);
 
   const handleBookAdded = () => {
     // Refresh the book list
@@ -142,7 +144,7 @@ const MyBooks = () => {
             ) : error ? (
               <div className="text-center w-100 py-5 text-danger">
                 <p>{error}</p>
-                <button 
+                <button
                   className="btn btn-primary"
                   onClick={() => fetchMyBooks(activeIndex)}
                 >
@@ -246,9 +248,9 @@ const MyBooks = () => {
           </div>
         </div>
       </div>
-      <CreateBookModal 
-        isOpen={modal} 
-        toggle={toggleModal} 
+      <CreateBookModal
+        isOpen={modal}
+        toggle={toggleModal}
         onBookAdded={handleBookAdded}
       />
     </div>
