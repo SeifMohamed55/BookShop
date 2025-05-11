@@ -23,12 +23,14 @@ const PopularBook = ({ bookVal }: { bookVal: PopularBooks }) => {
         average rating : {bookVal.averageRating}
       </h5>
       <p className="normal-font opacity-75 m-0 times">
-        total pages  : {bookVal.totalPages}
+        total pages : {bookVal.totalPages}
       </p>
       <div className="d-flex justify-content-between align-items-center small-font">
-        {Array.from({ length: 5 }).map((star, idx) => (
-          <FontAwesomeIcon key={idx} icon={faStar} className="text-warning" />
-        ))}
+        {Array.from({ length: Math.round(bookVal.averageRating || 0) }).map(
+          (_, idx) => (
+            <FontAwesomeIcon key={idx} icon={faStar} className="text-warning" />
+          )
+        )}
       </div>
     </div>
   );

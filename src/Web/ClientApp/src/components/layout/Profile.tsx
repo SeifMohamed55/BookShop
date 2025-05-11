@@ -98,9 +98,7 @@ const Profile: React.FC = () => {
             <Slider {...sliderSettings}>
               {Array.from({ length: 4 }).map((_, idx) => (
                 <div key={idx} className="px-2">
-                  <Card className="h-100 border-0 shadow-sm hover-card">
-
-                  </Card>
+                  <Card className="h-100 border-0 shadow-sm hover-card"></Card>
                 </div>
               ))}
             </Slider>
